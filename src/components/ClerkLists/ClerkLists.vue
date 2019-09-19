@@ -28,7 +28,7 @@ export default {
     }
   },
   created () {
-    var weixinConfig ={
+    /*var weixinConfig ={
       debug: true,
 
       "appId": "wx0da4e67530296351",
@@ -40,13 +40,12 @@ export default {
     }
 
     const wx = window['wx']
-    console.log("weixin哈哈阿海", wx);
 
     wx.config(weixinConfig);
     
     wx.ready(function(){
-      console.log("准备好了");
-    });
+      // console.log("准备好了");
+    });*/
   },
   mounted () {
     // console.log("weixin", wx);

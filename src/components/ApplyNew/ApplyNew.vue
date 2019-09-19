@@ -56,15 +56,35 @@ export default {
   created () {
     this.WX= window['wx'];
 
+    /*setTimeout(function () {
+      // 获取微信配置
+      $.ajax({
+         type: "GET",  
+         url: "http://localhost:8080/weixin/test",  
+         contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+         // data: {username:$("#username").val(), password:$("#password").val()},  
+         dataType: "json",  
+         success: function(data){  
+                    console.log("成功");  
+                    console.log(data);  
+                  },  
+         error: function(e){  
+                     console.log(e);  
+         }  
+      });      
+    }, 5000);*/
+
+
+
     var weixinConfig ={
-      debug: true,
+      'debug': true,
 
-  "appId": "wx0da4e67530296351",
-  "nonceStr": "jqlDcl7lF87bvso1",
-  "timestamp": 1568883965,
-  "signature": "d29e8343360373e8456f47dd3e10040992357860",
+      appId: "wx0da4e67530296351",
+      nonceStr: "oDNiOm9QV37zsgZo",
+      signature: "5aeb73442e66dc1246c0ba09b2983ef1c5f38f4f",
+      timestamp: 1568894591,
 
-      jsApiList: ['startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice']
+      'jsApiList': ['startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice']
     }
 
     this.WX.config(weixinConfig);
