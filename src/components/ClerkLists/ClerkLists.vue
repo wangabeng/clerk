@@ -15,6 +15,8 @@
 // import {mapGetters, mapActions} from 'vuex'
 import $ from 'jquery'
 
+import wx from 'weixin-js-sdk'
+
 export default {
   name: 'ClerkLists',
   mounted () {
@@ -24,6 +26,30 @@ export default {
     randomLink () {
       this.$router.push('/randomorder');
     }
+  },
+  created () {
+    var weixinConfig ={
+      debug: true,
+
+      "appId": "wx0da4e67530296351",
+      "nonceStr": "HO4lIaBfubT3x5dl",
+      "timestamp": 1568877171,
+      "signature": "bcffe31a0f643f8f370b001c8761c375809ec822",
+
+      jsApiList: ['startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice']
+    }
+
+    const wx = window['wx']
+    console.log("weixin哈哈阿海", wx);
+
+    wx.config(weixinConfig);
+    
+    wx.ready(function(){
+      console.log("准备好了");
+    });
+  },
+  mounted () {
+    // console.log("weixin", wx);
   }
 }
 </script>

@@ -6,6 +6,7 @@ import Index from '@/components/Index/Index'
 import ClerkLists from '@/components/ClerkLists/ClerkLists'
 import ClerkInfo from '@/components/ClerkInfo/ClerkInfo'
 import RandomOrder from '@/components/RandomOrder/RandomOrder'
+import ApplyNew from '@/components/ApplyNew/ApplyNew'
 
 // import Index from '@/components/Index/Index'
 
@@ -57,6 +58,15 @@ const router = new Router({
         title: '随机下单',
       },
     },
+    {
+      path: '/applynew',
+      name: 'ApplyNew',
+      component: ApplyNew,
+      meta: {
+        title: '新店员申请',
+      },
+    },
+    
     /*{
       path: '/register',
       name: 'Register',
