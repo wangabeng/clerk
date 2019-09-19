@@ -2,6 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Index from '@/components/Index/Index'
+
+import ClerkLists from '@/components/ClerkLists/ClerkLists'
+import ClerkInfo from '@/components/ClerkInfo/ClerkInfo'
+import RandomOrder from '@/components/RandomOrder/RandomOrder'
+
 // import Index from '@/components/Index/Index'
 
 Vue.use(Router)
@@ -17,15 +22,39 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      redirect: '/index'
+      redirect: '/clerklists'
     },
-    {
+    /*{
       path: '/index',
       name: 'Index',
       component: Index,
       meta: {
         title: '首页',
         requireAuth: true // 在需要登录的路由的meta中添加响应的权限标识
+      },
+    },*/
+    {
+      path: '/clerklists',
+      name: 'ClerkLists',
+      component: ClerkLists,
+      meta: {
+        title: '店员列表',
+      },
+    },
+    {
+      path: '/clerkinfo',
+      name: 'ClerkInfo',
+      component: ClerkInfo,
+      meta: {
+        title: '店员信息',
+      },
+    },
+    {
+      path: '/randomorder',
+      name: 'RandomOrder',
+      component: RandomOrder,
+      meta: {
+        title: '随机下单',
       },
     },
     /*{
@@ -49,10 +78,8 @@ const router = new Router({
 
 // 路由卫士 鉴权 获取和设置用户token及userInfo信息
 router.beforeEach((to, from, next) => {
-  // 判断将要跳转的路由是否需要鉴权
-  if (to.matched.some(record => record.meta.requireAuth)) {
-    /*console.log("需要权限");*/
-
+  if (to.meta.title) {
+    document.title = to.meta.title
   }
   // 如果不需要登陆权限 直接进入要跳转的路由页面
   next();

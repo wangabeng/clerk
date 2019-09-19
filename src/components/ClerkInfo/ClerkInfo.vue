@@ -1,7 +1,6 @@
 <template>
   <div id="m-index">
     index<i class="fa fa-volume-up" aria-hidden="true"></i>
-    <img src="./用户名.png" alt="">
   </div>
 </template>
 
@@ -16,7 +15,7 @@
 import $ from 'jquery'
 
 export default {
-  name: 'Index',
+  name: 'ClerkInfo',
   mounted () {
     console.log("adfdfdf", $("#m-index").html());
   }

@@ -1,7 +1,7 @@
 <template>
-  <div id="m-index">
-    index<i class="fa fa-volume-up" aria-hidden="true"></i>
-    <img src="./用户名.png" alt="">
+  <div class="clerk-lists">
+    店员列表
+    <a href="javascript:;" @click='randomLink'>ddd</a>
   </div>
 </template>
 
@@ -16,16 +16,21 @@
 import $ from 'jquery'
 
 export default {
-  name: 'Index',
+  name: 'ClerkLists',
   mounted () {
     console.log("adfdfdf", $("#m-index").html());
+  },
+  methods: {
+    randomLink () {
+      this.$router.push('/randomorder');
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
 @import "common/sass/variable.scss";
-#m-index {
+.clerk-lists {
   color: $color-sub-blue;
   width: 6rem;
   background: blue;
