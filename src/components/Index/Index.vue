@@ -1,6 +1,6 @@
 <template>
   <div id="m-index">
-    index
+    index<i class="fa fa-volume-up" aria-hidden="true"></i>
   </div>
 </template>
 
@@ -15,12 +15,17 @@
 
 export default {
   name: 'Index',
+  created () {
+    console.log("adfdfdf", $("#m-index").html());
+  }
 }
 </script>
 
 <style scoped lang="scss">
-@import "common/sass/reset.scss";
+@import "common/sass/variable.scss";
 #m-index {
-  color: red;
+  color: $color-sub-blue;
+  width: 6rem;
+  background: blue;
 }
 </style>
