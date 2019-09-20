@@ -7,9 +7,6 @@ const mutations = {
   [types.SET_USER_INFO] (state, userInfoStr) {
     state.userInfo = userInfoStr
   },
-  [types.SET_MODI_NEWS] (state, newsStr) {
-    state.modiNews = newsStr
-  }
 }
 
 export default mutations

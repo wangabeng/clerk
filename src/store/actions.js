@@ -10,6 +10,3 @@ export const setUserInfo = function ({commit, state}, userInfoStr) {
   }*/
   commit(types.SET_USER_INFO, userInfoStr)
 }
-export const setModiNews = function ({commit, state}, newsStr) {
-  commit(types.SET_MODI_NEWS, newsStr)
-}

@@ -118,13 +118,13 @@ export default {
           params: {
             // openid: '132332332'
           },
-          /*config: {
-            headers: { "Content-Type": "application/x-www-form-urlencoded"},
-          },*/
+          config: {
+            headers: { "Content-Type": "application/x-www-form-urlencoded",'Authorization': 'test'},
+          },
           withCredentials: true // 携带cookie
         })
         .then(function (response) {
-          console.log(response);
+          console.log(response.data);
         })
         .catch(function (error) {
           // console.log(error);
