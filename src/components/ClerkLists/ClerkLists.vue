@@ -47,7 +47,7 @@
             <p class="desc">希望你的可爱 可以治愈一切不可爱</p>
             <!-- 播放及价格 -->
             <div class="play-price">
-              <div><img src='./play-icon.jpg'></div>
+              <div class='paly-icon'></div>
               <p>¥5元起</p>
             </div>
           </div>
@@ -80,7 +80,7 @@
             <p class="desc">希望你的可爱 可以治愈一切不可爱</p>
             <!-- 播放及价格 -->
             <div class="play-price">
-              <div><img src='./play-icon.jpg'></div>
+              <div class='paly-icon playing'></div>
               <p>¥5元起</p>
             </div>
           </div>
@@ -88,6 +88,19 @@
         </a>
       </li>
     </ul>
+    
+    <div v-for="(item, $index) in list" :key="$index">
+      <!-- Hacker News item loop -->{{item}}
+    </div>
+    <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+
+    <!-- 选择器 -->
+    <!-- 遮罩层 -->
+    <!-- <div class="mask-fixed"></div>
+    <ul class="picker-container">
+      <li class='option' v-for='item in genderArr'>{{item}}</li>
+      <li class='cancel'>取消</li>
+    </ul> -->
   </div>
 </template>
 
@@ -103,20 +116,47 @@ import $ from 'jquery'
 
 import wx from 'weixin-js-sdk'
 
-// import axios from 'axios'
-import axios from 'src/api/axios';
+import axios from 'axios'
+// import axios from 'src/api/axios';
 import {BASEURL} from "src/api/config.js";
+
+import InfiniteLoading from 'vue-infinite-loading';
+const api = '//hn.algolia.com/api/v1/search_by_date?tags=story';
 
 export default {
   name: 'ClerkLists',
+  components: {
+    InfiniteLoading,
+  },
   data () {
     return {
       token: '',
+      genderArr: ['全部', '只看男生', '只看女生'],
+      typeArr: ['全部', '镇店', '金牌', '普通'],
+
+      page: 1,
+      list: [],
+
     };
   },
   mounted () {
   },
   methods: {
+    infiniteHandler($state) {
+      axios.get(api, {
+        params: {
+          page: this.page,
+        },
+      }).then(({ data }) => {
+        if (data.hits.length) {
+          this.page += 1;
+          this.list.push(...data.hits);
+          $state.loaded();
+        } else {
+          $state.complete();
+        }
+      });
+    },
   },
   created () {
   },
@@ -128,11 +168,12 @@ export default {
 
 <style scoped lang="scss">
 @import "common/sass/variable.scss";
+@import "common/sass/mixin.scss";
 .random-link {
   position: fixed;
   right: .2rem;
   bottom: .4rem;
-  z-index: 1000000;
+  z-index: 9999;
   a {
     background-color: #f02b32;
     color: #fff;
@@ -322,12 +363,24 @@ export default {
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            div {
-              img {
-                width: .77rem;
-                height: .34rem;
+            .paly-icon {
+              width: .75rem;
+              height: .32rem;
+              display: inline-flex;
+              box-shadow: $box-shadow;
+              border-radius: .04rem;
+              @include background_fill('~common/image/audio.png');
+              &.playing {
+                @include background_fill('~common/image/audioplay.gif');
               }
             }
+            /* .play-icon {
+              width: .77rem;
+              height: .34rem;
+              display: inline-flex;
+              background-color: red;
+              @include background_fill('~common/image/audio.png');
+            } */
             p {
               color: $color-text-d;
             }
@@ -343,34 +396,38 @@ export default {
       }
     }
   }
-        /* <a href="javascript:;">
-          <!-- 头像 -->
-          <div class="potrait">
-            <img src="./th.jpg" alt="">
-          </div>
-          <div class="mid-infos">
-            <!-- 名字及状态 -->
-            <div class="name-line">
-              <div class="name-wrapper">
-                <span>张三丰</span>
-                <i class="fa fa-mars" aria-hidden="true"></i>
-                <!-- <i class="fa fa-venus" aria-hidden="true"></i> -->                
-              </div>
-              <div class="online-status">
-                <i></i>
-                <span>在线</span>
-              </div>
-        
-            </div>
-            <!-- 说明 -->
-            <p class="desc">希望你的可爱 可以治愈一切不可爱</p>
-            <!-- 播放及价格 -->
-            <div class="play-price">
-              <a href="javascript:;"></a>
-              <p>¥5元起</p>
-            </div>
-          </div>
-        </a> */
+
+}
+
+/* 遮罩层 */
+.mask-fixed {
+  position: fixed;
+  z-index: 10000;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: .6;
+}
+/* 选择器 */
+.picker-container {
+  position: fixed;
+  z-index: 10001;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  background-color: #fff;
+  li {
+    width: 100%;
+    line-height: 1.5;
+    text-align: center;
+    padding: .2rem 0;
+    &.option {
+      border-bottom: $border-1px;
+    }
+    &.cancel {
+      border-top: .2rem solid rgba(0, 0, 0, .05);
+    }
+  }
 }
 </style>
 
