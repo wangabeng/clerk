@@ -4,7 +4,7 @@
     <a href="javascript:;" @click='randomLink'>ddd</a>
     <br>
     <br>
-    <a href="javascript:;" @click='getInfoC'>获取信息</a>
+    <a href="javascript:;" @click='feedback'>反馈</a>
     <br>
     <br>
     <a href="javascript:;" @click='login'>登录</a>
@@ -96,6 +96,40 @@ export default {
           // console.log(error);
         });
     },
+    feedback () {
+      // ajax测试成功
+      /*$.ajax({
+         type: "POST",  
+         // url: BASEURL + "/api/get_user_info",  
+         url: "http://116.62.23.153:9494/api/get_feedback_types",  
+         contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+         // data: {username:$("#username").val(), password:$("#password").val()},  
+         dataType: "json",  
+         success: function(data){  
+                    console.log("成功");  
+                    console.log(data);  
+                  },  
+         error: function(e){  
+                     console.log(e);  
+         }  
+      });*/
+
+      axios.post('/get_feedback_types', {
+          params: {
+            // openid: '132332332'
+          },
+          /*config: {
+            headers: { "Content-Type": "application/x-www-form-urlencoded"},
+          },*/
+          withCredentials: true // 携带cookie
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          // console.log(error);
+        });
+    },
     login () {
       axios.post('/admin/login', {
           params: {
@@ -144,7 +178,7 @@ export default {
     }
 
     // 请求文章列表
-    axios.get(BASEURL + '/newscenter/lists', {
+    /*axios.get(BASEURL + '/newscenter/lists', {
         params: {
           curpage: 1,
           pagesize: 4,
@@ -156,7 +190,7 @@ export default {
       })
       .catch(function (error) {
         // console.log(error);
-      });
+      });*/
 
 
     /*var weixinConfig ={

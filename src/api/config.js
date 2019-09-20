@@ -1,6 +1,7 @@
 // dev
 // export const BASEURL = 'http://116.62.23.153:9494/api';
-export const BASEURL = 'http://localhost:8080/consult';
+// export const BASEURL = 'http://localhost:8080/consult';
+export const BASEURL = ' http://116.62.23.153:9494/api';
 // export const BASEURL = 'https://www.sgshudong.com';
 
 // export const BASEURL = 'https://www.sgshudong.com';
