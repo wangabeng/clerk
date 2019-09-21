@@ -95,10 +95,73 @@
     
 
     <!-- 立即下单 -->
+    <div class="fixed-place-now">
+      <input class='place-btn' type="button" value='立即下单'>
+    </div>
 
-    <!-- 蒙尘 -->
+    <!-- 遮罩层 -->
+    <div class="mask-info"></div>
 
     <!-- 购买弹出窗 -->
+    <div class="order-window">
+      <!-- 主图及选择规格 -->
+      <div class="top-info">
+        <div class="pic"><img src="./th.jpg" alt=""></div>
+        <div class="sum-txt">
+          <p class='amount'>￥16</p>
+          <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;;&nbsp;&nbsp;时长&nbsp;</p>
+        </div>
+      </div>
+      <!-- 选择规格区 -->
+      <div class="select-wrapper">
+        <!-- 滚动区 -->
+        <div class="select-inner">
+          <!-- 类型区 -->
+          <div class="type-area type-time">
+            <ul class="">
+              <li class='active'>文字语音条</li>
+              <li>语音通话</li>
+            </ul>            
+          </div>
+
+
+          <!-- 时长区 -->
+          <div class="long-area type-time">
+            <h4>时长</h4>
+            <ul>
+              <li>半小时</li>
+              <li>一小时</li>
+              <li>一天</li>
+              <li>一周</li>
+              <li>一个月</li>
+            </ul>
+          </div>
+          <!-- 购买数量 -->
+          <div class="amount-area">
+            <h4>购买数量</h4>
+            <div class="amount-wrapper">
+              <a href="javascript:;"><img src="~common/image/minus-icon.png" alt=""></a>
+              <input type="number" value='1'>
+              <a href="javascript:;"><img src="~common/image/add-icon.png" alt=""></a>
+            </div>
+          </div>
+          <!-- 微信号 -->
+          <div class="weixin-area">
+            <h4>微信号</h4>
+            <input type="text" placeholder="请输入微信号">
+          </div>
+
+        </div>
+
+      </div>
+      <!-- 提交按钮区 -->
+      <div class="bot-sub">
+        <p class="total">
+          总价：<span>-￥162.0</span>
+        </p>
+        <div>立即下单</div>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -157,6 +220,211 @@ export default {
 <style  lang="scss">/* scoped */
 @import "common/sass/variable.scss";
 @import "common/sass/mixin.scss";
+
+/* 下单按钮 */
+.fixed-place-now {
+  width: 100%;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  padding: .2rem 0;
+  border-top: $border-1px;
+  .place-btn {
+    font-size: .22rem;
+    background-color: #ee0d2d;
+    color: #fff;
+    width: 5.8rem;
+    padding: .15rem 0;
+    border-radius: .06rem;
+  }
+}
+/* 遮罩层 */
+.mask-info {
+  position: fixed;
+  // display: none;
+  z-index: 10001;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: black;
+  opacity: .6;
+}
+/* 弹出窗 */
+.order-window {
+  width: 100%;
+  position: fixed;
+  z-index: 10002;
+  left: 0;
+  bottom: 0;
+  background-color: #fff;
+  // height: calc(100VH - 2rem);
+  height: calc(85VH);
+  color: $color-text-dd;
+  border-top-left-radius: .1rem;
+  border-top-right-radius: .1rem;
+
+  .top-info {
+    height: 2.5rem;
+    width: 6.4rem;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: .3rem .3rem 0;
+    box-sizing: border-box;
+
+    .pic {
+      width: 2rem;
+      height: 2rem;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .sum-txt {
+      box-sizing: border-box;
+      padding-left: .2rem;
+      line-height: 1.5;
+      color: $color-text-d;
+      .amount {
+        color: #f12d2f;
+        font-size: .28rem;
+        margin-top: .1rem;
+      }
+      .size {
+        font-size: .23rem;
+      }
+    }
+  }
+
+  .select-wrapper {
+    height: calc(85VH - 3.3rem);
+    overflow-y: auto;
+    border-top: $border-1px;
+    border-bottom: $border-1px;
+    .select-inner {
+      width: 100%;
+      padding: 0 .2rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items:center;
+      
+      .type-time {
+        width: 100%;
+        padding: .2rem;
+        width: 100%;
+        box-sizing: border-box;
+        border-bottom: $border-1px;
+        h4 {
+          font-size: .25rem;
+          padding: .1rem .1rem;
+
+        }
+        >ul {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          li {
+            margin: .1rem;
+            &:first-child {
+              margin-left: 0;
+            }
+            padding: .1rem .12rem;
+            border-radius: .05rem;
+            background-color: $color-background-d;
+            font-size: .22rem;
+            &.active {
+              background-color: #fdeaec;
+              color: #f12d2f;
+            }
+          }
+        }        
+      }
+
+      /* 购买数量 */
+      .amount-area {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: .2rem .1rem;
+        box-sizing: border-box;
+        h4 {
+          font-size: .25rem;
+          padding: .1rem .1rem;
+        }
+        .amount-wrapper {
+          display: inline-flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          align-items: center;
+          justify-content: center;
+          a {
+            img {
+              width: .8rem;
+              height: .6rem;
+            }
+          }
+          input {
+            width: 1rem;
+            height: .6rem;
+            box-sizing: border-box;
+            padding: 0 .1rem;
+            margin: 0 .06rem;
+            font-size: 0.24rem;
+            background-color: #f5f5f5;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+
+  .bot-sub {
+    height: .8rem;
+  }
+}
+/*       <div class="select-wrapper">
+  <!-- 滚动区 -->
+  <div class="select-inner">
+    <ul class="type-area">
+      <li>文字语音条</li>
+      <li>语音通话</li>
+    </ul>
+  </div>
+  <!-- 时长区 -->
+  <div class="long-area">
+    <h4>时长</h4>
+    <ul>
+      <li>半小时</li>
+      <li>一小时</li>
+      <li>一天</li>
+      <li>一周</li>
+      <li>一个月</li>
+    </ul>
+  </div>
+  <!-- 购买数量 -->
+  <div class="amount-area">
+    <h4>购买数量</h4>
+    <div class="amount-wrapper">
+      <img src="" alt="">
+      <input type="number">
+      <img src="" alt="">
+    </div>
+  </div>
+  <!-- 微信号 -->
+  <div class="weixin-area">
+    <h4>微信号</h4>
+    <input type="text" placeholder="请输入微信号">
+  </div>
+</div> */
 #clerk-info {
   width: 6.4rem;
 
@@ -168,6 +436,7 @@ export default {
     align-items: center;
     background-color: #f6f6f6;
     color: $color-text-dd;
+    padding-bottom: 1rem;
     
     .level-price-desc {
       width: 100%;
@@ -202,6 +471,7 @@ export default {
 
       .per-desc {
         padding: .2rem 0 .2rem;
+        font-size: .2rem;
       }
     }
     
@@ -266,18 +536,58 @@ export default {
           border-radius: .05rem;
           border: $border-1px-d;
           color: $color-text-d;
+          font-size: .2rem;
+        }
+      }
+    }
+
+    .service-price {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: #fff;
+      padding: 0 .2rem;
+      box-sizing: border-box;
+      margin-top: .2rem;
+      p {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: .2rem 0 .2rem;
+        border-bottom: $border-1px;
+        i {
+          padding-right: .05rem;
+          font-size: .23rem;
+        }
+      }
+      ul {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: .2rem 0 .2rem;
+
+        li {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          padding: .12rem 0;
+          &.title {
+            font-weight: bold;
+            color: $color-text-basic;
+          }
+          span {
+            flex: 1;
+            text-align: center;
+          }
         }
       }
     }
 
   }
-      /* <div class="nature-wrapper">
-        <p><i class="fa fa-tags" aria-hidden="true"></i><span>性格标签</span></p>
-        <ul>
-          <li>理解</li>
-          <li>包容体贴别人</li>
-        </ul>
-      </div> */
 
 }
 
