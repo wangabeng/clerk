@@ -94,18 +94,22 @@
     </div>
     
 
-    <!-- 立即下单 -->
+    <!-- 下单 -->
     <div class="fixed-place-now">
-      <input class='place-btn' type="button" value='立即下单'>
+      <input class='place-btn' type="button" 
+        @click='orderIn' value='下单'>
     </div>
 
     <!-- 遮罩层 -->
-    <div class="mask-info"></div>
+    <div class="mask-info" :class="{'open': maskShow}" 
+      @click='closeWin'></div>
 
     <!-- 购买弹出窗 -->
-    <div class="order-window">
+    <div class="order-window" :class="{'open': maskShow}">
       <!-- 主图及选择规格 -->
       <div class="top-info">
+        <img class='close-icon' src="~common/image/close-icon.png" 
+          @click='closeWin' alt="">
         <div class="pic"><img src="./th.jpg" alt=""></div>
         <div class="sum-txt">
           <p class='amount'>￥16</p>
@@ -129,11 +133,11 @@
           <div class="long-area type-time">
             <h4>时长</h4>
             <ul>
-              <li>半小时</li>
-              <li>一小时</li>
-              <li>一天</li>
-              <li>一周</li>
-              <li>一个月</li>
+              <li @click="selectTime($event, '半小时')">半小时</li>
+              <li @click="selectTime($event, '1小时')">一小时</li>
+              <li @click="selectTime($event, '1天')">一天</li>
+              <li @click="selectTime($event, '一周')">一周</li>
+              <li @click="selectTime($event, '一个月')">一个月</li>
             </ul>
           </div>
           <!-- 购买数量 -->
@@ -159,7 +163,7 @@
         <p class="total">
           总价：<span>-￥162.0</span>
         </p>
-        <div>立即下单</div>
+        <input type="button" value='立即下单'>
       </div>
     </div>
 
@@ -206,10 +210,28 @@ export default {
           observer: true,
           observeParents: true,
       },
+
+      maskShow: false,
+
     };
   },
   created () {
     console.log("canshu:" + this.$route.params.id);
+  },
+  methods: {
+    // 下单弹出弹窗
+    orderIn () {
+      this.maskShow = true;
+    },
+    // 关闭弹窗
+    closeWin () {
+      this.maskShow = false;
+    },
+    // 选择时长
+    selectTime (daysTime) {
+      // 
+
+    }
   },
   mounted () {
     // console.log("adfdfdf", $("#m-index").html());
@@ -246,7 +268,7 @@ export default {
 /* 遮罩层 */
 .mask-info {
   position: fixed;
-  // display: none;
+  display: none;
   z-index: 10001;
   width: 100%;
   height: 100%;
@@ -254,6 +276,11 @@ export default {
   top: 0;
   background-color: black;
   opacity: .6;
+
+  &.open {
+    display: flex;
+  }
+
 }
 /* 弹出窗 */
 .order-window {
@@ -262,12 +289,21 @@ export default {
   z-index: 10002;
   left: 0;
   bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: #fff;
-  // height: calc(100VH - 2rem);
   height: calc(85VH);
   color: $color-text-dd;
   border-top-left-radius: .1rem;
   border-top-right-radius: .1rem;
+
+  transform: translateY(100%);
+  transition: all 500ms ease-in-out;
+
+  &.open {
+    transform: translateY(0);
+  }
 
   .top-info {
     height: 2.5rem;
@@ -277,6 +313,15 @@ export default {
     align-items: flex-start;
     padding: .3rem .3rem 0;
     box-sizing: border-box;
+    position: relative;
+
+    .close-icon {
+      position: absolute;
+      top: .2rem;
+      right: .2rem;
+      width: .4rem;
+      heihgt: .4rem;
+    }
 
     .pic {
       width: 2rem;
@@ -349,16 +394,18 @@ export default {
 
       /* 购买数量 */
       .amount-area {
-        width: 100%;
+        width: 6.4rem;
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
         padding: .2rem .1rem;
         box-sizing: border-box;
+        border-bottom: $border-1px;
         h4 {
           font-size: .25rem;
           padding: .1rem .1rem;
+          box-sizing: border-box;
         }
         .amount-wrapper {
           display: inline-flex;
@@ -384,49 +431,60 @@ export default {
           }
         }
       }
+
+      /* 微信号 */
+      .weixin-area {
+        width: 6.4rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: .2rem .1rem;
+        box-sizing: border-box;
+        h4 {
+          font-size: .25rem;
+          padding: .1rem .1rem;
+        }
+        input {
+          flex: 1;
+          padding: .1rem .05rem;
+          box-sizing: border-box;
+          margin-left: .2rem;
+        }
+      }
     }
   }
 
   .bot-sub {
     height: .8rem;
+    width: 6.4rem;
+    padding: 0 .2rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    .total {
+      span {
+        color: #f12d2f;
+      }
+    }
+    input {
+      display: inline-flex;
+      padding: .1rem .3rem;
+      border-radius: .05rem;
+      background-color: #f12d2f;
+      color: #fff;
+    }
   }
 }
-/*       <div class="select-wrapper">
-  <!-- 滚动区 -->
-  <div class="select-inner">
-    <ul class="type-area">
-      <li>文字语音条</li>
-      <li>语音通话</li>
-    </ul>
-  </div>
-  <!-- 时长区 -->
-  <div class="long-area">
-    <h4>时长</h4>
-    <ul>
-      <li>半小时</li>
-      <li>一小时</li>
-      <li>一天</li>
-      <li>一周</li>
-      <li>一个月</li>
-    </ul>
-  </div>
-  <!-- 购买数量 -->
-  <div class="amount-area">
-    <h4>购买数量</h4>
-    <div class="amount-wrapper">
-      <img src="" alt="">
-      <input type="number">
-      <img src="" alt="">
-    </div>
-  </div>
-  <!-- 微信号 -->
-  <div class="weixin-area">
-    <h4>微信号</h4>
-    <input type="text" placeholder="请输入微信号">
-  </div>
-</div> */
+
+
 #clerk-info {
   width: 6.4rem;
+  .masked {
+
+  }
 
   /* 详情信息 */
   .detail-info-wrapper {

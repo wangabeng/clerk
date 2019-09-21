@@ -7,6 +7,9 @@ import fontSize from './common/js/fontSize'
 
 import 'common/sass/index.scss'
 
+import AwesomePicker from 'vue-awesome-picker';
+Vue.use(AwesomePicker);
+
 Vue.config.productionTip = false
 
 new Vue({

@@ -2,7 +2,7 @@
   <div class="clerk-lists">
     <!-- 随机下单 -->
     <div class="random-link">
-      <a href="javascript:;">随机下单</a>
+      <a href="javascript:;" @click='linkRandom'>随机下单</a>
     </div>
 
     <!-- 搜索栏 -->
@@ -215,7 +215,11 @@ export default {
     // 播放
     doPlay () {
       return false;
-    }
+    },
+    // 随机下单
+    linkRandom () {
+      this.$router.push({path: '/randomorder'});
+    },
   },
   created () {
     // 默认请求所有店员数据 发送请求 {URL}/api/get_index
