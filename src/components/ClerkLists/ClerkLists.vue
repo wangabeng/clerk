@@ -16,8 +16,8 @@
     <!-- 排序及分类 -->
     <div class="sort-wrapper">
       <a href="javascript:;">智能排序</a>
-      <a href="javascript:;" @click="selectGender('sex')">性别：全部</a>
-      <a href="javascript:;" @click="selectGender('level')">等级：全部</a>
+      <a href="javascript:;" @click="selectGender('sex', genderArr)">性别：全部</a>
+      <a href="javascript:;" @click="selectGender('level', typeArr)">等级：全部</a>
     </div>
     <!-- 店员列表 -->
     <ul class="all-lists">
@@ -47,7 +47,7 @@
             <p class="desc">希望你的可爱 可以治愈一切不可爱</p>
             <!-- 播放及价格 -->
             <div class="play-price">
-              <div class='paly-icon'></div>
+              <div class='paly-icon' @click.stop='doPlay'></div>
               <p>¥5元起</p>
             </div>
           </div>
@@ -100,7 +100,7 @@
       @click='cancelPicker'></div>
     <!-- 选择器 -->
     <ul class="picker-container" :class="{'open': pickerShow}">
-      <li class='option' v-for='item in genderArr' 
+      <li class='option' v-for='item in pickerArr' 
         @click='resetSum(item.num)'>{{item.text}}</li>
       <li class='cancel' @click='cancelPicker'>取消</li>
     </ul>
@@ -170,11 +170,12 @@ export default {
       });
     },
     // 选择性别
-    selectGender (sexOrLevel) {
+    selectGender (sexOrLevel, arr) {
       // sexOrLevel 是重新选择性别 还是等级
       this.sexOrLevel = sexOrLevel;
       // 1 选项数据填充
-      this.pickerArr = this.genderArr;
+      this.pickerArr = arr;
+      console.log(this.pickerArr);
       // 2 遮罩层显示 选择器显示
       this.maskShow = true;
       this.pickerShow = true;
@@ -194,12 +195,12 @@ export default {
       this.pickerShow = false;
     },
     // 选择等级
-    selectType () {
-      this.pickerArr = this.typeArr;
-      // 2 遮罩层显示 选择器显示
-      this.maskShow = true;
-      this.pickerShow = true;
-    },
+    // selectType (sexOrLevel) {
+    //   this.pickerArr = this.typeArr;
+    //   // 2 遮罩层显示 选择器显示
+    //   this.maskShow = true;
+    //   this.pickerShow = true;
+    // },
     // 取消选择
     cancelPicker () {
       this.pickerArr = [];
@@ -210,6 +211,10 @@ export default {
     getClerkDetail (id) {
       // 路由跳转
       this.$router.push({ path: `/clerkinfo/${id}`});
+    },
+    // 播放
+    doPlay () {
+      return false;
     }
   },
   created () {
@@ -473,7 +478,7 @@ export default {
   bottom: 0;
   background-color: #fff;
 
-  transform: translateY(100VH);
+  transform: translateY(100%);
   transition: all 500ms ease-in-out;
 
   &.open {
