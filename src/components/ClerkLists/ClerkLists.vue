@@ -16,13 +16,13 @@
     <!-- 排序及分类 -->
     <div class="sort-wrapper">
       <a href="javascript:;">智能排序</a>
-      <a href="javascript:;">性别：全部</a>
-      <a href="javascript:;">等级：全部</a>
+      <a href="javascript:;" @click="selectGender('sex')">性别：全部</a>
+      <a href="javascript:;" @click="selectGender('level')">等级：全部</a>
     </div>
     <!-- 店员列表 -->
     <ul class="all-lists">
       <li>
-        <a href="javascript:;">
+        <a href="javascript:;" @click='getClerkDetail("zhangsan")'>
           <!-- 头像 -->
           <div class="potrait">
             <img src="./th.jpg" alt="">
@@ -94,13 +94,16 @@
     </div>
     <infinite-loading @infinite="infiniteHandler"></infinite-loading>
 
-    <!-- 选择器 -->
+    
     <!-- 遮罩层 -->
-    <!-- <div class="mask-fixed"></div>
-    <ul class="picker-container">
-      <li class='option' v-for='item in genderArr'>{{item}}</li>
-      <li class='cancel'>取消</li>
-    </ul> -->
+    <div class="mask-fixed" :class="{'open': maskShow}" 
+      @click='cancelPicker'></div>
+    <!-- 选择器 -->
+    <ul class="picker-container" :class="{'open': pickerShow}">
+      <li class='option' v-for='item in genderArr' 
+        @click='resetSum(item.num)'>{{item.text}}</li>
+      <li class='cancel' @click='cancelPicker'>取消</li>
+    </ul>
   </div>
 </template>
 
@@ -131,11 +134,20 @@ export default {
   data () {
     return {
       token: '',
-      genderArr: ['全部', '只看男生', '只看女生'],
-      typeArr: ['全部', '镇店', '金牌', '普通'],
+
+
+      curClarkArr: [], // 当前店员数据 默认展示所有店员数据
+      genderArr: [{text: '所有', num: 0}, {text: '只看男生', num: 1}, {text: '只看女生', num: 2}], // 性别  1男 2女
+      typeArr: [{text: '全部', num: 0}, {text: '普通', num: 1}, {text: '金牌', num: 2}, {text: '镇店', num: 3}], // 等级 1普通 2金牌 3镇店
+      pickerArr: [], // 默认不显示
 
       page: 1,
       list: [],
+
+      maskShow: false, // 遮罩层默认不显示
+      pickerShow: false, // 选择器默认不显示
+
+      sexOrLevel: '', // 当前要切换选择性别 还是等级
 
     };
   },
@@ -157,12 +169,52 @@ export default {
         }
       });
     },
+    // 选择性别
+    selectGender (sexOrLevel) {
+      // sexOrLevel 是重新选择性别 还是等级
+      this.sexOrLevel = sexOrLevel;
+      // 1 选项数据填充
+      this.pickerArr = this.genderArr;
+      // 2 遮罩层显示 选择器显示
+      this.maskShow = true;
+      this.pickerShow = true;
+      /*genderArr: ['全部', '只看男生', '只看女生'], // 性别选项
+      typeArr: ['全部', '镇店', '金牌', '普通'], // 登记选项
+      pickerArr: [], // 默认不显示*/
+    },
+    // 重新选择
+    resetSum (num) {
+      // 1 重新选择性别or登记 this.sexOrLevel  如果是等级 获取登记编号num
+
+      // 2 发送请求 {URL}/api/get_index
+
+      // 3 隐藏遮罩层和选择器
+      this.pickerArr = [];
+      this.maskShow = false;
+      this.pickerShow = false;
+    },
+    // 选择等级
+    selectType () {
+      this.pickerArr = this.typeArr;
+      // 2 遮罩层显示 选择器显示
+      this.maskShow = true;
+      this.pickerShow = true;
+    },
+    // 取消选择
+    cancelPicker () {
+      this.pickerArr = [];
+      this.maskShow = false;
+      this.pickerShow = false;
+    },
+    // 获取店员详情
+    getClerkDetail (id) {
+      // 路由跳转
+      this.$router.push({ path: `/clerkinfo/${id}`});
+    }
   },
   created () {
+    // 默认请求所有店员数据 发送请求 {URL}/api/get_index
   },
-  mounted () {
-    // console.log("weixin", wx);
-  }
 }
 </script>
 
@@ -402,11 +454,15 @@ export default {
 /* 遮罩层 */
 .mask-fixed {
   position: fixed;
+  display: none;
   z-index: 10000;
   width: 100%;
   height: 100%;
   background-color: black;
   opacity: .6;
+  &.open {
+    display: block;
+  }
 }
 /* 选择器 */
 .picker-container {
@@ -416,6 +472,14 @@ export default {
   left: 0;
   bottom: 0;
   background-color: #fff;
+
+  transform: translateY(100VH);
+  transition: all 500ms ease-in-out;
+
+  &.open {
+    transform: translateY(0);
+  }
+
   li {
     width: 100%;
     line-height: 1.5;

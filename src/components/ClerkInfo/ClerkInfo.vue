@@ -2,7 +2,7 @@
   <div id="m-index">
     <!-- index<i class="fa fa-volume-up" aria-hidden="true"></i> -->
 
-
+dsdd
   <swiper :options="swiperOption">
   　　<swiper-slide>
         <img src="./th.jpg" style='width:2.4rem;height:2rem' alt=""><span>1111111</span>
@@ -62,8 +62,11 @@ export default {
       },
     };
   },
+  created () {
+    console.log("canshu:" + this.$route.params.id);
+  },
   mounted () {
-    console.log("adfdfdf", $("#m-index").html());
+    // console.log("adfdfdf", $("#m-index").html());
   }
 }
 </script>
