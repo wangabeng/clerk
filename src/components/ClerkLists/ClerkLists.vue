@@ -106,6 +106,9 @@
     </ul>
 
       <p @click='sendCode'>测试发送code</p>
+      <br>
+      <br>
+      <p @click='getList'>测试发送code</p>
 
 
   </div>
@@ -246,7 +249,7 @@ export default {
          }  
       });*/
       var prarmData = {
-        code: '071NBRFl0DRwcr1qGPFl0tU1Gl0NBRFE'
+        code: '001RQu2K0c0xT82FuN2K02pO2K0RQu2e'
       }
       axios({
         method: 'post',
@@ -254,10 +257,9 @@ export default {
         data: Qs.stringify(prarmData),
       }).then(function (response) {
         console.log(response.data);
-      })
-      .catch(function (error) {
+      }).catch(function (error) {
         // console.log(error);
-      });;
+      });
 
         /*'/wechatauth', Qs.stringify(prarmData))
         .then(function (response) {
@@ -283,6 +285,27 @@ export default {
           // console.log(error);
         });*/
 
+
+    },
+    // 获取店员列表
+    getList () {
+      var prarmData = {
+        nick_name:  "\u963f\u8ff8",
+        sex: 1,
+        level: 1,
+      }
+      axios({
+        method: 'post',
+        url: '/get_index',
+        data: Qs.stringify(prarmData),
+        headers:{
+          'Authorization': 'Bearer' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8',
+        }
+      }).then(function (response) {
+        console.log(response.data);
+      }).catch(function (error) {
+        // console.log(error);
+      });
 
     }
   },

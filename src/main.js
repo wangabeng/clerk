@@ -4,6 +4,7 @@ import router from './router'
 import $ from 'jquery'
 // rem布局字体自适应
 import fontSize from './common/js/fontSize'
+fontSize(document, window)
 
 import 'common/sass/index.scss'
 
@@ -16,6 +17,6 @@ new Vue({
   render: h => h(App),
   router,
   mounted () {
-    fontSize(); // 自适应rem布局
+    // fontSize(); // 自适应rem布局
   }
 }).$mount('#app')
