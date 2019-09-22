@@ -38,7 +38,7 @@
               </div>
               <div class="online-status">
                 <!-- online  offline -->
-                <i class="fa fa-circle offline" aria-hidden="true"></i>
+                <i class="fa fa-circle online" aria-hidden="true"></i>
                 <span>在线</span>
               </div>
 
@@ -55,7 +55,7 @@
         </a>
       </li>
       <li>
-        <a href="javascript:;">
+        <a href="javascript:;" @click='getClerkDetail("zhangsan")'>
           <!-- 头像 -->
           <div class="potrait">
             <img src="./th.jpg" alt="">
@@ -72,7 +72,7 @@
               <div class="online-status">
                 <!-- online  offline -->
                 <i class="fa fa-circle offline" aria-hidden="true"></i>
-                <span>在线</span>
+                <span>离线</span>
               </div>
 
             </div>
@@ -80,7 +80,7 @@
             <p class="desc">希望你的可爱 可以治愈一切不可爱</p>
             <!-- 播放及价格 -->
             <div class="play-price">
-              <div class='paly-icon playing'></div>
+              <div class='paly-icon playing' @click.stop='doPlay'></div>
               <p>¥5元起</p>
             </div>
           </div>

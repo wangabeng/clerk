@@ -18,6 +18,6 @@ export default {
 
 <style>
 #app {
-
+	width: 100%;
 }
 </style>

@@ -14,7 +14,7 @@ module.exports = {
     devServer:{
         open:true,//是否自动弹出
         host:'localhost',
-        port: 3000,//端口
+        port: 8080,//端口
         https:false,
         hotOnly:false,//热更新
         disableHostCheck: true, // 解决内网穿透报错

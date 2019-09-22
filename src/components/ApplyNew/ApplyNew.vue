@@ -2,7 +2,7 @@
   <div id="apply-new">
     <!-- 申请说明 -->
     <div class="apply-info">
-      <h3>申请说明</h3>
+      <h3>新店员申请资料</h3>
       <p>如果你颜值在线，双商在线，如果你喜欢熬夜挑灯夜读，那么请加入我们吧！</p>
     </div>
 
@@ -41,12 +41,14 @@
 
       <div class="each-input-fill">
         <span class='title'  >所在城市</span>
-        <span @click="choose">请选择</span>
-        <span>{{province+city}}</span>
-         <!--省市区三级联动-->
-        <div class="divwrap" v-if="show">
-          <v-distpicker type="mobile" @province="onChangeProvince1" @city="onChangeCity"
-                        @area="onChangeArea"></v-distpicker>
+        <div class="city-container">
+          <span @click="choose">请选择&nbsp;</span>
+          <span @click="choose">{{province+city}}</span>
+           <!--省市区三级联动-->
+          <div class="divwrap" v-if="show">
+            <v-distpicker type="mobile" @province="onChangeProvince1" @city="onChangeCity"
+                           hide-area></v-distpicker><!-- @area="onChangeArea" -->
+          </div>
         </div>
       </div>
 
@@ -79,6 +81,7 @@
 
     <!-- 录音 -->
     <div class="record-audio">
+      <h3>录音（15秒内）</h3>
       <div class="play-reset"><span>播放录音</span><span>重新录音</span></div>
       <div class="new-record">录音</div>
     </div>
@@ -91,9 +94,14 @@
       </div>
       <ul>
         <!-- 上传按钮 -->
-        <li>+</li>
+        <li class='btn'>+</li>
         <!-- 照片展示 -->
-        <li></li>
+        <li class='list'>
+          <img src="./th.jpg" alt="">
+          <i class="fa fa-times delete-icon" aria-hidden="true"></i>
+        </li>
+        </li>
+        
       </ul>
     </div>
 
@@ -119,13 +127,15 @@
     </div>
 
     <!-- 提交申请 -->
-    <div class="sub-wrapper">
-      <input type="button" value='提交申请'>
+    <div class="apply-now">
+      <input class='place-btn' type="button" 
+        value='提交申请'>
     </div>
 
 
 
-<!--遮罩层-->
+
+<!--遮罩层 时间选择器-->
 <div class="blacks" v-if="show" @click="countermand"></div>
 
   </div>
@@ -159,8 +169,8 @@ export default {
       time: '',
 
       // 省市区选择  
-      lxr: '',
-      lxdh: '',
+      // lxr: '',
+      // lxdh: '',
       show: false,
       //省市区
       province: '',
@@ -191,11 +201,13 @@ export default {
       },
       onChangeCity: function (a) {
         this.city = a.value;
+
+        this.show = false;
+        this.city = this.province + this.city + this.area;
       },
       onChangeArea: function (a) {
         this.area = a.value;
-        this.show = false;
-        this.city = this.province + this.city + this.area;
+
       }
   },
   created () {
@@ -209,9 +221,235 @@ export default {
 
 <style scoped lang="scss">
 @import "common/sass/variable.scss";
+@import "common/sass/mixin.scss";
+
 #apply-new {
+  widht: 6.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: $color-background-d;
+  padding-bottom: .4rem;
+
+  .apply-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: .3rem;
+    background-color: #fff;
+    h3 {
+      width: 100%;
+      box-sizing: border-box;
+      padding: .2rem 0 .2rem;
+      font-size: .26rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    >p {
+      width: 100%;
+      box-sizing: border-box;
+      line-height: 1.3;
+    }
+  }
+
+  .info-fill-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    margin-top: .3rem;
+    font-size: .22rem;
+
+    .each-input-fill {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: .2rem .3rem;
+      box-sizing: border-box;
+      border-bottom: $border-1px;
+      .title {
+        display: inline-flex;
+        width: 1.4rem;
+      }
+      input.fill-input {
+        flex: 1;
+        padding: .1rem .1rem;
+        box-sizing: border-box;
+        font-size: .22rem;
+      }
+
+      .gender-wrapper {
+        flex: 1;
+        label {
+          margin-right: .3rem;
+        }
+      }
+      .date-wrapper {
+        flex: 1;
+      }
+      .city-container {
+        flex: 1;
+      }
+    }
+  }
+
+  .record-audio {
+    margin-top: .3rem;
+    background-color: #fff;
+    width: 100%;
+    padding: .2rem .3rem;
+    box-sizing: border-box;
+    h3 {
+      line-height: 1.5;
+    }
+    .play-reset {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin: .2rem 0 .2rem;
+    }
+  }
+  
+  .upload-pic {
+    margin-top: .3rem;
+    background-color: #fff;
+    width: 100%;
+    padding: .2rem .3rem;
+    box-sizing: border-box;
+
+    .title {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items:center;
+      justify-content: space-between;
+      margin-bottom: .3rem;
+    }
+
+    ul {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+
+      li {
+        width: 1.2rem;
+        height: 1.2rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-right: .3rem;
+        position: relative;
+        &.btn {
+          border: 1px dashed rgba(0, 0, 0, .08);
+          font-size: .8rem;
+          color: $color-text-dd;
+          background-color: $color-background-d;
+        }
+        &.list {
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position: center center;
+        }
+        img {
+          width: 100%;
+        }
+        .delete-icon {
+          position: absolute;
+          top: -.2rem;
+          right: -.2rem;
+        }
+      }
+
+    }
+  }
+
+  .order-type {
+    margin-top: .3rem;
+    background-color: #fff;
+    width: 100%;
+    padding: .2rem .3rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+    h4 {
+      line-height: 1.5;
+      margin-bottom: .3rem;
+    }
+    label {
+      widht: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: .1rem 0;
+      input {
+        margin-right: .1rem;
+      }
+    }
+  }
+
+  .apply-now {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .2rem 0;
+    margin-top: .3rem;
+    .place-btn {
+      font-size: .22rem;
+      background-color: #ee0d2d;
+      color: #fff;
+      width: 5.8rem;
+      padding: .15rem 0;
+      border-radius: .06rem;
+    }
+  }
 
 }
+
+
+
+/*     <div class="order-type">
+  <h4>接单类型（多选）</h4>
+  <label for="wenziyuyin">
+    <input type="checkbox" name='type' id='wenziyuyin'>
+    <span>文字语音条</span>
+  </label>
+  <label for="yuyintonghua">
+    <input type="checkbox" name='type' id='yuyintonghua'>
+    <span>语音通话</span>
+  </label>
+  <label for="youxi">
+    <input type="checkbox" name='type' id='youxi'>
+    <span>游戏陪玩</span>
+  </label>
+  <label for="连麦哄睡">
+    <input type="checkbox" name='type' id='连麦哄睡'>
+    <span>文字语音条</span>
+  </label>
+</div> */
+
+
+/* 日期选择 */
+.date-wrapper {
+  font-size: .22rem;
+}
+.date-wrapper .calendar-months a {
+  font-size: .22rem;
+}
+.date-wrapper .calendar-head a {
+  font-size: .22rem!important;
+}
+
+
+
+
 /*遮罩层*/
 .blacks {
   position: fixed;
@@ -228,7 +466,8 @@ export default {
   left: 0;
   bottom: 0;
   width: 100%;
-  z-index: 99;
+  z-index: 200001;
+  background-color: #fff;
 }
 
 /*外部*/
