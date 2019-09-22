@@ -40,9 +40,13 @@
       </div>
 
       <div class="each-input-fill">
-        <span class='title'>所在城市</span>
-        <div class="city-wrapper" style='font-size: .2rem'>
-          <!-- <v-distpicker @selected="onSelected"></v-distpicker> -->
+        <span class='title'  >所在城市</span>
+        <span @click="choose">请选择</span>
+        <span>{{province+city}}</span>
+         <!--省市区三级联动-->
+        <div class="divwrap" v-if="show">
+          <v-distpicker type="mobile" @province="onChangeProvince1" @city="onChangeCity"
+                        @area="onChangeArea"></v-distpicker>
         </div>
       </div>
 
@@ -119,7 +123,11 @@
       <input type="button" value='提交申请'>
     </div>
 
- <v-distpicker province="广东省" city="广州市" area="海珠区"></v-distpicker>
+
+
+<!--遮罩层-->
+<div class="blacks" v-if="show" @click="countermand"></div>
+
   </div>
 </template>
 
@@ -150,25 +158,45 @@ export default {
     return {
       time: '',
 
-        titleText: '个人资料',
-        picker: {
-            data: [
-                ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
-                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
-            ],
-        },
+      // 省市区选择  
+      lxr: '',
+      lxdh: '',
+      show: false,
+      //省市区
+      province: '',
+      city: '',
+      area: ''
+      // 省市区选择 结束 
     }
   },
+  props: ['ips'],
   methods: {
     disabledDate(time){
       if(time.getTime() > new Date().getTime()) return true;
     },
-    handlePickerCancel () {},
-    handlePickerConfirm () {},
-    showPicker() {
-        console.log('dd');
-        this.$ref.picker.show();
-    },
+      //取消选择地区
+      countermand: function () {
+        this.show = false
+      },
+      //打开选择地区
+      choose: function () {
+        console.log('OK');
+        this.show = true;
+      },
+      onChangeProvince1: function (a) {
+        this.province = a.value;
+        if (a.value == '台湾省') {
+          this.show = false;
+        }
+      },
+      onChangeCity: function (a) {
+        this.city = a.value;
+      },
+      onChangeArea: function (a) {
+        this.area = a.value;
+        this.show = false;
+        this.city = this.province + this.city + this.area;
+      }
   },
   created () {
 
@@ -183,5 +211,63 @@ export default {
 @import "common/sass/variable.scss";
 #apply-new {
 
+}
+/*遮罩层*/
+.blacks {
+  position: fixed;
+  width: 100%;
+  height: 50%;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+/*省市区三级联动*/
+.divwrap {
+  height: 50%;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 99;
+}
+
+/*外部*/
+.divwrap > .distpicker-address-wrapper {
+  color: #0d0d0d;
+  height: 100%;
+}
+
+/*头部*/
+.divwrap >>> .address-header {
+  background: #000;
+  color: #fff;
+  width: 100%;
+  position: fixed;
+  bottom: 50%;
+  height: 0.5rem;
+  font-size: 0.2rem;
+}
+
+/*头部内容*/
+.divwrap >>> .address-header ul li {
+  flex-grow: 1;
+  text-align: center;
+}
+
+/*选择过省市区的头部*/
+.divwrap >>> .address-header .active {
+  color: #fff;
+  border-bottom: 0.05rem solid #666;
+}
+
+/*内容部分*/
+.divwrap >>> .address-container {
+  overflow: scroll;
+  height: 100%;
+}
+
+/*点过的地区内容*/
+.divwrap >>> .address-container .active {
+  color: red;
 }
 </style>
