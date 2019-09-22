@@ -93,10 +93,32 @@ const router = new Router({
 
 // 路由卫士 鉴权 获取和设置用户token及userInfo信息
 router.beforeEach((to, from, next) => {
+  // 设置路由页面的title
   if (to.meta.title) {
-    document.title = to.meta.title
+    document.title = to.meta.title;
   }
-  // 如果不需要登陆权限 直接进入要跳转的路由页面
+  // 判断将要跳转的路由是否需要鉴权
+  if (to.matched.some(record => record.meta.requireAuth)) {
+    // 如果需要鉴权 就去vuex读取是否有token信息，如果有 就携带上token
+    // 如果vuex没有token 就去localStorage读取 前端放行
+
+    // 如果没有 1 发送微信链接get请求 获取code的请求  
+    // 2 在回调看是否有code 如果有 就去api获取token
+    //       如果回调没有code 就继续请求code 或不处理
+    // 3  在第二次回调中获取token 存入vuex和localstorage      
+
+
+    /*console.log("需要权限");
+    console.log(to);
+    console.log("需要权限 end");*/
+    // 如果未登陆 跳转到登陆页
+    /*if(!store.getters.token) {
+      next('/login');
+      return;
+    }*/
+  }
+
+  // 
   next();
 })
 

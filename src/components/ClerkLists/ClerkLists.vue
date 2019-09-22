@@ -104,6 +104,10 @@
         @click='resetSum(item.num)'>{{item.text}}</li>
       <li class='cancel' @click='cancelPicker'>取消</li>
     </ul>
+
+      <p @click='sendCode'>测试发送code</p>
+
+
   </div>
 </template>
 
@@ -119,8 +123,10 @@ import $ from 'jquery'
 
 import wx from 'weixin-js-sdk'
 
-import axios from 'axios'
-// import axios from 'src/api/axios';
+// import axios from 'axios'
+// 用封装好的axios
+import axios from 'src/api/axios';
+import Qs from 'qs';
 import {BASEURL} from "src/api/config.js";
 
 import InfiniteLoading from 'vue-infinite-loading';
@@ -220,9 +226,69 @@ export default {
     linkRandom () {
       this.$router.push({path: '/randomorder'});
     },
+    // 测试
+    sendCode () {
+      // wechatauth
+      // 请求成功
+      /*$.ajax({
+         type: "POST",  
+         url: BASEURL + "/wechatauth",  
+         // url: "http://116.62.23.153:9494/api/get_feedback_types",  
+         contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+         data: {code: '0617IqfN1FxXF61SLIgN15H9fN17Iqft'},  
+         dataType: "json",  
+         success: function(data){  
+                    console.log("成功");  
+                    console.log(data);  
+                  },  
+         error: function(e){  
+                     console.log(e);  
+         }  
+      });*/
+      var prarmData = {
+        code: '071NBRFl0DRwcr1qGPFl0tU1Gl0NBRFE'
+      }
+      axios({
+        method: 'post',
+        url: '/wechatauth',
+        data: Qs.stringify(prarmData),
+      }).then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        // console.log(error);
+      });;
+
+        /*'/wechatauth', Qs.stringify(prarmData))
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          // console.log(error);
+        });*/
+
+      /*axios.post('/get_feedback_types', {
+          params: {
+            // code: '132332332'
+          },
+          config: {
+            headers: { "Content-Type": "application/x-www-form-urlencoded",'Authorization': 'test'},
+          },
+          withCredentials: true // 携带cookie
+        })
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          // console.log(error);
+        });*/
+
+
+    }
   },
   created () {
     // 默认请求所有店员数据 发送请求 {URL}/api/get_index
+    // 先查看本地localstorage是否保存有token及用户信息，如果有 
   },
 }
 </script>

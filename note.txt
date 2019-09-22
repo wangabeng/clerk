@@ -1,0 +1,41 @@
+AppID：wxa3c69deeaa1b4948
+AppSecret：f520a5fe4afbb7e9914550a853bc245a
+
+js前端页面域名
+nicedevelop.nat300.top
+
+
+微信网页授权：
+----------------
+第一步：用户同意授权，获取code
+https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
+引导用户进入：
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect 若提示“该链接无法访问”，请检查参数是否填写错误，是否拥有scope参数对应的授权作用域权限。
+
+
+参考链接(请在微信客户端中打开此链接体验):
+scope为snsapi_base
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx520c15f417810387&redirect_uri=https%3A%2F%2Fchong.qq.com%2Fphp%2Findex.php%3Fd%3D%26c%3DwxAdapter%26m%3DmobileDeal%26showwxpaytitle%3D1%26vb2ctag%3D4_2030_5_1194_60&response_type=code&scope=snsapi_base&state=123#wechat_redirect
+
+snsapi_userinfo （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且， 即使在未关注的情况下，只要用户授权，也能获取其信息 ）
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf0e81c3bee622d60&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+
+第一次发送请求：
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa3c69deeaa1b4948&redirect_uri=nicedevelop.nat300.top&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+
+备注： 第一次请求 显示redirect_uri错误 
+解决办法：  
+授权后重定向的回调链接地址， 请使用 urlEncode 对链接进行处理   （一定要注意转码） 
+
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa3c69deeaa1b4948&redirect_uri=http%3A%2F%2Fnicedevelop.nat300.top&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+
+
+用户授权后 由微信服务器返回一个重定向给前端  
+http://nicedevelop.nat300.top/?code=081GoO4y1xzCka0I3B1y1GsT4y1GoO4B&state=STATE
+
+此时 前端在vue-router路由中 huoqu code
+ranhou然后获取token
+
+{"code":0,"msg":"\u767b\u5f55\u6210\u529f","count":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8","nick_name":"\u963f\u8ff8","avatar_url":"http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTJkcRIy499jfgavF3YbbQeH1SCXKcRV4z7jruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA\/132"},"data":[]}
+
+
