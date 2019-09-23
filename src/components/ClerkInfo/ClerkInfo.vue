@@ -2,9 +2,6 @@
   <div id="clerk-info">
     <!-- 轮播图 -->
     <swiper :options="swiperOption">
-    　　<!-- <swiper-slide>
-          <img src="./th.jpg" style='width:2.4rem;height:2rem' alt=""><span>1111111</span>
-        </swiper-slide> -->
     　　<swiper-slide>
           <div class='slider-each-wrapper'>
             <img :src="clertDetail.salesman.image_urls" alt="">   

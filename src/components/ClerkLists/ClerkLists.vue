@@ -74,9 +74,14 @@
       <p @click='sendCode'>测试发送code</p>
       <br>
       <br>
-      <p @click='getList('1', '1')'>测试携带token获取用户列表</p>
+      <p @click="getList('1', '1')">测试携带token获取用户列表</p>
 
+      <br>
+      <p @click="getUserinfo()">测试携带token get_userinfo</p>
 
+      <br>
+      <!-- api/get_sign_package -->
+      <p @click="testSign()">测试签名</p>
 
   </div>
 </template>
@@ -323,7 +328,43 @@ export default {
         // console.log(error);
       });
 
-    }
+    },
+    // 测试
+    getUserinfo () {
+      var prarmData = {
+        // token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8'
+      }
+      axios({
+        method: 'post',
+        url: '/get_user_info',
+        // data: Qs.stringify(prarmData),
+        headers:{
+          'token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8',
+        }
+      }).then(function (response) {
+        console.log(response.data);
+      }).catch(function (error) {
+        // console.log(error);
+      });
+    },
+    // 测试签名
+    testSign () {
+      var prarmData = {
+        // token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8'
+      }
+      axios({
+        method: 'post',
+        url: '/get_sign_package',
+        // data: Qs.stringify(prarmData),
+        headers:{
+          'token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8',
+        }
+      }).then(function (response) {
+        console.log(response.data);
+      }).catch(function (error) {
+        // console.log(error);
+      });
+    },
   },
   created () {
     // 默认请求所有店员数据 发送请求 {URL}/api/get_index
