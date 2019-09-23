@@ -16,25 +16,26 @@
     <!-- 排序及分类 -->
     <div class="sort-wrapper">
       <a href="javascript:;">智能排序</a>
-      <a href="javascript:;" @click="selectGender('sex', genderArr)">性别：全部</a>
-      <a href="javascript:;" @click="selectGender('level', typeArr)">等级：全部</a>
+      <a href="javascript:;" @click="selectGender('sex', genderArr)">性别：{{sexNoToTxt}}</a>
+      <a href="javascript:;" @click="selectGender('level', typeArr)">等级：{{typeNoToTxt}}</a>
     </div>
     <!-- 店员列表 -->
     <ul class="all-lists">
-      <li>
-        <a href="javascript:;" @click='getClerkDetail("zhangsan")'>
+      <li v-for='(item, index) in allList'>
+        <a href="javascript:;" @click='getClerkDetail(item.id)'>
           <!-- 头像 -->
           <div class="potrait">
-            <img src="./th.jpg" alt="">
-            <p class='main-tag'>镇店</p>
+            <img :src="item.avatar_url" alt="">
+            <p class='main-tag'>{{item.level}}</p>
           </div>
           <div class="mid-infos">
             <!-- 名字及状态 -->
             <div class="name-line">
               <div class="name-wrapper">
-                <span>张三丰</span>
-                <i class="fa fa-mars male" aria-hidden="true"></i>
-                <!-- <i class="fa fa-venus" aria-hidden="true"></i> -->                
+                <span>{{item.nick_name}}</span>
+                <!-- 1 男 2 女 -->
+                <i class="fa fa-mars male" aria-hidden="true" v-if="item.sex == '1'"></i>
+                <i class="fa fa-venus" aria-hidden="true" v-if="item.sex == '2'"></i>                
               </div>
               <div class="online-status">
                 <!-- online  offline -->
@@ -47,41 +48,8 @@
             <p class="desc">希望你的可爱 可以治愈一切不可爱</p>
             <!-- 播放及价格 -->
             <div class="play-price">
-              <div class='paly-icon' @click.stop='doPlay'></div>
-              <p>¥5元起</p>
-            </div>
-          </div>
-          <div class='right-detail'><i class="fa fa-angle-right" aria-hidden="true"></i></div>
-        </a>
-      </li>
-      <li>
-        <a href="javascript:;" @click='getClerkDetail("zhangsan")'>
-          <!-- 头像 -->
-          <div class="potrait">
-            <img src="./th.jpg" alt="">
-            <p class='main-tag'>镇店</p>
-          </div>
-          <div class="mid-infos">
-            <!-- 名字及状态 -->
-            <div class="name-line">
-              <div class="name-wrapper">
-                <span>张三丰</span>
-                <i class="fa fa-mars male" aria-hidden="true"></i>
-                <!-- <i class="fa fa-venus" aria-hidden="true"></i> -->                
-              </div>
-              <div class="online-status">
-                <!-- online  offline -->
-                <i class="fa fa-circle offline" aria-hidden="true"></i>
-                <span>离线</span>
-              </div>
-
-            </div>
-            <!-- 说明 -->
-            <p class="desc">希望你的可爱 可以治愈一切不可爱</p>
-            <!-- 播放及价格 -->
-            <div class="play-price">
-              <div class='paly-icon playing' @click.stop='doPlay'></div>
-              <p>¥5元起</p>
+              <div class='paly-icon playing' @click.stop='doPlay' :data-url="item.audio_url"></div>
+              <p>{{item.price}}</p>
             </div>
           </div>
           <div class='right-detail'><i class="fa fa-angle-right" aria-hidden="true"></i></div>
@@ -89,11 +57,6 @@
       </li>
     </ul>
     
-    <div v-for="(item, $index) in list" :key="$index">
-      <!-- Hacker News item loop -->{{item}}
-    </div>
-    <infinite-loading @infinite="infiniteHandler"></infinite-loading>
-
     
     <!-- 遮罩层 -->
     <div class="mask-fixed" :class="{'open': maskShow}" 
@@ -105,10 +68,14 @@
       <li class='cancel' @click='cancelPicker'>取消</li>
     </ul>
 
+      <p @click='weixinOpen'>微信认证 --已经修改</p>
+
+      <br>
       <p @click='sendCode'>测试发送code</p>
       <br>
       <br>
-      <p @click='getList'>测试发送code</p>
+      <p @click='getList('1', '1')'>测试携带token获取用户列表</p>
+
 
 
   </div>
@@ -130,38 +97,60 @@ import wx from 'weixin-js-sdk'
 // 用封装好的axios
 import axios from 'src/api/axios';
 import Qs from 'qs';
-import {BASEURL} from "src/api/config.js";
+import {BASEURL, WEIXINCERTI} from "src/api/config.js";
 
-import InfiniteLoading from 'vue-infinite-loading';
-const api = '//hn.algolia.com/api/v1/search_by_date?tags=story';
+import getToken from 'src/api/getToken.js';
+
+import {allList} from 'src/api/mockdata.js';
+
+
+// import InfiniteLoading from 'vue-infinite-loading';
+// const api = '//hn.algolia.com/api/v1/search_by_date?tags=story';
 
 export default {
   name: 'ClerkLists',
   components: {
-    InfiniteLoading,
+    // InfiniteLoading,
   },
   data () {
     return {
       token: '',
 
-
-      curClarkArr: [], // 当前店员数据 默认展示所有店员数据
       genderArr: [{text: '所有', num: 0}, {text: '只看男生', num: 1}, {text: '只看女生', num: 2}], // 性别  1男 2女
       typeArr: [{text: '全部', num: 0}, {text: '普通', num: 1}, {text: '金牌', num: 2}, {text: '镇店', num: 3}], // 等级 1普通 2金牌 3镇店
-      pickerArr: [], // 默认不显示
+      pickerArr: [], // 默认不显示 下拉选择器要呈现的内容
+      defaultCheck: {
+        'sex': '0', //  1男 2 女
+        'level': '0' // 等级 1普通 2金牌 3镇店
+      },
 
-      page: 1,
-      list: [],
+
+      /*page: 1,
+      list: [],*/
 
       maskShow: false, // 遮罩层默认不显示
       pickerShow: false, // 选择器默认不显示
+      sexOrLevel: '', // 当前要切换选择性别 还是等级 
 
-      sexOrLevel: '', // 当前要切换选择性别 还是等级
+
+      allList: allList, // 所有店员列表
+
+      // 个人的token及其他个人信息
+      userinfo: {"code":0,"msg":"\u767b\u5f55\u6210\u529f","count":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8","nick_name":"\u963f\u8ff8","avatar_url":"http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTJkcRIy499jfgavF3YbbQeH1SCXKcRV4z7jruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA\/132"},"data":[]}
 
     };
   },
-  mounted () {
+  computed: {
+    sexNoToTxt () {
+      var sum = this.genderArr.find(item => item.num == this.defaultCheck.sex);
+      return sum.text;
+    },
+    typeNoToTxt () {
+      var sum = this.typeArr.find(item => item.num == this.defaultCheck.sex);
+      return sum.text;
+    },
   },
+
   methods: {
     infiniteHandler($state) {
       axios.get(api, {
@@ -178,7 +167,7 @@ export default {
         }
       });
     },
-    // 选择性别
+    // 选择性别 或等级 参数 'sex', genderArr[]
     selectGender (sexOrLevel, arr) {
       // sexOrLevel 是重新选择性别 还是等级
       this.sexOrLevel = sexOrLevel;
@@ -195,8 +184,10 @@ export default {
     // 重新选择
     resetSum (num) {
       // 1 重新选择性别or登记 this.sexOrLevel  如果是等级 获取登记编号num
-
-      // 2 发送请求 {URL}/api/get_index
+      console.log('选择: ', this.sexOrLevel + "  " + num, );
+      this.defaultCheck[this.sexOrLevel] = num;
+      // 2 发送请求 getList (defaultCheck.sex, defaultCheck.level)  
+      console.log(this.defaultCheck);
 
       // 3 隐藏遮罩层和选择器
       this.pickerArr = [];
@@ -229,7 +220,26 @@ export default {
     linkRandom () {
       this.$router.push({path: '/randomorder'});
     },
-    // 测试
+    weixinOpen () {
+      // 测试打开微信验证
+      window.location.href = WEIXINCERTI;
+      /*$.ajax({
+          type:"GET",                    
+          url:"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx520c15f417810387&redirect_uri=https%3A%2F%2Fchong.qq.com%2Fphp%2Findex.php%3Fd%3D%26c%3DwxAdapter%26m%3DmobileDeal%26showwxpaytitle%3D1%26vb2ctag%3D4_2030_5_1194_60&response_type=code&scope=snsapi_base&state=123#wechat_redirect",
+          data:{
+          },
+          dataType:"json",  
+           
+          success:function(data){
+            // alert(data);
+            
+          },
+          error:function(data){
+            // console.log(data);
+          }
+      });*/
+    },
+    // 测试发送code获取token
     sendCode () {
       // wechatauth
       // 请求成功
@@ -248,7 +258,9 @@ export default {
                      console.log(e);  
          }  
       });*/
-      var prarmData = {
+
+      // 请求成功
+      /*var prarmData = {
         code: '001RQu2K0c0xT82FuN2K02pO2K0RQu2e'
       }
       axios({
@@ -259,7 +271,10 @@ export default {
         console.log(response.data);
       }).catch(function (error) {
         // console.log(error);
-      });
+      });*/
+
+      // 封装起来
+      getToken('001RQu2K0c0xT82FuN2K02pO2K0RQu2e');
 
         /*'/wechatauth', Qs.stringify(prarmData))
         .then(function (response) {
@@ -288,18 +303,19 @@ export default {
 
     },
     // 获取店员列表
-    getList () {
+    getList (sex, level) {
       var prarmData = {
-        nick_name:  "\u963f\u8ff8",
-        sex: 1,
-        level: 1,
+        nick_name:  "\u963f\u8ff8", // 个人的信息  this.userinfo.nick_name
+        sex: sex,
+        level: level,
+        // token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8'
       }
       axios({
         method: 'post',
         url: '/get_index',
         data: Qs.stringify(prarmData),
         headers:{
-          'Authorization': 'Bearer' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8',
+          'token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8',
         }
       }).then(function (response) {
         console.log(response.data);
@@ -311,7 +327,14 @@ export default {
   },
   created () {
     // 默认请求所有店员数据 发送请求 {URL}/api/get_index
-    // 先查看本地localstorage是否保存有token及用户信息，如果有 
+    // 先查看本地localstorage是否保存有token及用户信息，如果有 就正常执行 如果没有 就请求登录
+    // console.log( window.localStorage.getItem('aliplayer_lang_data_h5_2_8_2_zh-cn'));
+    // 默认读取所有20个数据 ajax请求 this.getList (sex, level)
+  },
+  mounted () {
+    // 读取页面参数  this.$route.query.code,
+    /*console.log('code: ', this.$route.query.code);
+    console.log('abc: ',this.$route.query.abc);*/ 
   },
 }
 </script>

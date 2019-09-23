@@ -8,7 +8,15 @@ import ClerkInfo from '@/components/ClerkInfo/ClerkInfo'
 import RandomOrder from '@/components/RandomOrder/RandomOrder'
 import ApplyNew from '@/components/ApplyNew/ApplyNew'
 
+
+import {BASEURL, WEIXINCERTI} from "src/api/config.js";
 // import Index from '@/components/Index/Index'
+
+import getToken from 'src/api/getToken.js';
+import axios from 'src/api/axios';
+import Qs from 'qs';
+
+import store from '@/store/index'
 
 Vue.use(Router)
 
@@ -19,7 +27,7 @@ Router.prototype.push = function push(location) {
 
 const router = new Router({
   // 如果开启history模式 会出现如果二级路由找不到 无法跳转到404页面的错误 此时需要后端配合 重定向到index.html页
-  // mode: 'history',
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -93,30 +101,54 @@ const router = new Router({
 
 // 路由卫士 鉴权 获取和设置用户token及userInfo信息
 router.beforeEach((to, from, next) => {
+  var storage = window.localStorage;
+  console.log('to:', to.name, '获取item:' + window.localStorage.getItem('userinfo'));
+  
   // 设置路由页面的title
   if (to.meta.title) {
     document.title = to.meta.title;
   }
   // 判断将要跳转的路由是否需要鉴权
-  if (to.matched.some(record => record.meta.requireAuth)) {
+  /*if (to.matched.some(record => record.meta.requireAuth)) {
     // 如果需要鉴权 就去vuex读取是否有token信息，如果有 就携带上token
     // 如果vuex没有token 就去localStorage读取 前端放行
 
-    // 如果没有 1 发送微信链接get请求 获取code的请求  
-    // 2 在回调看是否有code 如果有 就去api获取token
-    //       如果回调没有code 就继续请求code 或不处理
-    // 3  在第二次回调中获取token 存入vuex和localstorage      
+    // 1 如果在ClerkLists这个页面 且是微信跳转过来的页面 就执行获取code 发送验证请求
+    if (to.name == 'ClerkLists' && !!to.query.code) {
+      
+      // 发送ajax请求 携带code 去服务器验证
+      var prarmData = {
+        code: to.query.code
+      }
+      axios({
+        method: 'post',
+        url: '/wechatauth',
+        data: Qs.stringify(prarmData),
+      }).then(function (response) {
+        // 获取到用户信息 写入本地存储
+        storage.setItem("userinfo", JSON.stringify(response.data.count));
+        console.log(storage.getItem("userinfo"));
+        // next('');
+        // window.location.href = 'http://nicedevelop.nat300.top/';
+        return;
+      }).catch(function (error) {
+        console.log("请求不到用户信息");
+        // window.location.href = 'www.baidu.com';
+        return false;
+      });
+    }
+ 
+    
+    // 第2种情况 页面不带code 就判断是否已经有用户信息
+    console.log("需要权限");
+    console.log(window.localStorage.getItem("userinfo"));
+    if (!storage.getItem("userinfo")) { // 如果没有
+      // 跳转到微信验证页
+      window.location.href = WEIXINCERTI;
+      return false;
+    } 
 
-
-    /*console.log("需要权限");
-    console.log(to);
-    console.log("需要权限 end");*/
-    // 如果未登陆 跳转到登陆页
-    /*if(!store.getters.token) {
-      next('/login');
-      return;
-    }*/
-  }
+  }*/
 
   // 
   next();

@@ -30,6 +30,11 @@ https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa3c69deeaa1b4948&red
 https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa3c69deeaa1b4948&redirect_uri=http%3A%2F%2Fnicedevelop.nat300.top&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
 
 
+// return_url直接跳转到此 http://nicedevelop.nat300.top/clerklists
+https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa3c69deeaa1b4948&redirect_uri=http%3a%2f%2fnicedevelop.nat300.top%2f%23%2f&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+
+
+
 用户授权后 由微信服务器返回一个重定向给前端  
 http://nicedevelop.nat300.top/?code=081GoO4y1xzCka0I3B1y1GsT4y1GoO4B&state=STATE
 
