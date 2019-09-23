@@ -43,5 +43,137 @@ export const allList = [
 ];
 
 
-export const SUBJECT = {
-};
+export const clertDetail = 
+{
+
+    "code": 0,
+
+    "msg": "成功",
+
+    "count": 1,
+
+    "data": {
+
+        "salesman": {
+
+            "salesman_id": "1",
+
+            "nick_name": "崔美珠",
+
+            "image_urls": [
+
+                "http://att.astxt.com/data/attachment/forum/201101/12/083504dmcqmdzfdv53vqed.jpg"
+
+            ],
+
+            "sex": "2",
+
+            "level": "普通",
+
+            "audio_url": "1",
+
+            "sign": "春风十里不如你",
+
+            "character": [
+
+                "温柔",
+
+                "大方"
+
+            ],
+
+            "price": "¥5元起"
+
+        },
+
+        "service_price": [
+
+            [
+
+                "",
+
+                "文字语音条",
+
+                "语音通话",
+
+                "",
+
+                ""
+
+            ],
+
+            [
+
+                "半小时",
+
+                "5",
+
+                "20",
+
+                "",
+
+                ""
+
+            ],
+
+            [
+
+                "一小时",
+
+                "9",
+
+                "35",
+
+                "",
+
+                ""
+
+            ],
+
+            [
+
+                "一天",
+
+                "50",
+
+                "",
+
+                "",
+
+                ""
+
+            ],
+
+            [
+
+                "一周",
+
+                "300",
+
+                "",
+
+                "",
+
+                ""
+
+            ],
+
+            [
+
+                "一个月",
+
+                "999",
+
+                "",
+
+                "",
+
+                ""
+
+            ]
+
+        ]
+
+    }
+
+}

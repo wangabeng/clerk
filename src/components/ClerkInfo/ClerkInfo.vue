@@ -7,32 +7,15 @@
         </swiper-slide> -->
     　　<swiper-slide>
           <div class='slider-each-wrapper'>
-            <img src="./th.jpg" alt="">   
+            <img :src="clertDetail.salesman.image_urls" alt="">   
             <div class="info-txt">
               <div class="name-wrapper">
-                <span class='name'>张三丰</span>
-                <span class='star'>女 双子座</span>
+                <span class='name'>{{clertDetail.salesman.nick_name}}</span>
+                <span class='star'>{{clertDetail.salesman.sex=='1'? '男': '女'}}</span>
               </div>
               <div class="online-status">
                 <!-- online  offline -->
-                <i class="fa fa-circle offline" aria-hidden="true"></i>
-                <span>在线</span>
-              </div>
-            </div>    
-          </div>
-
-        </swiper-slide>
-        <swiper-slide>
-          <div class='slider-each-wrapper'>
-            <img src="./th.jpg" alt="">   
-            <div class="info-txt">
-              <div class="name-wrapper">
-                <span class='name'>张三丰</span>
-                <span class='star'>女 双子座</span>
-              </div>
-              <div class="online-status">
-                <!-- online  offline -->
-                <i class="fa fa-circle offline" aria-hidden="true"></i>
+                <i class="fa fa-circle online" aria-hidden="true"></i>
                 <span>在线</span>
               </div>
             </div>    
@@ -52,12 +35,12 @@
         <div class="level-price">
           <div class="level-wrapper">
             <i class="fa fa-diamond" aria-hidden="true"></i>
-            <span>普通</span>
+            <span>{{clertDetail.salesman.level}}</span>
           </div>
-          <p class="price-form">￥5元起</p>
+          <p class="price-form">{{clertDetail.salesman.price}}</p>
         </div>
         <!-- 个人描述 -->
-        <p class="per-desc">希望你的可爱 可以治愈一切不可爱</p>
+        <p class="per-desc">{{clertDetail.salesman.sign}}</p>
       </div>
       
       <!-- 录音 播放 -->
@@ -73,8 +56,7 @@
       <div class="nature-wrapper">
         <p><i class="fa fa-tags" aria-hidden="true"></i><span>性格标签</span></p>
         <ul>
-          <li>理解</li>
-          <li>包容体贴别人</li>
+          <li v-for='item in clertDetail.salesman.character'>{{item}}</li>
         </ul>
       </div>
 
@@ -82,12 +64,12 @@
       <div class="service-price">
         <p><i class="fa fa-credit-card" aria-hidden="true"></i><span>服务内容及价格</span></p>
         <ul>
-          <li class='title'>
-            <span></span><span>文字语音条</span><span>语音通话</span>
+          <li v-for='(item, index) in clertDetail.service_price'>
+            <span v-for='(innerItem, innnerIndex) in item'>{{innerItem}}</span>
           </li>
-          <li><span>半小时</span><span>16</span><span>40</span></li>
+          <!-- <li><span>半小时</span><span>16</span><span>40</span></li>
           <li><span>一小时</span><span>16</span><span>40</span></li>
-          <li><span>一天</span><span>16</span><span>40</span></li>
+          <li><span>一天</span><span>16</span><span>40</span></li> -->
         </ul>
       </div>
 
@@ -110,9 +92,9 @@
       <div class="top-info">
         <img class='close-icon' src="~common/image/close-icon.png" 
           @click='closeWin' alt="">
-        <div class="pic"><img src="./th.jpg" alt=""></div>
+        <div class="pic"><img :src="clertDetail.salesman.image_urls" alt=""></div>
         <div class="sum-txt">
-          <p class='amount'>￥16</p>
+          <p class='amount'>{{clertDetail.salesman.price}}</p>
           <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;;&nbsp;&nbsp;时长&nbsp;</p>
         </div>
       </div>
@@ -123,8 +105,8 @@
           <!-- 类型区 -->
           <div class="type-area type-time">
             <ul class="">
-              <li class='active'>文字语音条</li>
-              <li>语音通话</li>
+              <li :class="{'active': xIndex =='1'}" @click="selectType('1')">文字语音条</li>
+              <li :class="{'active': xIndex =='2'}" @click="selectType('2')">语音通话</li>
             </ul>            
           </div>
 
@@ -133,20 +115,20 @@
           <div class="long-area type-time">
             <h4>时长</h4>
             <ul>
-              <li @click="selectTime($event, '半小时')">半小时</li>
-              <li @click="selectTime($event, '1小时')">一小时</li>
-              <li @click="selectTime($event, '1天')">一天</li>
-              <li @click="selectTime($event, '一周')">一周</li>
-              <li @click="selectTime($event, '一个月')">一个月</li>
+              <li :class="{'active': yIndex =='1'}" @click="selectTime('1')">半小时</li>
+              <li :class="{'active': yIndex =='2'}" @click="selectTime('2')">一小时</li>
+              <li :class="{'active': yIndex =='3'}" @click="selectTime('3')">一天</li>
+              <li :class="{'active': yIndex =='4'}" @click="selectTime('4')">一周</li>
+              <li :class="{'active': yIndex =='5'}" @click="selectTime('5')">一个月</li>
             </ul>
           </div>
           <!-- 购买数量 -->
           <div class="amount-area">
             <h4>购买数量</h4>
             <div class="amount-wrapper">
-              <a href="javascript:;"><img src="~common/image/minus-icon.png" alt=""></a>
-              <input type="number" value='1'>
-              <a href="javascript:;"><img src="~common/image/add-icon.png" alt=""></a>
+              <a href="javascript:;" @click='plus'><img src="~common/image/minus-icon.png" alt=""></a>
+              <input type="number"  v-model="amountInput">
+              <a href="javascript:;" @click='add'><img src="~common/image/add-icon.png" alt=""></a>
             </div>
           </div>
           <!-- 微信号 -->
@@ -161,7 +143,7 @@
       <!-- 提交按钮区 -->
       <div class="bot-sub">
         <p class="total">
-          总价：<span>-￥162.0</span>
+          总价：<span>{{total}}</span>
         </p>
         <input type="button" value='立即下单'>
       </div>
@@ -184,6 +166,12 @@ import $ from 'jquery'
 import 'swiper/css/swiper.css'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 
+// 用封装好的axios
+import axios from 'src/api/axios';
+import Qs from 'qs';
+import {BASEURL, WEIXINCERTI} from "src/api/config.js";
+
+import {clertDetail} from 'src/api/mockdata.js';
 
 export default {
   name: 'ClerkInfo',
@@ -213,10 +201,40 @@ export default {
 
       maskShow: false,
 
+
+      clertDetail: null, // 店员信息详情,
+
+      PriceInfoArr: [],
+      xFlag: false, // x轴是否选中
+      xIndex: '', // 1 文字语音 2 语音通话
+      yFlag: false, // x轴是否选中
+      yIndex: '', // 1 2 3 4 5
+      amountInput: 1, // 默认数量输入框是1
+
+
     };
   },
+  computed: {
+    total () {
+      var sum;
+      if (this.xFlag && this.yFlag) {
+        sum = parseInt(this.PriceInfoArr[parseInt(this.yIndex)][parseInt(this.xIndex)]) * this.amountInput;
+      } else {
+        sum = '-';
+      }
+      return sum;
+    }
+
+  },
   created () {
-    console.log("canshu:" + this.$route.params.id);
+    // console.log("canshu:" + this.$route.params.id);
+    // ajx通过id获取详情this.clertDetail = clertDetail;
+    this.clertDetail = clertDetail.data;
+    console.log(this.clertDetail);
+    this.PriceInfoArr = this.clertDetail.service_price;
+    console.log(this.PriceInfoArr);
+
+
   },
   methods: {
     // 下单弹出弹窗
@@ -227,11 +245,31 @@ export default {
     closeWin () {
       this.maskShow = false;
     },
-    // 选择时长
-    selectTime (daysTime) {
-      // 
+    // 选择 X轴
+    selectType (xIndex) {
+      // this.xFlag = !this.xFlag;
+      this.xFlag = true;
+      console.log("选中" + xIndex);
+      this.xIndex = xIndex;
 
-    }
+      console.log(parseInt(this.xIndex));
+    },
+    // 选择时长 Y轴
+    selectTime (daysTime) {
+      this.yFlag = true;
+      console.log("选中" + daysTime);
+      this.yIndex = daysTime;
+
+      console.log(parseInt(this.yIndex));
+    },
+    // 加库存
+    add () {
+      this.amountInput++;
+    },
+    // 减库存
+    plus () {
+      this.amountInput == 1? this.amountInput: this.amountInput--;
+    },
   },
   mounted () {
     // console.log("adfdfdf", $("#m-index").html());
@@ -450,6 +488,7 @@ export default {
           padding: .1rem .05rem;
           box-sizing: border-box;
           margin-left: .2rem;
+          font-size: .22rem;
         }
       }
     }
@@ -633,7 +672,7 @@ export default {
           align-items: center;
           justify-content: space-between;
           padding: .12rem 0;
-          &.title {
+          &:first-child {
             font-weight: bold;
             color: $color-text-basic;
           }
@@ -674,7 +713,7 @@ export default {
     bottom: 0;
     padding: .2rem .3rem .4rem;
     box-sizing: border-box;
-    color: #fff;
+    color: rgba(200,200,200, .8);
     display: flex;
     flex-direction: row;
     align-items: flex-end;
