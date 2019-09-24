@@ -157,21 +157,21 @@ export default {
   },
 
   methods: {
-    infiniteHandler($state) {
-      axios.get(api, {
-        params: {
-          page: this.page,
-        },
-      }).then(({ data }) => {
-        if (data.hits.length) {
-          this.page += 1;
-          this.list.push(...data.hits);
-          $state.loaded();
-        } else {
-          $state.complete();
-        }
-      });
-    },
+    // infiniteHandler($state) {
+    //   axios.get(api, {
+    //     params: {
+    //       page: this.page,
+    //     },
+    //   }).then(({ data }) => {
+    //     if (data.hits.length) {
+    //       this.page += 1;
+    //       this.list.push(...data.hits);
+    //       $state.loaded();
+    //     } else {
+    //       $state.complete();
+    //     }
+    //   });
+    // },
     // 选择性别 或等级 参数 'sex', genderArr[]
     selectGender (sexOrLevel, arr) {
       // sexOrLevel 是重新选择性别 还是等级
@@ -215,7 +215,9 @@ export default {
     // 获取店员详情
     getClerkDetail (id) {
       // 路由跳转
-      this.$router.push({ path: `/clerkinfo/${id}`});
+      // {name: '/order/page1',params:{ id:'1'}}
+      // this.$router.push({ path: `/clerkinfo/${id}`});
+      this.$router.push({ name: 'ClerkInfo', params:{ id: id}});
     },
     // 播放
     doPlay () {
@@ -223,7 +225,7 @@ export default {
     },
     // 随机下单
     linkRandom () {
-      this.$router.push({path: '/randomorder'});
+      this.$router.push({name: 'RandomOrder'});
     },
     weixinOpen () {
       // 测试打开微信验证
@@ -371,6 +373,8 @@ export default {
     // 先查看本地localstorage是否保存有token及用户信息，如果有 就正常执行 如果没有 就请求登录
     // console.log( window.localStorage.getItem('aliplayer_lang_data_h5_2_8_2_zh-cn'));
     // 默认读取所有20个数据 ajax请求 this.getList (sex, level)
+    // 获取页面参数
+
   },
   mounted () {
     // 读取页面参数  this.$route.query.code,
