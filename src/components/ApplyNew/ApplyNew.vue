@@ -226,8 +226,9 @@ export default {
 
     wx.config({
       debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-"appId":"wxa3c69deeaa1b4948","nonceStr":"SjMx6q1KJ7pxZiOo","timestamp":1569316603,"signature":"dfa0b6179cf355ecf8aa8cae5600abe3d99ae2e2",
-      jsApiList: ['startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice'] // 必填，需要使用的JS接口列表
+"appId":"wxa3c69deeaa1b4948","nonceStr":"8d43BWR35zosVTVx","timestamp":1569335905,"signature":"6f462d50fc8c1aa59b5c12ed2f1c43fee79c9277",
+      jsApiList: [] // 必填，需要使用的JS接口列表
+      // 'startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice'
     });
     wx.ready(function(){
       console.log('微信配置好了');

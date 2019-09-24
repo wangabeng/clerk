@@ -352,21 +352,52 @@ export default {
     },
     // 测试签名
     testSign () {
+      var curUrl = window.location.href.split('#')[0];
+
+      $.ajax({
+         type: "POST",  
+         url: "https://www.sgshudong.com/api/get_sign_package",  
+         contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+         data: {url: curUrl},  
+         headers: {'token': GetStorage("userinfo").token},
+         dataType: "json",  
+         success: function(data){  
+                    console.log("成功");  
+                    console.log(data);  
+                  },  
+         error: function(e){  
+                     console.log(e);  
+         }  
+      });
+
+
+
+
+
+
+      // 传入url location.href.split('#')[0]获取,而且需要encodeURIComponent）
+      /*var curUrl = window.location.href.split('#')[0];
+
+      // console.log(encodeURIComponent(curUrl));
+      console.log(curUrl);
+      // console.log(Qs.stringify(encodeURIComponent(curUrl)));
+
       var prarmData = {
-        // token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8'
+        url: encodeURIComponent(curUrl)
       }
       axios({
         method: 'post',
         url: '/get_sign_package',
         // data: Qs.stringify(prarmData),
+        data: curUrl,
         headers:{
-          'token': GetStorage("userinfo").toekn,
+          'token': GetStorage("userinfo").token,
         }
       }).then(function (response) {
         console.log(response.data);
       }).catch(function (error) {
         // console.log(error);
-      });
+      });*/
     },
   },
   created () {

@@ -8,6 +8,8 @@ import ClerkInfo from '@/components/ClerkInfo/ClerkInfo'
 import RandomOrder from '@/components/RandomOrder/RandomOrder'
 import ApplyNew from '@/components/ApplyNew/ApplyNew'
 
+import Test from '@/components/Test/Test'
+
 
 import {BASEURL, WEIXINCERTI} from "src/api/config.js";
 // import Index from '@/components/Index/Index'
@@ -79,6 +81,15 @@ const router = new Router({
       component: ApplyNew,
       meta: {
         title: '新店员申请',
+        // requireAuth: true
+      },
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: Test,
+      meta: {
+        title: 'test',
         // requireAuth: true
       },
     },
