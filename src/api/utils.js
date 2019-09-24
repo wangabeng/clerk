@@ -4,3 +4,15 @@ export const GetQueryString = function (name) {
   var r = window.location.search.substr(1).match(reg);
   if(r!=null)return  unescape(r[2]); return null;
 }
+
+// 存储json 到localstorage的 itemName
+export const SaveStorage =  function (itemName, json) {
+  var local = window.localStorage;
+  local.setItem(itemName, JSON.stringify(json));
+}
+
+// 获取localstorage中itemName 的son值(token)
+export const GetStorage =  function (itemName) {
+  var local = window.localStorage;
+  return JSON.parse(local.getItem(itemName));
+}

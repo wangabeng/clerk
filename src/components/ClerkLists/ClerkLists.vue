@@ -107,6 +107,7 @@ import {BASEURL, WEIXINCERTI} from "src/api/config.js";
 import getToken from 'src/api/getToken.js';
 
 import {allList} from 'src/api/mockdata.js';
+import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
 
 
 // import InfiniteLoading from 'vue-infinite-loading';
@@ -322,7 +323,7 @@ export default {
         url: '/get_index',
         data: Qs.stringify(prarmData),
         headers:{
-          'token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8',
+          'token': GetStorage("userinfo").token,
         }
       }).then(function (response) {
         console.log(response.data);

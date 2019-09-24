@@ -12,7 +12,7 @@ import ApplyNew from '@/components/ApplyNew/ApplyNew'
 import {BASEURL, WEIXINCERTI} from "src/api/config.js";
 // import Index from '@/components/Index/Index'
 
-import {GetQueryString} from "src/api/utils.js";
+import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
 
 import getToken from 'src/api/getToken.js';
 import axios from 'src/api/axios';
@@ -105,7 +105,7 @@ const router = new Router({
 // 路由卫士 鉴权 获取和设置用户token及userInfo信息
 router.beforeEach((to, from, next) => {
   var storage = window.localStorage;
-  console.log('to:', to.name, '获取item:' + window.localStorage.getItem('userinfo'));
+  console.log('to:', to.name, '获取item:' + GetStorage('userinfo'));
   
   // 设置路由页面的title
   if (to.meta.title) {
@@ -141,7 +141,7 @@ router.beforeEach((to, from, next) => {
     // 如果vuex没有token 就去localStorage读取 前端放行
 
     // 1 如果在ClerkLists这个页面 且是微信跳转过来的页面 就执行获取code 发送验证请求
-    if (to.name == 'ClerkLists' && !! GetQueryString("code")) {
+    if (to.name == 'ClerkLists' && !!GetQueryString("code")) {
       
       // 发送ajax请求 携带code 去服务器验证
       var prarmData = {
@@ -154,9 +154,9 @@ router.beforeEach((to, from, next) => {
       }).then(function (response) {
         // 获取到用户信息 写入本地存储
         storage.setItem("userinfo", JSON.stringify(response.data.count));
-        console.log("token:");
-        console.log( JSON.parse(storage.getItem("userinfo")).token );
-        // next('');
+        console.log( "token:", GetStorage("userinfo").token );
+
+
         // window.location.href = 'http://nicedevelop.nat300.top/';
         next('/clerklists');
         return;
