@@ -355,7 +355,7 @@ export default {
       top: .2rem;
       right: .2rem;
       width: .4rem;
-      heihgt: .4rem;
+      height: .4rem;
     }
 
     .pic {

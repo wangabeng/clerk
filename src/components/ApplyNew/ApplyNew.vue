@@ -132,22 +132,23 @@
         value='提交申请'>
     </div>
 
-
-
+  
+  <input type="button" value='测试录音' id='talkbtn'>
+  <br>
+  <br>
+  
 
 <!--遮罩层 时间选择器-->
 <div class="blacks" v-if="show" @click="countermand"></div>
+
+
+
+
 
   </div>
 </template>
 
 <script>
-// import HelloWorld from 'components/HelloWorld/HelloWorld.vue'
-// import Index from 'components/Index/Index.vue'
-// import SideBar from 'base/SideBar/SideBar.vue'
-// import MHeader from 'base/MHeader/MHeader.vue'
-// import MFooter from 'base/MFooter/MFooter.vue'
-
 // import {mapGetters, mapActions} from 'vuex'
 import $ from 'jquery'
 
@@ -156,6 +157,8 @@ import wx from 'weixin-js-sdk'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import VDistpicker from 'v-distpicker'
 // import { Area } from 'vant';
+import {GetSign} from "src/api/utils.js";
+
 
 export default {
   name: 'ApplyNew',
@@ -177,44 +180,65 @@ export default {
       city: '',
       area: ''
       // 省市区选择 结束 
+
     }
   },
   props: ['ips'],
   methods: {
+    // 日期选择
     disabledDate(time){
       if(time.getTime() > new Date().getTime()) return true;
     },
-      //取消选择地区
-      countermand: function () {
-        this.show = false
-      },
-      //打开选择地区
-      choose: function () {
-        console.log('OK');
-        this.show = true;
-      },
-      onChangeProvince1: function (a) {
-        this.province = a.value;
-        if (a.value == '台湾省') {
-          this.show = false;
-        }
-      },
-      onChangeCity: function (a) {
-        this.city = a.value;
-
+    // 城市选择
+    //取消选择地区
+    countermand: function () {
+      this.show = false
+    },
+    //打开选择地区
+    choose: function () {
+      console.log('OK');
+      this.show = true;
+    },
+    onChangeProvince1: function (a) {
+      this.province = a.value;
+      if (a.value == '台湾省') {
         this.show = false;
-        this.city = this.province + this.city + this.area;
-      },
-      onChangeArea: function (a) {
-        this.area = a.value;
-
       }
+    },
+    onChangeCity: function (a) {
+      this.city = a.value;
+
+      this.show = false;
+      this.city = this.province + this.city + this.area;
+    },
+    onChangeArea: function (a) {
+      this.area = a.value;
+    }
+    // 城市选择 结束
+
+
   },
   created () {
-
+    console.log(wx);
   },
   mounted () {
+    console.log(window.location.href);
 
+    wx.config({
+      debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+"appId":"wxa3c69deeaa1b4948","nonceStr":"SjMx6q1KJ7pxZiOo","timestamp":1569316603,"signature":"dfa0b6179cf355ecf8aa8cae5600abe3d99ae2e2",
+      jsApiList: ['startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice'] // 必填，需要使用的JS接口列表
+    });
+    wx.ready(function(){
+      console.log('微信配置好了');
+
+      var _this = this;
+      $('#talkbtn').on('click', function(event){
+          console.log('开始录音');
+          wx.startRecord();
+      });
+
+    });
   }
 }
 </script>
@@ -224,7 +248,7 @@ export default {
 @import "common/sass/mixin.scss";
 
 #apply-new {
-  widht: 6.4rem;
+  width: 6.4rem;
   display: flex;
   flex-direction: column;
   align-items: center;

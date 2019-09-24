@@ -323,7 +323,7 @@ export default {
         url: '/get_index',
         data: Qs.stringify(prarmData),
         headers:{
-          'token': GetStorage("userinfo").token,
+          'token': GetStorage("userinfo").toekn,
         }
       }).then(function (response) {
         console.log(response.data);
@@ -360,7 +360,7 @@ export default {
         url: '/get_sign_package',
         // data: Qs.stringify(prarmData),
         headers:{
-          'token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8',
+          'token': GetStorage("userinfo").toekn,
         }
       }).then(function (response) {
         console.log(response.data);

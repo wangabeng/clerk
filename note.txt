@@ -44,3 +44,5 @@ ranhou然后获取token
 {"code":0,"msg":"\u767b\u5f55\u6210\u529f","count":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8","nick_name":"\u963f\u8ff8","avatar_url":"http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTJkcRIy499jfgavF3YbbQeH1SCXKcRV4z7jruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA\/132"},"data":[]}
 
 
+设置token信息(测试用 把该userinfo设置入本地存储)
+localstorage.setItem("userinf", '{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8","nick_name":"阿迸","avatar_url":"http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJkcRIy499jfgavF3YbbQeH1SCXKcRV4z7jruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA/132"}')
