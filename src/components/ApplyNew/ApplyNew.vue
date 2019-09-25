@@ -10,16 +10,18 @@
     <div class="info-fill-wrapper">
       <div class="each-input-fill">
         <span class='title'>昵称</span>
-        <input type="text" class='fill-input' placeholder="请输入圈名">
+        <input type="text" class='fill-input' placeholder="请输入圈名" v-model='nick_name'>
       </div>
+      {{nick_name}}
 
       <div class="each-input-fill">
         <span class='title'>选择性别</span>
         <div class="gender-wrapper">
-          <label for="male"><span>男</span><input type="radio" id='male' name='gender'></label>
-          <label for="famale"><span>女</span><input type="radio" id='famale' name='gender'></label>
+          <label for="male"><span>男</span><input type="radio" id='male' name='gender' value='1' v-model='sex'></label>
+          <label for="famale"><span>女</span><input type="radio" id='famale' name='gender' value='2' v-model='sex'></label>
         </div>
       </div>
+      {{sex}}
 
       <div class="each-input-fill">
         <span class='title'>出生年月</span>
@@ -28,16 +30,21 @@
           <vue-datepicker-local :disabledDate="disabledDate" v-model="time" format="YYYY-MM" clearable/>
         </div>
       </div>
+      <!-- {{birth_year}} and {{birth_month}} -->
+      {{birth_year}}
+      {{birth_month}}
 
       <div class="each-input-fill">
         <span class='title'>声线类型</span>
-        <input type="text" class='fill-input' placeholder="请输入声线类型">
+        <input type="text" class='fill-input' placeholder="请输入声线类型" v-model="voice_type">
       </div>
+      {{voice_type}}
 
       <div class="each-input-fill">
         <span class='title'>在线时间</span>
-        <input type="text" class='fill-input' placeholder="请输入在线时间">
+        <input type="text" class='fill-input' placeholder="请输入在线时间" v-model="online_time">
       </div>
+      {{online_time}}
 
       <div class="each-input-fill">
         <span class='title'  >所在城市</span>
@@ -51,31 +58,36 @@
           </div>
         </div>
       </div>
+      {{province}}{{city}}
 
       <div class="each-input-fill">
         <span class='title'>技能特长</span>
-        <input type="text" class='fill-input' placeholder="有哪方面的技能或特长">
+        <input type="text" class='fill-input' placeholder="有哪方面的技能或特长" v-model="specialty">
       </div>
+      {{specialty}}
 
       <div class="each-input-fill">
         <span class='title'>相关经验</span>
-        <input type="text" class='fill-input' placeholder="是否有其他店铺的经验">
+        <input type="text" class='fill-input' placeholder="是否有其他店铺的经验" v-model="experience">
       </div>
+      {{experience}}
 
-      <div class="each-input-fill">
+      <!-- <div class="each-input-fill">
         <span class='title'>相关经验</span>
         <input type="text" class='fill-input' placeholder="请输入相关经验">
-      </div>
+      </div> -->
 
       <div class="each-input-fill">
         <span class='title'>擅长游戏</span>
-        <input type="text" class='fill-input' placeholder="擅长的游戏">
+        <input type="text" class='fill-input' placeholder="擅长的游戏" v-model="game">
       </div>
+      {{game}}
 
       <div class="each-input-fill">
         <span class='title'>微信号</span>
-        <input type="text" class='fill-input' placeholder="请输入微信号">
+        <input type="text" class='fill-input' placeholder="请输入微信号" v-model='wechat_num'>
       </div>
+      {{wechat_num}}
 
     </div>
 
@@ -90,16 +102,19 @@
     <div class="upload-pic">
       <div class="title">
         <h4>上传图片</h4>
-        <p>0/4</p>
+        <p><span class='alert' ref='limitTxt' v-if='curLoadFlag'>最多上传{{UPLOAD_LIMIT}}张</span><span class='total'>{{uploadArr.length}}/{{UPLOAD_LIMIT}}</span></p>
       </div>
       <ul>
         <!-- 上传按钮 -->
-        <li class='btn'>+</li>
-        <!-- 照片展示 -->
-        <li class='list'>
-          <img src="./th.jpg" alt="">
-          <i class="fa fa-times delete-icon" aria-hidden="true"></i>
+        <li class='btn' :class="{'disable': uploadArr.length == UPLOAD_LIMIT?true: false}">
+          <label for="uploadFile">+</label>
+          <input type="file" class="form-control-file" style='display: none' id="uploadFile" @change="uploadFile($event)" :disabled="uploadArr.length == UPLOAD_LIMIT?true: false" />
         </li>
+        <!-- 照片展示 -->
+        <li class='list' v-for='(item, index) in uploadArr' v-if='uploadArr.length' 
+          :style="{backgroundImage:'url(' + item + ')'}">
+          <!-- <img :src="item" alt=""> -->
+          <i class="fa fa-times delete-icon" aria-hidden="true" @click='cancel(index)'></i>
         </li>
         
       </ul>
@@ -109,22 +124,23 @@
     <div class="order-type">
       <h4>接单类型（多选）</h4>
       <label for="wenziyuyin">
-        <input type="checkbox" name='type' id='wenziyuyin'>
+        <input type="checkbox"  id='wenziyuyin' value='1' v-model='types'>
         <span>文字语音条</span>
       </label>
       <label for="yuyintonghua">
-        <input type="checkbox" name='type' id='yuyintonghua'>
+        <input type="checkbox"  id='yuyintonghua' value='2' v-model='types'>
         <span>语音通话</span>
       </label>
       <label for="youxi">
-        <input type="checkbox" name='type' id='youxi'>
+        <input type="checkbox"  id='youxi' value='3' v-model='types'>
         <span>游戏陪玩</span>
       </label>
       <label for="连麦哄睡">
-        <input type="checkbox" name='type' id='连麦哄睡'>
+        <input type="checkbox"  id='连麦哄睡' value='4' v-model='types'>
         <span>文字语音条</span>
       </label>
     </div>
+    {{types}}
 
     <!-- 提交申请 -->
     <div class="apply-now">
@@ -159,12 +175,21 @@ import VDistpicker from 'v-distpicker'
 // import { Area } from 'vant';
 import {GetSign} from "src/api/utils.js";
 
+// 用封装好的axios
+import axios from 'src/api/axios';
+import Qs from 'qs';
+import {BASEURL, WEIXINCERTI} from "src/api/config.js";
+
+
+import getToken from 'src/api/getToken.js';
+import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
+
 
 export default {
   name: 'ApplyNew',
   components: {
-    VueDatepickerLocal,
-    VDistpicker,
+    VueDatepickerLocal, //  日期选择
+    VDistpicker, // 城市选择
     
   },
   data () {
@@ -178,10 +203,54 @@ export default {
       //省市区
       province: '',
       city: '',
-      area: ''
+      area: '',
       // 省市区选择 结束 
 
+      'uploadfile': '', //  文件图片上传
+      'uploadArr': [], // 上传的图片列表
+      'UPLOAD_LIMIT' : 2, // 最多上传四张
+      'curLoadFlag': false,
+
+      // 提交表单数据
+      nick_name: '', // 昵称
+      sex: '1', // 性别
+      // birth_year: 'ddd', // 出生年 计算属性中
+      // birth_month: '', // 出生月 计算属性中
+      voice_type: '', // 声线类型
+      online_time: '', //
+      // province_id: '', // 见 data
+      // city_id: '', // 见 data
+      specialty: '', //
+      experience: '', //
+      game: '', //
+      wechat_num: '', //
+      audio_url: '', // 上传到服务器中的audio的url地址
+      image_urls: [], // 见 uploadArr
+      types: [], //
+
+
     }
+  },
+  watch: {
+    /*time (newValue, oldValue) {
+      console.log(newValue.getFullYear());
+    },*/
+  },
+  computed: {
+    birth_year () {
+      if (!!this.time) {
+        return this.time.getFullYear();
+      } else {
+        return '';
+      }
+    },
+    birth_month () {
+      if (!!this.time) {
+        return this.time.getMonth() + 1;
+      } else {
+        return '';
+      }
+    },
   },
   props: ['ips'],
   methods: {
@@ -213,10 +282,74 @@ export default {
     },
     onChangeArea: function (a) {
       this.area = a.value;
-    }
+    },
     // 城市选择 结束
 
+    // 普通上传文件 图片上传
+    uploadFile (event) {
+      // 如果已经有4张了 就提示最多上传4张
+      if (this.uploadArr.length == this.UPLOAD_LIMIT) {
+        this.curLoadFlag = true;
+        var timer = null;
+        timer = setTimeout(function () {
+          this.curLoadFlag = false;
+          clearTimeout(timer);
+        }, 1000);
+        return;
+      }
 
+      var _this = this;
+
+      console.log('图片上传kaishi');
+
+      this.file = event.target.files[0];
+
+      let param = new FormData();
+      // param.append("name", "wiiiiiinney");
+      //通过append向form对象添加数据
+      param.append("file", this.file);
+
+      /*let config = {
+        //添加请求头
+        headers: { "Content-Type": "multipart/form-data",'token': GetStorage("userinfo").token},
+        // headers: {'token': GetStorage("userinfo").token},
+        dataType:'json',
+      };
+
+      axios.post(BASEURL + '/upload_file', param, config)
+        .then(function (response) {
+          // uploadArr.push(response.data.file);
+          console.log('图片上传结果response:', response.data.data.data.file);
+          // _this.uploadSum = response.data;
+        })
+        .catch(function (error) {
+          console.log("上传失败");
+        });*/
+
+      // 成功
+      $.ajax({
+          url: BASEURL + '/upload_file',
+          type: "post",
+          dataType: "json",
+          data: param,
+          async: false,
+          contentType: false,
+          processData: false,
+          headers: {'token': GetStorage("userinfo").token},
+          success: function (res) {
+            console.log(res.data.file);
+            _this.uploadArr.push(res.data.file);
+          },
+          error: function(e){  
+            console.log(e);  
+          }  
+      });
+
+    },
+    // 删除上传的图片
+    cancel (index) {
+      this.uploadArr.splice(index, 1); // 删除当前图片
+    },
   },
   created () {
     console.log(wx);
@@ -298,6 +431,8 @@ export default {
       .title {
         display: inline-flex;
         width: 1.4rem;
+
+
       }
       input.fill-input {
         flex: 1;
@@ -354,6 +489,20 @@ export default {
       align-items:center;
       justify-content: space-between;
       margin-bottom: .3rem;
+
+      h4 {
+      }
+      >p {
+        .alert {
+          color: #f0ad4e;
+          display: inline-flex;
+          padding-right: .2rem;
+        }
+        .total {
+          display: inline-flex;
+        }
+      }
+
     }
 
     ul {
@@ -375,6 +524,20 @@ export default {
           font-size: .8rem;
           color: $color-text-dd;
           background-color: $color-background-d;
+          &.disable {
+            color: #c6c5c5;
+          }
+
+          input {
+            display: none;
+          }
+          label {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
         }
         &.list {
           background-repeat: no-repeat;
@@ -408,7 +571,7 @@ export default {
       margin-bottom: .3rem;
     }
     label {
-      widht: 100%;
+      width: 100%;
       display: flex;
       flex-direction: row;
       align-items: center;
