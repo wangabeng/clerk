@@ -49,3 +49,5 @@ localStorage.setItem("userinfo", '{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
 
 # 上传的图片列表
 https:\/\/www.sgshudong.com\/user_guide\/upload\/pic\/20190925101415th.jpg
+
+https:\/\/www.sgshudong.com\/user_guide\/upload\/pic\/20190925103933th.jpg

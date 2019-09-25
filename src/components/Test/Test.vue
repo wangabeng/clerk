@@ -130,7 +130,7 @@ export default {
   mounted () {
     wx.config({
       debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-      "appId":"wxa3c69deeaa1b4948","nonceStr":"1mdhXHuZZ8pHw4oA","timestamp":1569343667,"signature":"db5676810793fe30ec11091b1d653a3cf22856cc",
+      "appId":"wxa3c69deeaa1b4948","nonceStr":"2QPl4XU4y0Fw7VaE","timestamp":1569394393,"signature":"415fa36656a93bd324cfb6a041384f883c4f6617",
       jsApiList: [
     'checkJsApi',
     'onMenuShareTimeline',

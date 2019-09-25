@@ -94,8 +94,8 @@
     <!-- 录音 -->
     <div class="record-audio">
       <h3>录音（15秒内）</h3>
-      <div class="play-reset"><span>播放录音</span><span>重新录音</span></div>
-      <div class="new-record">录音</div>
+      <div class="play-reset"><input id='playAudio' type="button" value='播放录音'><input id='reestAudio' type="button" value='重新录音'></div>
+      <div class="new-record"><input id='newAudio' type="button" value='录音'><input id='stopAudio' type="button" value='停止录音'</div>
     </div>
 
     <!-- 上传图片 -->
@@ -149,9 +149,27 @@
     </div>
 
   
-  <input type="button" value='测试录音' id='talkbtn'>
-  <br>
-  <br>
+  <!-- 测试 -->
+    <h3 id="menu-voice">音频接口</h3>
+    <span class="desc">开始录音接口</span>
+    <button class="btn btn_primary" id="startRecord">startRecord</button>
+    <span class="desc">停止录音接口</span>
+    <button class="btn btn_primary" id="stopRecord">stopRecord</button>
+    <span class="desc">播放语音接口</span>
+    <button class="btn btn_primary" id="playVoice">playVoice</button>
+    <span class="desc">暂停播放接口</span>
+    <button class="btn btn_primary" id="pauseVoice">pauseVoice</button>
+    <span class="desc">停止播放接口</span>
+    <button class="btn btn_primary" id="stopVoice">stopVoice</button>
+    <span class="desc">上传语音接口</span>
+    <button class="btn btn_primary" id="uploadVoice">uploadVoice</button>
+    <span class="desc">下载语音接口</span>
+    <button class="btn btn_primary" id="downloadVoice">downloadVoice</button>
+    <br>
+    <br>
+    <span class="desc">播放serverid的录音</span>
+    <button class="btn btn_primary" id="playServrVoice">播放serverid的录音</button>
+
   
 
 <!--遮罩层 时间选择器-->
@@ -208,7 +226,7 @@ export default {
 
       'uploadfile': '', //  文件图片上传
       'uploadArr': [], // 上传的图片列表
-      'UPLOAD_LIMIT' : 2, // 最多上传四张
+      'UPLOAD_LIMIT' : 4, // 最多上传四张
       'curLoadFlag': false,
 
       // 提交表单数据
@@ -309,23 +327,6 @@ export default {
       //通过append向form对象添加数据
       param.append("file", this.file);
 
-      /*let config = {
-        //添加请求头
-        headers: { "Content-Type": "multipart/form-data",'token': GetStorage("userinfo").token},
-        // headers: {'token': GetStorage("userinfo").token},
-        dataType:'json',
-      };
-
-      axios.post(BASEURL + '/upload_file', param, config)
-        .then(function (response) {
-          // uploadArr.push(response.data.file);
-          console.log('图片上传结果response:', response.data.data.data.file);
-          // _this.uploadSum = response.data;
-        })
-        .catch(function (error) {
-          console.log("上传失败");
-        });*/
-
       // 成功
       $.ajax({
           url: BASEURL + '/upload_file',
@@ -357,22 +358,219 @@ export default {
   mounted () {
     console.log(window.location.href);
 
+    // 微信配置
     wx.config({
       debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-"appId":"wxa3c69deeaa1b4948","nonceStr":"8d43BWR35zosVTVx","timestamp":1569335905,"signature":"6f462d50fc8c1aa59b5c12ed2f1c43fee79c9277",
-      jsApiList: [] // 必填，需要使用的JS接口列表
-      // 'startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice'
+      "appId":"wxa3c69deeaa1b4948","nonceStr":"2QPl4XU4y0Fw7VaE","timestamp":1569394393,"signature":"415fa36656a93bd324cfb6a041384f883c4f6617",
+      jsApiList: [
+        'translateVoice',
+        'startRecord',
+        'stopRecord',
+        'onRecordEnd',
+        'playVoice',
+        'pauseVoice',
+        'stopVoice',
+        'uploadVoice',
+        'downloadVoice'
+      ] // 必填，需要使用的JS接口列表
     });
+
+    // wx.ready后绑定事件
     wx.ready(function(){
       console.log('微信配置好了');
 
       var _this = this;
-      $('#talkbtn').on('click', function(event){
-          console.log('开始录音');
-          wx.startRecord();
+
+      // 3 智能接口
+      var voice = {
+        localId: '',
+        serverId: ''
+      };
+      var timer = null; // 录音定时器
+      var ifWorking = false; // 是否正在录音
+
+      
+      /*      <div class="play-reset"><input id='playAudio' type="button" value='播放录音'><input id='reestAudio' type="button" value='重新录音'></div>
+      <div class="new-record"><input id='newAudio' type="button" value='录音'></div>*/
+      // 新建录音 开始录音 15秒后自动结束
+      document.querySelector('#newAudio').onclick = function () {
+        ifWorking = true;
+        // 开始录音
+        wx.startRecord({
+          cancel: function () {
+            alert('用户拒绝授权录音');
+          }
+        });
+        timer = setTimeout(function () {
+          if (ifWorking) {
+            clearTimeout(timer);
+          }
+        }, 15000);
+
+      };
+
+      // 4.3 停止录音
+      document.querySelector('#stopAudio').onclick = function () {
+        clearTimeout(timer);
+        wx.stopRecord({
+          success: function (res) {
+            voice.localId = res.localId;
+            // 录音成功后先上传到微信服务器 然后上传到自己的服务器
+            uploadVoice();
+          },
+          fail: function (res) {
+            alert(JSON.stringify(res));
+          }
+        });
+      };
+
+      //上传录音
+      function uploadVoice(){
+        //调用微信的上传录音接口把本地录音先上传到微信的服务器
+        //不过，微信只保留3天，而我们需要长期保存，我们需要把资源从微信服务器下载到自己的服务器
+        wx.uploadVoice({
+          localId: voice.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+          isShowProgressTips: 1, // 默认为1，显示进度提示
+          success: function (res) {
+            //把录音在微信服务器上的id（res.serverId）发送到自己的服务器供下载。
+            $.ajax({
+              url: '后端处理上传录音的接口',
+              type: 'post',
+              data: JSON.stringify(res),
+              dataType: "json",
+              success: function (data) {
+                alert('文件已经保存到七牛的服务器');//这回，我使用七牛存储
+              },
+              error: function (xhr, errorType, error) {
+                console.log(error);
+              }
+            });
+          }
+        });
+      }
+
+
+
+
+      // 绑定开始
+      // 4 音频接口
+      // 4.2 开始录音
+      document.querySelector('#startRecord').onclick = function () {
+        wx.startRecord({
+          cancel: function () {
+            alert('用户拒绝授权录音');
+          }
+        });
+      };
+
+      // 4.3 停止录音
+      document.querySelector('#stopRecord').onclick = function () {
+        wx.stopRecord({
+          success: function (res) {
+            voice.localId = res.localId;
+          },
+          fail: function (res) {
+            alert(JSON.stringify(res));
+          }
+        });
+      };
+
+      // 4.4 监听录音自动停止
+      wx.onVoiceRecordEnd({
+        complete: function (res) {
+          voice.localId = res.localId;
+          alert('录音时间已超过一分钟');
+        }
       });
 
+      // 4.5 播放音频
+      document.querySelector('#playVoice').onclick = function () {
+        if (voice.localId == '') {
+          alert('请先使用 startRecord 接口录制一段声音');
+          return;
+        }
+        wx.playVoice({
+          localId: voice.localId
+        });
+      };
+
+      // 4.6 暂停播放音频
+      document.querySelector('#pauseVoice').onclick = function () {
+        wx.pauseVoice({
+          localId: voice.localId
+        });
+      };
+
+      // 4.7 停止播放音频
+      document.querySelector('#stopVoice').onclick = function () {
+        wx.stopVoice({
+          localId: voice.localId
+        });
+      };
+
+      // 4.8 监听录音播放停止
+      wx.onVoicePlayEnd({
+        complete: function (res) {
+          alert('录音（' + res.localId + '）播放结束');
+        }
+      });
+
+      // 4.8 上传语音
+      document.querySelector('#uploadVoice').onclick = function () {
+        if (voice.localId == '') {
+          alert('请先使用 startRecord 接口录制一段声音');
+          return;
+        }
+        wx.uploadVoice({
+          localId: voice.localId,
+          success: function (res) {
+            alert('上传语音成功，serverId 为' + res.serverId);
+            voice.serverId = res.serverId;
+          }
+        });
+      };
+
+      // 4.9 下载语音
+      document.querySelector('#downloadVoice').onclick = function () {
+        if (voice.serverId == '') {
+          alert('请先使用 uploadVoice 上传声音');
+          return;
+        }
+        wx.downloadVoice({
+          serverId: voice.serverId,
+          success: function (res) {
+            alert('下载语音成功，localId 为' + res.localId);
+            voice.localId = res.localId;
+          }
+        });
+      };
+
+      // 
+      // playServrVoice
+      // 4.9 下XXX
+      document.querySelector('#playServrVoice').onclick = function () {
+        // if (voice.serverId == '') {
+        //   alert('请先使用 uploadVoice 上传声音');
+        //   return;
+        // }
+        wx.playVoice({
+          localId: "FOQhwIxtEsD4aDCIy87xOrLMcPbG6E8yU2tkbfFBX0fFeDbfWAfX3gqcM4ixUp5T",
+        });
+      };
+
+      /*document.querySelector('#playVoice').onclick = function () {
+        if (voice.localId == '') {
+          alert('请先使用 startRecord 接口录制一段声音');
+          return;
+        }
+        wx.playVoice({
+          localId: "FOQhwIxtEsD4aDCIy87xOrLMcPbG6E8yU2tkbfFBX0fFeDbfWAfX3gqcM4ixUp5T"
+        });
+      };     */ 
+      // 绑定结束
+
     });
+    // wx.ready后绑定事件 结束
   }
 }
 </script>
@@ -698,3 +896,22 @@ export default {
   color: red;
 }
 </style>
+
+
+
+<!--       /*let config = {
+  //添加请求头
+  headers: { "Content-Type": "multipart/form-data",'token': GetStorage("userinfo").token},
+  // headers: {'token': GetStorage("userinfo").token},
+  dataType:'json',
+};
+
+axios.post(BASEURL + '/upload_file', param, config)
+  .then(function (response) {
+    // uploadArr.push(response.data.file);
+    console.log('图片上传结果response:', response.data.data.data.file);
+    // _this.uploadSum = response.data;
+  })
+  .catch(function (error) {
+    console.log("上传失败");
+  });*/ -->
