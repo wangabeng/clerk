@@ -6,6 +6,8 @@ import $ from 'jquery'
 import fontSize from './common/js/fontSize'
 fontSize(document, window)
 
+import { Button, Select } from 'element-ui'
+
 import 'common/sass/index.scss'
 
 import AwesomePicker from 'vue-awesome-picker';

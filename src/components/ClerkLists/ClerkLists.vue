@@ -68,7 +68,8 @@
       <li class='cancel' @click='cancelPicker'>取消</li>
     </ul>
 
-      <p @click='weixinOpen'>微信认证 --已经修改</p>
+    <!-- 测试 -->
+      <!-- <p @click='weixinOpen'>微信认证 --已经修改</p>
 
       <br>
       <p @click='sendCode'>测试发送code</p>
@@ -80,8 +81,8 @@
       <p @click="getUserinfo()">测试携带token get_userinfo</p>
 
       <br>
-      <!-- api/get_sign_package -->
-      <p @click="testSign()">测试签名</p>
+      <p @click="testSign()">测试签名</p> -->
+      <!-- 测试 -->
 
   </div>
 </template>
