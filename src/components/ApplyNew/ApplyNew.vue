@@ -11,9 +11,8 @@
       <div class="each-input-fill form-check">
         <span class='title'>昵称</span>
         <input type="text" class='fill-input' placeholder="请输入圈名" v-model='nick_name'>
-        <p class="check-txt">* 测试测试测试 测试提示</p>
+        <p class="check-txt" v-if='ifSubmit && !nick_name'>* 昵称必填</p>
       </div>
-      {{nick_name}}
 
       <div class="each-input-fill form-check">
         <span class='title'>选择性别</span>
@@ -21,9 +20,9 @@
           <label for="male"><span>男</span><input type="radio" id='male' name='gender' value='1' v-model='sex'></label>
           <label for="famale"><span>女</span><input type="radio" id='famale' name='gender' value='2' v-model='sex'></label>
         </div>
-        <p class="check-txt">* 测试测试测试 测试提示</p>
+        <p class="check-txt" v-if='ifSubmit && !sex'>* 性别必填</p>
       </div>
-      {{sex}}
+      <!-- {{sex}} -->
 
       <div class="each-input-fill form-check" >
         <span class='title'>出生年月</span>
@@ -31,79 +30,73 @@
           <!-- <vue-datepicker-local v-model="time" format="YYYY-MM" clearable></vue-datepicker-local> -->
           <vue-datepicker-local :disabledDate="disabledDate" v-model="time" format="YYYY-MM" clearable/>
         </div>
-        <p class="check-txt">* 测试测试测试 测试提示</p>
+        <p class="check-txt" v-if='ifSubmit && !birth_year && !birth_month'>* 出生年月必填</p>
       </div>
       <!-- {{birth_year}} and {{birth_month}} -->
-      {{birth_year}}
-      {{birth_month}}
 
       <div class="each-input-fill form-check">
         <span class='title'>声线类型</span>
         <input type="text" class='fill-input' placeholder="请输入声线类型" v-model="voice_type">
-        <p class="check-txt">* 测试测试测试 测试提示</p>
+        <p class="check-txt" v-if='ifSubmit && !voice_type'>* 声线类型必填</p>
       </div>
-      {{voice_type}}
+      <!-- {{voice_type}} -->
 
       <div class="each-input-fill form-check">
         <span class='title'>在线时间</span>
         <input type="text" class='fill-input' placeholder="请输入在线时间" v-model="online_time">
-        <p class="check-txt">* 测试测试测试 测试提示</p>
+        <p class="check-txt" v-if='ifSubmit && !online_time'>* 在线时间必填</p>
       </div>
-      {{online_time}}
+      <!-- {{online_time}} -->
 
       <div class="each-input-fill form-check">
         <span class='title'  >所在城市</span>
         <div class="city-container">
-          <span @click="choose">请选择&nbsp;</span>
-          <span @click="choose">{{province+city}}</span>
+          <span @click="choose" v-if='!city'>&nbsp;请选择&nbsp;</span>
+          <span @click="choose" v-if='city'>&nbsp;已选择&nbsp;</span>
+          <span @click="choose">{{city}}</span>
            <!--省市区三级联动-->
           <div class="divwrap" v-if="show">
             <v-distpicker type="mobile" @province="onChangeProvince1" @city="onChangeCity"
                            hide-area></v-distpicker><!-- @area="onChangeArea" -->
           </div>
         </div>
-        <p class="check-txt">* 测试测试测试 测试提示</p>
+        <p class="check-txt" v-if='ifSubmit && !city'>* 所在城市必填</p>
       </div>
-      {{province}}{{city}}
+      <!-- {{city}} -->
 
       <div class="each-input-fill form-check">
         <span class='title'>技能特长</span>
         <input type="text" class='fill-input' placeholder="有哪方面的技能或特长" v-model="specialty">
-        <p class="check-txt">* 测试测试测试 测试提示</p>
+        <p class="check-txt" v-if='ifSubmit && !specialty'>* 技能或特长必填</p>
       </div>
-      {{specialty}}
+      <!-- {{specialty}} -->
 
       <div class="each-input-fill form-check">
         <span class='title'>相关经验</span>
         <input type="text" class='fill-input' placeholder="是否有其他店铺的经验" v-model="experience">
-        <p class="check-txt">* 测试测试测试 测试提示</p>
+        <p class="check-txt" v-if='ifSubmit && !experience'>* 是否有其他店铺的经验必填</p>
       </div>
-      {{experience}}
-
-      <!-- <div class="each-input-fill">
-        <span class='title'>相关经验</span>
-        <input type="text" class='fill-input' placeholder="请输入相关经验">
-      </div> -->
+      <!-- {{experience}} -->
 
       <div class="each-input-fill form-check">
         <span class='title'>擅长游戏</span>
         <input type="text" class='fill-input' placeholder="擅长的游戏" v-model="game">
-        <p class="check-txt">* 测试测试测试 测试提示</p>
+        <p class="check-txt" v-if='ifSubmit && !game'>* 擅长的游戏必填</p>
       </div>
-      {{game}}
+      <!-- {{game}} -->
 
       <div class="each-input-fill form-check">
         <span class='title'>微信号</span>
         <input type="text" class='fill-input' placeholder="请输入微信号" v-model='wechat_num'>
-        <p class="check-txt">* 测试测试测试 测试提示</p>
+        <p class="check-txt" v-if='ifSubmit && !wechat_num'>* 微信号必填</p>
       </div>
-      {{wechat_num}}
+      <!-- {{wechat_num}} -->
 
     </div>
 
     <!-- 录音 -->
     <div class="record-audio">
-      <h3>录音（15秒内）</h3>
+      <h3>录音（15秒内）&nbsp;<span v-if='ifSubmit && !audio_url'>录音必须</span></h3>
       <!-- 录音按钮 -->
       <div class="new-record" v-if='firstFlag'>
         <input  id='newAudio' type="button" value='录音'>
@@ -139,9 +132,10 @@
 
     <!-- 上传图片 -->
     <div class="upload-pic">
-      <div class="title">
+      <div class="title form-check">
         <h4>上传图片</h4>
         <p><span class='alert' ref='limitTxt' v-if='uploadArr.length == UPLOAD_LIMIT'>最多上传{{UPLOAD_LIMIT}}张</span><span class='total'>{{uploadArr.length}}/{{UPLOAD_LIMIT}}</span></p>
+        <p class="check-txt" v-if='ifSubmit && uploadArr.length==0'>请上传1-4张照片</p>
       </div>
       <ul>
         <!-- 上传按钮 -->
@@ -161,7 +155,7 @@
 
     <!-- 接单类型 -->
     <div class="order-type">
-      <h4 class='form-check'><span>接单类型（多选）</span><span class='check-txt'>* 测试测试测试 测试提示</span></h4>
+      <h4 class='form-check'><span>接单类型（多选）</span><span class='check-txt' v-if='ifSubmit && types.length==0'>* 接单类型 必填</span></h4>
       <label for="wenziyuyin">
         <input type="checkbox"  id='wenziyuyin' value='1' v-model='types'>
         <span>文字语音条</span>
@@ -179,12 +173,12 @@
         <span>文字语音条</span>
       </label>
     </div>
-    {{types}}
+    <!-- {{types}} -->
 
     <!-- 提交申请 -->
     <div class="apply-now">
       <input class='place-btn' type="button" 
-        value='提交申请'>
+        value='提交申请' @click='applyNewSubmit'>
     </div>
 
 
@@ -250,7 +244,7 @@ export default {
 
       // 提交表单数据
       nick_name: '', // 昵称
-      sex: '1', // 性别
+      sex: '', // 性别
       // birth_year: 'ddd', // 出生年 计算属性中
       // birth_month: '', // 出生月 计算属性中
       voice_type: '', // 声线类型
@@ -262,8 +256,9 @@ export default {
       game: '', //
       wechat_num: '', //
       audio_url: '', // 上传到服务器中的audio的url地址
-      image_urls: [], // 见 uploadArr
+      // image_urls: [], // 见 uploadArr
       types: [], //
+      // 提交表单数据结束
 
       COUNT_START: 15, // 倒计时
       firstFlag: true, // 是否是第一次录音
@@ -272,6 +267,8 @@ export default {
       weixinConfig: {}, // 微信配置
 
       ifPlaying: false, // 是否正在播放
+
+      ifSubmit: false, // 提交flag 一旦提交 就执行表单验证
 
 
     }
@@ -378,6 +375,16 @@ export default {
     cancel (index) {
       this.uploadArr.splice(index, 1); // 删除当前图片
     },
+    // 提交注册信息
+    applyNewSubmit () {
+      this.ifSubmit = true;
+      // 如果有表单为空的 
+      var _this = this;
+      if (!!this.nick_name && !!this.sex && !!this.birth_year  && !!this.birth_month  && !!this.voice_type && !!this.online_time  && !!this.city_id && !!this.experience  && !!this.game && !!this.wechat_num  && !!this.audio_url  && !!this.types) {
+        // 如果有数据为空 就把警告开关打开
+        this.ifSubmit = true;
+      }
+    }
   },
   created () {
     var _this = this;
@@ -444,7 +451,7 @@ export default {
     // 微信配置
     wx.config({
       debug: true,
-      "appId":"wxa3c69deeaa1b4948","nonceStr":"46SFviSjLSXtgJUW","timestamp":1569477718,"signature":"9f97c42b763f2c410e90e9bd738b06578e137f8d",
+      "appId":"wxa3c69deeaa1b4948","nonceStr":"0jiyJLEh5HD4g9dY","timestamp":1569499958,"signature":"c3e38b7ac5068ba96e83468fc81a4193f1513815",
       jsApiList: [
         'translateVoice',
         'startRecord',
@@ -486,29 +493,22 @@ export default {
       });
 
       function beginRecord () {
+        // 一旦打开 
+        _this.firstFlag = false;
+
+        _this.ifWorking = true;
+        // 开始录音 切倒计时
+        countTimer = setInterval(function () {
+          console.log(_this.COUNT_START);
+          if (_this.COUNT_START == 0) {
+            clearInterval(countTimer); // 停止倒计时
+          } else {
+            --_this.COUNT_START;
+          }
+        }, 1000);
 
         wx.startRecord({
           success: function () {
-            // 一旦打开 
-            _this.firstFlag = false;
-
-            _this.ifWorking = true;
-            // 开始录音 切倒计时
-            countTimer = setInterval(function () {
-              console.log(_this.COUNT_START);
-              if (_this.COUNT_START == 0) {
-                clearInterval(countTimer); // 停止倒计时
-              } else {
-                --_this.COUNT_START;
-              }
-            }, 1000);
-
-            timer = setTimeout(function () {
-              // 自动停止录音
-              if (_this.COUNT_START == 0) {
-                endAudio();
-              }
-            }, 15000);
 
           },
           cancel: function () {
@@ -516,6 +516,12 @@ export default {
           }
         });
 
+        timer = setTimeout(function () {
+          // 自动停止录音
+          if (_this.COUNT_START == 0) {
+            endAudio();
+          }
+        }, 15000);
 
       };
 
@@ -714,6 +720,11 @@ export default {
     box-sizing: border-box;
     h3 {
       line-height: 1.5;
+      span {
+        color: #d60000;
+        display: inline-flex;
+        transform: scale(0.8);     
+      }
     }
     
     // 新录音
@@ -810,7 +821,11 @@ export default {
       flex-direction: row;
       align-items:center;
       justify-content: space-between;
-      margin-bottom: .3rem;
+      padding-bottom: .3rem;
+
+      .check-txt {
+        left: -.2rem;
+      }
 
       h4 {
       }
@@ -892,7 +907,16 @@ export default {
 
     h4 {
       line-height: 1.5;
-      margin-bottom: .3rem;
+      padding-bottom: .3rem;
+      width: 100%;
+      display: flex;
+      span {
+        display: inline-flex;
+        &:last-child {
+          padding-left: 0;
+          left: -.2rem;
+        }
+      }
     }
     label {
       width: 100%;
@@ -924,28 +948,6 @@ export default {
   }
 
 }
-
-
-
-/*     <div class="order-type">
-  <h4>接单类型（多选）</h4>
-  <label for="wenziyuyin">
-    <input type="checkbox" name='type' id='wenziyuyin'>
-    <span>文字语音条</span>
-  </label>
-  <label for="yuyintonghua">
-    <input type="checkbox" name='type' id='yuyintonghua'>
-    <span>语音通话</span>
-  </label>
-  <label for="youxi">
-    <input type="checkbox" name='type' id='youxi'>
-    <span>游戏陪玩</span>
-  </label>
-  <label for="连麦哄睡">
-    <input type="checkbox" name='type' id='连麦哄睡'>
-    <span>文字语音条</span>
-  </label>
-</div> */
 
 
 /* 日期选择 */
@@ -1072,10 +1074,10 @@ export default {
     display: inline-flex;
     left: 0;
     bottom: 0;
-    font-size: .18rem;
+    font-size: .2rem;
     color: #d60000;
     box-sizing: border-box;
-    padding-left: .2rem;
+    padding-left: .1rem;
     transform: scale(.9);
   }
 }
