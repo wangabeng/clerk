@@ -94,13 +94,46 @@
     <!-- 录音 -->
     <div class="record-audio">
       <h3>录音（15秒内）</h3>
-      <H4 v-if='ifWorking'>倒计时： {{COUNT_START}}</H4>
+      <!-- 录音按钮 -->
       <div class="new-record">
-        <input v-if='firstFlag' id='newAudio' type="button" value='录音'>&nbsp;&nbsp;<input v-if='ifWorking' id='stopAudio' type="button" value='停止录音'>
+        <input  id='newAudio' type="button" value='录音'>
       </div>
+      <!-- 播放 重新录音 -->
       <div class="play-reset">
-        <input id='playAudio' type="button" value='播放录音'><input  v-if='!firstFlag' id='resetAudio' type="button" value='重新录音'>
+        <!-- 播放 -->
+        <div class="input-btn" id='playAudio'>
+          <i class="fa fa-volume-up" aria-hidden="true"></i>
+          <span>播放录音</span>
+        </div>
+        <!-- 停止播放 -->
+        <div class="input-btn" id='stopPlay'>
+          <!-- <img src="common/iamge/audio.svg" alt=""> -->
+          <i class="bg"></i>
+          <span>停止播放</span>
+        </div>
+        <!-- <input id='stopPlay' type="button" value='停止播放'> -->
+        <input class='reset' id='resetAudio' type="button" value='重新录音'>
       </div>
+      <!-- 弹出层 -->
+      <div class="count-stop-layer">
+        <H4 >倒计时： {{COUNT_START}}</H4>
+        <input  id='stopAudio' type="button" value='停止录音'>
+      </div>
+      <!-- <div class="new-record">
+        <input v-if='firstFlag' id='newAudio' type="button" value='录音'>&nbsp;&nbsp;
+      </div>
+      播放 重新录音
+      <div class="play-reset">
+        <input v-if='!firstFlag &&!ifWorking' id='playAudio' type="button" value='播放录音'>
+        <input v-if='!firstFlag &&!ifWorking' id='playAudio' type="button" value='播放录音'>
+
+        <input  v-if='!firstFlag &&!ifWorking' id='resetAudio' type="button" value='重新录音'>
+      </div>
+      弹出层
+      <div class="count-stop-layer">
+        <H4 v-if='ifWorking'>倒计时： {{COUNT_START}}</H4>
+        <input v-if='ifWorking' id='stopAudio' type="button" value='停止录音'>
+      </div> -->
       
     </div>
 
@@ -154,29 +187,6 @@
         value='提交申请'>
     </div>
 
-  
-  <!-- 测试 -->
-    <h3 id="menu-voice">音频接口</h3>
-    <span class="desc">开始录音接口</span>
-    <button class="btn btn_primary" id="startRecord">startRecord</button>
-    <span class="desc">停止录音接口</span>
-    <button class="btn btn_primary" id="stopRecord">stopRecord</button>
-    <span class="desc">播放语音接口</span>
-    <button class="btn btn_primary" id="playVoice">playVoice</button>
-    <span class="desc">暂停播放接口</span>
-    <button class="btn btn_primary" id="pauseVoice">pauseVoice</button>
-    <span class="desc">停止播放接口</span>
-    <button class="btn btn_primary" id="stopVoice">stopVoice</button>
-    <span class="desc">上传语音接口</span>
-    <button class="btn btn_primary" id="uploadVoice">uploadVoice</button>
-    <span class="desc">下载语音接口</span>
-    <button class="btn btn_primary" id="downloadVoice">downloadVoice</button>
-    <br>
-    <br>
-    <span class="desc">播放serverid的录音</span>
-    <button class="btn btn_primary" id="playServrVoice">播放serverid的录音</button>
-
-  
 
 <!--遮罩层 时间选择器-->
 <div class="blacks" v-if="show" @click="countermand"></div>
@@ -194,6 +204,7 @@ import $ from 'jquery'
 // 每个页面都引入微信sdk 但是配置config参数设置成全局的
 import wx from 'weixin-js-sdk'
 
+
 import VueDatepickerLocal from 'vue-datepicker-local'
 import VDistpicker from 'v-distpicker'
 // import { Area } from 'vant';
@@ -208,6 +219,8 @@ import {BASEURL, WEIXINCERTI} from "src/api/config.js";
 import getToken from 'src/api/getToken.js';
 import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
 
+import layer from 'vue-layer'
+import 'vue-layer/lib/vue-layer.css';
 
 export default {
   name: 'ApplyNew',
@@ -369,6 +382,11 @@ export default {
     //console.log('abc', this.getWeixinConfig());
     // this.getWeixinConfig();
     // 获取微信config
+    // 测试layer
+    setTimeout(function () {
+   
+    }, 1000);
+
 
     //  getSignnature();
     // 通过本地存储的token 获取签名
@@ -424,7 +442,7 @@ export default {
     // 微信配置
     wx.config({
       debug: true,
-      "appId":"wxa3c69deeaa1b4948","nonceStr":"FOKSi0hwstLkHg7K","timestamp":1569462655,"signature":"c7e57118d3e9d46e1eb409bc206639c487d43b01",
+      "appId":"wxa3c69deeaa1b4948","nonceStr":"46SFviSjLSXtgJUW","timestamp":1569477718,"signature":"9f97c42b763f2c410e90e9bd738b06578e137f8d",
       jsApiList: [
         'translateVoice',
         'startRecord',
@@ -664,6 +682,7 @@ export default {
 
   .record-audio {
     margin-top: .3rem;
+    width: 100%;
     background-color: #fff;
     width: 100%;
     padding: .2rem .3rem;
@@ -671,6 +690,78 @@ export default {
     h3 {
       line-height: 1.5;
     }
+    
+    // 新录音
+    .new-record {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding: .15rem 0;
+      input {
+        width: 5.8rem;
+        padding: .17rem 0;
+        border-radius: .3rem;
+        background-color: #5cb85c;
+        color: #fff;
+      }
+
+    }
+    /* 播放录音 */
+    .play-reset {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: .15rem 0;
+      .input-btn {
+        width: 2.6rem;
+        padding: .15rem 0;
+        border-radius: .3rem;
+        background-color: #5cb85c;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        >i {
+          width: .26rem;
+          height: .26rem;
+          display: inline-flex;
+          font-size: .3rem;
+          &.bg {
+            width: .3rem;
+            height: .3rem;
+            display: inline-flex;
+            @include background_fill('./audio.svg');
+            background-size: cover;
+            transform: scale(1.2);
+          }
+        }
+        img {
+          width: .3rem;
+          height: .3rem;
+        }
+        >span {
+          display: inline-flex;
+          padding-left: .2rem;
+          color: #fff;
+        }
+      }
+      >input {
+        width: 2.6rem;
+        padding: .15rem 0;
+        border-radius: .3rem;
+        background-color: #5cb85c;
+        color: #fff;
+        &.reset {
+          background-color: #f0ad4e;
+        }
+      }
+    }
+
     .play-reset {
       width: 100%;
       display: flex;
