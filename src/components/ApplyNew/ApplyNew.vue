@@ -96,7 +96,7 @@
       <h3>录音（15秒内）</h3>
       <H4 v-if='ifWorking'>倒计时： {{COUNT_START}}</H4>
       <div class="new-record">
-        <input v-if='firstFlag' id='newAudio' type="button" value='录音'>&nbsp;&nbsp;<input id='stopAudio' type="button" value='停止录音'>
+        <input v-if='firstFlag' id='newAudio' type="button" value='录音'>&nbsp;&nbsp;<input v-if='ifWorking' id='stopAudio' type="button" value='停止录音'>
       </div>
       <div class="play-reset">
         <input id='playAudio' type="button" value='播放录音'><input  v-if='!firstFlag' id='resetAudio' type="button" value='重新录音'>
@@ -108,7 +108,7 @@
     <div class="upload-pic">
       <div class="title">
         <h4>上传图片</h4>
-        <p><span class='alert' ref='limitTxt' v-if='curLoadFlag'>最多上传{{UPLOAD_LIMIT}}张</span><span class='total'>{{uploadArr.length}}/{{UPLOAD_LIMIT}}</span></p>
+        <p><span class='alert' ref='limitTxt' v-if='uploadArr.length == UPLOAD_LIMIT'>最多上传{{UPLOAD_LIMIT}}张</span><span class='total'>{{uploadArr.length}}/{{UPLOAD_LIMIT}}</span></p>
       </div>
       <ul>
         <!-- 上传按钮 -->
@@ -184,7 +184,6 @@
 
 
 
-
   </div>
 </template>
 
@@ -192,6 +191,7 @@
 // import {mapGetters, mapActions} from 'vuex'
 import $ from 'jquery'
 
+// 每个页面都引入微信sdk 但是配置config参数设置成全局的
 import wx from 'weixin-js-sdk'
 
 import VueDatepickerLocal from 'vue-datepicker-local'
@@ -255,6 +255,8 @@ export default {
       COUNT_START: 15, // 倒计时
       firstFlag: true, // 是否是第一次录音
       ifWorking: false, // 是否正在录音
+
+      weixinConfig: {},
 
 
     }
@@ -363,7 +365,57 @@ export default {
     },
   },
   created () {
-    console.log(wx);
+    var _this = this;
+    //console.log('abc', this.getWeixinConfig());
+    // this.getWeixinConfig();
+    // 获取微信config
+
+    //  getSignnature();
+    // 通过本地存储的token 获取签名
+    function getSignnature () {
+      var curUrl = window.location.href.split('#')[0];
+
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/get_sign_package",  
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+        data: {url: curUrl},  
+        headers: {'token': GetStorage("userinfo").token},
+        dataType: "json",  
+        success: function(res){  
+                    console.log("成功");  
+                    console.log(res.data); // {"appId":"wxa3c69deeaa1b4948","nonceStr":"6ik7gYKkou3YddEa","timestamp":1569467461,"url":"http:\/\/localhost:8080\/","signature":"2b33114b8ab49383092189f69226cf64c0c40336","rawString"
+                    // 处理签名
+                    // weixinConfig
+                    var {appId, nonceStr, timestamp, signature} = res.data;
+                    _this.weixinConfig = {
+                      'debug': true,
+                      'appId': appId,
+                      'nonceStr': nonceStr,
+                      'timestamp': timestamp,
+                      'signature': signature,
+                      'jsApiList': [
+                        'translateVoice',
+                        'startRecord',
+                        'stopRecord',
+                        'onRecordEnd',
+                        'playVoice',
+                        'pauseVoice',
+                        'stopVoice',
+                        'uploadVoice',
+                        'downloadVoice'
+                      ]
+                    };
+                    //
+                    console.log('动态配置如下：', _this.weixinConfig, '动态配置结束');
+                  },  
+        error: function(e){  
+                     console.log(e);  
+        }  
+      });      
+    }
+
+    // 获取签名 结束
   },
   mounted () {
     var _this = this;
@@ -371,8 +423,8 @@ export default {
 
     // 微信配置
     wx.config({
-      debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-      "appId":"wxa3c69deeaa1b4948","nonceStr":"DcdKyjhP6SYelGhn","timestamp":1569407894,"signature":"117a40a44ebf143bcd38a77fdb5d8b199c627465",
+      debug: true,
+      "appId":"wxa3c69deeaa1b4948","nonceStr":"FOKSi0hwstLkHg7K","timestamp":1569462655,"signature":"c7e57118d3e9d46e1eb409bc206639c487d43b01",
       jsApiList: [
         'translateVoice',
         'startRecord',
@@ -383,8 +435,10 @@ export default {
         'stopVoice',
         'uploadVoice',
         'downloadVoice'
-      ] // 必填，需要使用的JS接口列表
+      ]
     });
+
+    // wx.config(_this.weixinConfig);
 
     // wx.ready后绑定事件
     wx.ready(function(){
@@ -403,7 +457,9 @@ export default {
       
 
       // 新建录音 开始录音 15秒后自动结束
-      document.querySelector('#newAudio').onclick = beginRecord;
+      $(document).on("click", "#newAudio", function(){
+        beginRecord();
+      });
       // 重新录音
       $(document).on("click", "#resetAudio", function(){
         beginRecord();
@@ -417,7 +473,11 @@ export default {
         // 开始录音 切倒计时
         countTimer = setInterval(function () {
           console.log(_this.COUNT_START);
-          _this.COUNT_START--;
+          if (_this.COUNT_START == 0) {
+            clearInterval(countTimer); // 停止倒计时
+          } else {
+            --_this.COUNT_START;
+          }
         }, 1000);
         wx.startRecord({
           cancel: function () {
@@ -429,12 +489,14 @@ export default {
           if (_this.COUNT_START == 0) {
             endAudio();
           }
-        }, 15);
+        }, 15000);
 
       };
 
       // 手工停止录音
-      document.querySelector('#stopAudio').onclick = endAudio;
+      $(document).on("click", "#stopAudio", function(){
+        endAudio();
+      });
 
       function endAudio () {
         console.log("录音停止");
@@ -442,6 +504,7 @@ export default {
         _this.COUNT_START = 15;
         clearTimeout(timer); // 清除录音定时器
         clearInterval(countTimer); // 停止倒计时
+
         wx.stopRecord({
           success: function (res) {
             voice.localId = res.localId;
@@ -499,7 +562,7 @@ export default {
       }
 
       // 播放录音
-      document.querySelector('#playAudio').onclick = function () {
+      $(document).on("click", "#playAudio", function(){
         if (voice.localId == '') {
           alert('请先使用 startRecord 接口录制一段声音');
           return;
@@ -507,9 +570,7 @@ export default {
         wx.playVoice({
           localId: voice.localId
         });
-      };
-
-
+      });
 
 
       // 绑定开始
@@ -662,7 +723,8 @@ export default {
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        margin-right: .3rem;
+        margin-right: .2rem;
+        margin-bottom: .4rem;
         position: relative;
         &.btn {
           border: 1px dashed rgba(0, 0, 0, .08);
@@ -694,8 +756,9 @@ export default {
         }
         .delete-icon {
           position: absolute;
-          top: -.2rem;
-          right: -.2rem;
+          top: -.15rem;
+          right: -.15rem;
+          color: $color-button-d;
         }
       }
 
