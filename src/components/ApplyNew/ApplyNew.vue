@@ -114,30 +114,16 @@
         <!-- 重新录音 -->
         <input v-if='!firstFlag &&!ifWorking' class='reset' id='resetAudio' type="button" value='重新录音'>
       </div>
-
-
-      <!-- <div class="new-record">
-        <input v-if='firstFlag' id='newAudio' type="button" value='录音'>&nbsp;&nbsp;
-      </div>
-      播放 重新录音
-      <div class="play-reset">
-        <input v-if='!firstFlag &&!ifWorking' id='playAudio' type="button" value='播放录音'>
-        <input v-if='!firstFlag &&!ifWorking' id='playAudio' type="button" value='播放录音'>
-
-        <input  v-if='!firstFlag &&!ifWorking' id='resetAudio' type="button" value='重新录音'>
-      </div>
-      弹出层
-      <div class="count-stop-layer">
-        <H4 v-if='ifWorking'>倒计时： {{COUNT_START}}</H4>
-        <input v-if='ifWorking' id='stopAudio' type="button" value='停止录音'>
-      </div> -->
-      
+    
     </div>
 
-     <!-- 弹出层  -->
+     <!-- 录音弹出层  v-if='ifWorking' -->
     <div class="count-stop-layer" v-if='ifWorking'>
-      <H4 >倒计时： {{COUNT_START}}</H4>
-      <input  id='stopAudio' type="button" value='停止录音'>
+      <div class="inner-container">
+        <h3>正在录音中...</h3>
+        <H4 >还有{{COUNT_START}}秒自动停止</H4>
+        <input  id='stopAudio' type="button" value='停止录音'>
+      </div>
     </div>
 
 
@@ -490,30 +476,36 @@ export default {
       });
 
       function beginRecord () {
-        // 一旦打开 
-        _this.firstFlag = false;
 
-        _this.ifWorking = true;
-        // 开始录音 切倒计时
-        countTimer = setInterval(function () {
-          console.log(_this.COUNT_START);
-          if (_this.COUNT_START == 0) {
-            clearInterval(countTimer); // 停止倒计时
-          } else {
-            --_this.COUNT_START;
-          }
-        }, 1000);
         wx.startRecord({
+          success: function () {
+            // 一旦打开 
+            _this.firstFlag = false;
+
+            _this.ifWorking = true;
+            // 开始录音 切倒计时
+            countTimer = setInterval(function () {
+              console.log(_this.COUNT_START);
+              if (_this.COUNT_START == 0) {
+                clearInterval(countTimer); // 停止倒计时
+              } else {
+                --_this.COUNT_START;
+              }
+            }, 1000);
+
+            timer = setTimeout(function () {
+              // 自动停止录音
+              if (_this.COUNT_START == 0) {
+                endAudio();
+              }
+            }, 15000);
+
+          },
           cancel: function () {
-            // alert('用户拒绝授权录音');
+            alert('用户拒绝授权录音');
           }
         });
-        timer = setTimeout(function () {
-          // 自动停止录音
-          if (_this.COUNT_START == 0) {
-            endAudio();
-          }
-        }, 15000);
+
 
       };
 
@@ -1018,6 +1010,48 @@ export default {
 /*点过的地区内容*/
 .divwrap >>> .address-container .active {
   color: red;
+}
+
+/* 录音弹出层 */
+.count-stop-layer {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 200000;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .inner-container {
+    background-color: #fff;
+    width: 5.8rem;
+    height: 30VH;
+    margin-top: -10VH;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: .1rem;
+    h3 {
+      font-size: .26rem;
+    }
+    h4 {
+      margin: .2rem 0 .4rem;
+      font-size: .23rem;
+      color: $color-text-dd;
+    }
+    input {
+      background-color: #d9534f;
+      padding: .1rem .35rem;
+      border-radius: .1rem;
+      color: #fff;
+      font-size: .23rem;
+    }
+  }
 }
 </style>
 
