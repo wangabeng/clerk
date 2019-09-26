@@ -451,7 +451,7 @@ export default {
     // 微信配置
     wx.config({
       debug: true,
-      "appId":"wxa3c69deeaa1b4948","nonceStr":"0jiyJLEh5HD4g9dY","timestamp":1569499958,"signature":"c3e38b7ac5068ba96e83468fc81a4193f1513815",
+      "appId":"wxa3c69deeaa1b4948","nonceStr":"lRwJQ7bbfsDwXyHC","timestamp":1569510201,"signature":"17f579e594393c8fbb3d39b61e65d0fafabbff79",
       jsApiList: [
         'translateVoice',
         'startRecord',
@@ -988,6 +988,7 @@ export default {
 .divwrap > .distpicker-address-wrapper {
   color: #0d0d0d;
   height: 100%;
+  overflow-y: auto;
 }
 
 /*头部*/

@@ -13,7 +13,7 @@ export const SaveStorage =  function (itemName, json) {
   local.setItem(itemName, JSON.stringify(json));
 }
 
-// 获取localstorage中itemName 的son值(token)
+// 获取localstorage中itemName 的值
 export const GetStorage =  function (itemName) {
   var local = window.localStorage;
   return JSON.parse(local.getItem(itemName));
