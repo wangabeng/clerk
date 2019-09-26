@@ -8,45 +8,50 @@
 
     <!-- 信息填写区 -->
     <div class="info-fill-wrapper">
-      <div class="each-input-fill">
+      <div class="each-input-fill form-check">
         <span class='title'>昵称</span>
         <input type="text" class='fill-input' placeholder="请输入圈名" v-model='nick_name'>
+        <p class="check-txt">* 测试测试测试 测试提示</p>
       </div>
       {{nick_name}}
 
-      <div class="each-input-fill">
+      <div class="each-input-fill form-check">
         <span class='title'>选择性别</span>
         <div class="gender-wrapper">
           <label for="male"><span>男</span><input type="radio" id='male' name='gender' value='1' v-model='sex'></label>
           <label for="famale"><span>女</span><input type="radio" id='famale' name='gender' value='2' v-model='sex'></label>
         </div>
+        <p class="check-txt">* 测试测试测试 测试提示</p>
       </div>
       {{sex}}
 
-      <div class="each-input-fill">
+      <div class="each-input-fill form-check" >
         <span class='title'>出生年月</span>
         <div class="date-wrapper">
           <!-- <vue-datepicker-local v-model="time" format="YYYY-MM" clearable></vue-datepicker-local> -->
           <vue-datepicker-local :disabledDate="disabledDate" v-model="time" format="YYYY-MM" clearable/>
         </div>
+        <p class="check-txt">* 测试测试测试 测试提示</p>
       </div>
       <!-- {{birth_year}} and {{birth_month}} -->
       {{birth_year}}
       {{birth_month}}
 
-      <div class="each-input-fill">
+      <div class="each-input-fill form-check">
         <span class='title'>声线类型</span>
         <input type="text" class='fill-input' placeholder="请输入声线类型" v-model="voice_type">
+        <p class="check-txt">* 测试测试测试 测试提示</p>
       </div>
       {{voice_type}}
 
-      <div class="each-input-fill">
+      <div class="each-input-fill form-check">
         <span class='title'>在线时间</span>
         <input type="text" class='fill-input' placeholder="请输入在线时间" v-model="online_time">
+        <p class="check-txt">* 测试测试测试 测试提示</p>
       </div>
       {{online_time}}
 
-      <div class="each-input-fill">
+      <div class="each-input-fill form-check">
         <span class='title'  >所在城市</span>
         <div class="city-container">
           <span @click="choose">请选择&nbsp;</span>
@@ -57,18 +62,21 @@
                            hide-area></v-distpicker><!-- @area="onChangeArea" -->
           </div>
         </div>
+        <p class="check-txt">* 测试测试测试 测试提示</p>
       </div>
       {{province}}{{city}}
 
-      <div class="each-input-fill">
+      <div class="each-input-fill form-check">
         <span class='title'>技能特长</span>
         <input type="text" class='fill-input' placeholder="有哪方面的技能或特长" v-model="specialty">
+        <p class="check-txt">* 测试测试测试 测试提示</p>
       </div>
       {{specialty}}
 
-      <div class="each-input-fill">
+      <div class="each-input-fill form-check">
         <span class='title'>相关经验</span>
         <input type="text" class='fill-input' placeholder="是否有其他店铺的经验" v-model="experience">
+        <p class="check-txt">* 测试测试测试 测试提示</p>
       </div>
       {{experience}}
 
@@ -77,15 +85,17 @@
         <input type="text" class='fill-input' placeholder="请输入相关经验">
       </div> -->
 
-      <div class="each-input-fill">
+      <div class="each-input-fill form-check">
         <span class='title'>擅长游戏</span>
         <input type="text" class='fill-input' placeholder="擅长的游戏" v-model="game">
+        <p class="check-txt">* 测试测试测试 测试提示</p>
       </div>
       {{game}}
 
-      <div class="each-input-fill">
+      <div class="each-input-fill form-check">
         <span class='title'>微信号</span>
         <input type="text" class='fill-input' placeholder="请输入微信号" v-model='wechat_num'>
+        <p class="check-txt">* 测试测试测试 测试提示</p>
       </div>
       {{wechat_num}}
 
@@ -151,7 +161,7 @@
 
     <!-- 接单类型 -->
     <div class="order-type">
-      <h4>接单类型（多选）</h4>
+      <h4 class='form-check'><span>接单类型（多选）</span><span class='check-txt'>* 测试测试测试 测试提示</span></h4>
       <label for="wenziyuyin">
         <input type="checkbox"  id='wenziyuyin' value='1' v-model='types'>
         <span>文字语音条</span>
@@ -1053,6 +1063,23 @@ export default {
     }
   }
 }
+
+/* 表单提示 */
+.form-check {
+  position: relative;
+  .check-txt {
+    position: absolute;
+    display: inline-flex;
+    left: 0;
+    bottom: 0;
+    font-size: .18rem;
+    color: #d60000;
+    box-sizing: border-box;
+    padding-left: .2rem;
+    transform: scale(.9);
+  }
+}
+
 </style>
 
 
