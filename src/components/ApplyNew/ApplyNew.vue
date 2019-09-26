@@ -95,30 +95,27 @@
     <div class="record-audio">
       <h3>录音（15秒内）</h3>
       <!-- 录音按钮 -->
-      <div class="new-record">
+      <div class="new-record" v-if='firstFlag'>
         <input  id='newAudio' type="button" value='录音'>
       </div>
+
       <!-- 播放 重新录音 -->
-      <div class="play-reset">
+      <div class="play-reset" v-if='!firstFlag'>
         <!-- 播放 -->
-        <div class="input-btn" id='playAudio'>
+        <div v-if='!firstFlag &&!ifWorking&&!ifPlaying' class="input-btn" id='playAudio' >
           <i class="fa fa-volume-up" aria-hidden="true"></i>
           <span>播放录音</span>
         </div>
         <!-- 停止播放 -->
-        <div class="input-btn" id='stopPlay'>
-          <!-- <img src="common/iamge/audio.svg" alt=""> -->
+        <div v-if='ifPlaying' class="input-btn" id='stopPlay'>
           <i class="bg"></i>
           <span>停止播放</span>
         </div>
-        <!-- <input id='stopPlay' type="button" value='停止播放'> -->
-        <input class='reset' id='resetAudio' type="button" value='重新录音'>
+        <!-- 重新录音 -->
+        <input v-if='!firstFlag &&!ifWorking' class='reset' id='resetAudio' type="button" value='重新录音'>
       </div>
-      <!-- 弹出层 -->
-      <div class="count-stop-layer">
-        <H4 >倒计时： {{COUNT_START}}</H4>
-        <input  id='stopAudio' type="button" value='停止录音'>
-      </div>
+
+
       <!-- <div class="new-record">
         <input v-if='firstFlag' id='newAudio' type="button" value='录音'>&nbsp;&nbsp;
       </div>
@@ -136,6 +133,13 @@
       </div> -->
       
     </div>
+
+     <!-- 弹出层  -->
+    <div class="count-stop-layer" v-if='ifWorking'>
+      <H4 >倒计时： {{COUNT_START}}</H4>
+      <input  id='stopAudio' type="button" value='停止录音'>
+    </div>
+
 
     <!-- 上传图片 -->
     <div class="upload-pic">
@@ -269,7 +273,9 @@ export default {
       firstFlag: true, // 是否是第一次录音
       ifWorking: false, // 是否正在录音
 
-      weixinConfig: {},
+      weixinConfig: {}, // 微信配置
+
+      ifPlaying: false, // 是否正在播放
 
 
     }
@@ -581,6 +587,7 @@ export default {
 
       // 播放录音
       $(document).on("click", "#playAudio", function(){
+        _this.ifPlaying = true;
         if (voice.localId == '') {
           alert('请先使用 startRecord 接口录制一段声音');
           return;
@@ -588,6 +595,22 @@ export default {
         wx.playVoice({
           localId: voice.localId
         });
+      });
+
+      // 停止播放音频
+      $(document).on("click", "#stopPlay", function(){
+        _this.ifPlaying = false;
+        wx.stopVoice({
+          localId: voice.localId
+        });
+      });
+
+      // 监听播放停止
+      wx.onVoicePlayEnd({
+        complete: function (res) {
+          _this.ifPlaying = false;
+          alert('录音（' + res.localId + '）播放结束');
+        }
       });
 
 
