@@ -373,7 +373,7 @@ export default {
   flex-direction: column;
   align-items: center;
   background-color: #fff;
-  // height: 85VH;
+  height: 85VH;
   color: $color-text-dd;
   border-top-left-radius: .1rem;
   border-top-right-radius: .1rem;
@@ -428,8 +428,7 @@ export default {
   }
 
   .select-wrapper {
-    // height: calc(85VH-3.3rem);
-    // height: e("calc(85VH-3.3rem)");
+    height: e("calc(85VH-3.3rem)");
     overflow-y: auto;
     border-top: $border-1px;
     border-bottom: $border-1px;
