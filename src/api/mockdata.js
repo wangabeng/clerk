@@ -39,6 +39,26 @@ export const allList = [
             "price": "¥6元起"
 
         },
+        {
+
+            "id": "2",
+
+            "nick_name": "1222",
+
+            "sex": "1",
+
+            "level": "普通",
+
+            "audio_url": "333",
+
+            "sign": "111",
+
+            "avatar_url": "http://pic2.sc.chinaz.com/Files/pic/pic9/201402/apic108_s.jpg",
+
+            "price": "¥6元起"
+
+        },
+
 
 ];
 

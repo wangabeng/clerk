@@ -8,7 +8,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 export default axios*/
 // 创建 axios 实例
 let http = axios.create({
-  // headers: {'Content-Type': 'application/json'},
+  //headers: {'Content-Type': 'application/json'},
   headers: {'Content-Type': 'application/x-www-form-urlencoded'}, // 改成这样的 就可以了
   baseURL: BASEURL,
   timeout: 60000,

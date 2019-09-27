@@ -180,6 +180,9 @@
       <input class='place-btn' type="button" 
         value='提交申请' @click='applyNewSubmit'>
     </div>
+  
+    <!-- 测试按钮 -->
+    <input type="button" @click='insertOne' value='测试插入数据'>
 
 
 <!--遮罩层 时间选择器-->
@@ -384,7 +387,41 @@ export default {
         // 如果有数据为空 就把警告开关打开
         this.ifSubmit = true;
       }
+    },
+    // 插入一条数据
+    insertOne () {
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/apply",  
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+        data: {
+          nick_name: 'test23女', // 昵称
+          sex: '2', // 性别
+          birth_year: '1988', // 出生年 计算属性中
+          birth_month: '10', // 出生月 计算属性中
+          voice_type: '温柔型', // 声线类型
+          online_time: '测试', //
+          province_id: '湖北', // 见 data
+          city_id: '长沙', // 见 data
+          specialty: '很多', //
+          experience: '射箭', //
+          game: '游泳', //
+          wechat_num: 'sanfeng', //
+          audio_url: 'https://www.w3school.com.cn/i/horse.ogg', // 上传到服务器中的audio的url地址
+          image_urls: ['http://pic1.sc.chinaz.com/Files/pic/pic9/201909/zzpic20245_s.jpg', 'http://pics.sc.chinaz.com/files/pic/pic9/201909/bpic13704.jpg'].join(), // 见 uploadArr
+          types: [1,2].join(), //
+        },  
+        headers: {'token': GetStorage("userinfo").token},
+        dataType: "json",  
+        success: function(res){  
+                    console.log(res.data); 
+                  },  
+        error: function(e){  
+                     console.log(e);  
+        }  
+      });   
     }
+
   },
   created () {
     var _this = this;

@@ -9,9 +9,9 @@
     <div class="search-wrapper">
       <div class="input-wrapper">
         <i class="fa fa-search" aria-hidden="true"></i>
-        <input type="text" placeholder="搜索店员">
+        <input type="text" placeholder="搜索店员"  v-model='searchTxt'>
       </div>
-      <a href="javascript:;">搜索</a>
+      <a href="javascript:;" @click='searchInput'>搜索</a>
     </div>
     <!-- 排序及分类 -->
     <div class="sort-wrapper">
@@ -45,7 +45,7 @@
 
             </div>
             <!-- 说明 -->
-            <p class="desc">希望你的可爱 可以治愈一切不可爱</p>
+            <p class="desc">{{item.sign}}</p>
             <!-- 播放及价格 -->
             <div class="play-price">
               <div class='paly-icon playing' @click.stop='doPlay' :data-url="item.audio_url"></div>
@@ -56,7 +56,11 @@
         </a>
       </li>
     </ul>
+
+    <p class="no-record" v-if='allList.length==0'><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span>暂无记录</span></p>
     
+    <!-- SVG动画加载更多 -->
+    <p style="display: none;width: 100%;text-align: center;" ref='loadingTxt' id='loading-txt'><img style='width:2rem;height:.5rem;display: inline-block;' src="./loading.svg" alt=""></p>
     
     <!-- 遮罩层 -->
     <div class="mask-fixed" :class="{'open': maskShow}" 
@@ -69,19 +73,20 @@
     </ul>
 
     <!-- 测试 -->
-      <p @click='weixinOpen'>微信认证 --已经修改</p>
 
+      <!-- <p @click='weixinOpen'>微信认证 已经修改</p>
+      
       <br>
       <p @click='sendCode'>测试发送code</p>
       <br>
       <br>
-      <p @click="getList('1', '1')">测试携带token获取用户列表</p>
-
+      <p @click="getList('0', '0')">测试携带token获取用户列表</p>
+      
       <br>
       <p @click="getUserinfo()">测试携带token get_userinfo</p>
-
+      
       <br>
-      <p @click="testSign()">测试签名</p>
+      <p @click="testSign()">测试签名</p> -->
       <!-- 测试 -->
 
   </div>
@@ -107,7 +112,7 @@ import {BASEURL, WEIXINCERTI} from "src/api/config.js";
 
 import getToken from 'src/api/getToken.js';
 
-import {allList} from 'src/api/mockdata.js';
+// import {allList} from 'src/api/mockdata.js';
 import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
 
 
@@ -127,8 +132,10 @@ export default {
       typeArr: [{text: '全部', num: 0}, {text: '普通', num: 1}, {text: '金牌', num: 2}, {text: '镇店', num: 3}], // 等级 1普通 2金牌 3镇店
       pickerArr: [], // 默认不显示 下拉选择器要呈现的内容
       defaultCheck: {
+        'nickName': '', //默认为空字符串
         'sex': '0', //  1男 2 女
-        'level': '0' // 等级 1普通 2金牌 3镇店
+        'level': '0', // 等级 1普通 2金牌 3镇店
+        'curPage': 1, // 当前页
       },
 
 
@@ -140,7 +147,8 @@ export default {
       sexOrLevel: '', // 当前要切换选择性别 还是等级 
 
 
-      allList: allList, // 所有店员列表
+      allList: [], // 所有店员列表
+      searchTxt: '', // 搜索框用户
 
       // 个人的token及其他个人信息
       userinfo: {"code":0,"msg":"\u767b\u5f55\u6210\u529f","count":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8","nick_name":"\u963f\u8ff8","avatar_url":"http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTJkcRIy499jfgavF3YbbQeH1SCXKcRV4z7jruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA\/132"},"data":[]}
@@ -159,21 +167,6 @@ export default {
   },
 
   methods: {
-    // infiniteHandler($state) {
-    //   axios.get(api, {
-    //     params: {
-    //       page: this.page,
-    //     },
-    //   }).then(({ data }) => {
-    //     if (data.hits.length) {
-    //       this.page += 1;
-    //       this.list.push(...data.hits);
-    //       $state.loaded();
-    //     } else {
-    //       $state.complete();
-    //     }
-    //   });
-    // },
     // 选择性别 或等级 参数 'sex', genderArr[]
     selectGender (sexOrLevel, arr) {
       // sexOrLevel 是重新选择性别 还是等级
@@ -188,26 +181,22 @@ export default {
       typeArr: ['全部', '镇店', '金牌', '普通'], // 登记选项
       pickerArr: [], // 默认不显示*/
     },
-    // 重新选择
+    // 重新选择 重新设置查询条件
     resetSum (num) {
       // 1 重新选择性别or登记 this.sexOrLevel  如果是等级 获取登记编号num
       console.log('选择: ', this.sexOrLevel + "  " + num, );
       this.defaultCheck[this.sexOrLevel] = num;
-      // 2 发送请求 getList (defaultCheck.sex, defaultCheck.level)  
-      console.log(this.defaultCheck);
+      // 2 发送请求 getList (defaultCheck.sex, defaultCheck.level, 1) 从第1页开始查  
+      this.defaultCheck.curPage = 1;
+      this.allList = []; // 清空列表 重置查询条件从第一页开始查
+      // console.log(this.defaultCheck);
+      this.getList(this.defaultCheck);
 
       // 3 隐藏遮罩层和选择器
       this.pickerArr = [];
       this.maskShow = false;
       this.pickerShow = false;
     },
-    // 选择等级
-    // selectType (sexOrLevel) {
-    //   this.pickerArr = this.typeArr;
-    //   // 2 遮罩层显示 选择器显示
-    //   this.maskShow = true;
-    //   this.pickerShow = true;
-    // },
     // 取消选择
     cancelPicker () {
       this.pickerArr = [];
@@ -229,26 +218,12 @@ export default {
     linkRandom () {
       this.$router.push({name: 'RandomOrder'});
     },
+    // 1 跳转到微信验证页 微信页
     weixinOpen () {
       // 测试打开微信验证
       window.location.href = WEIXINCERTI;
-      /*$.ajax({
-          type:"GET",                    
-          url:"https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx520c15f417810387&redirect_uri=https%3A%2F%2Fchong.qq.com%2Fphp%2Findex.php%3Fd%3D%26c%3DwxAdapter%26m%3DmobileDeal%26showwxpaytitle%3D1%26vb2ctag%3D4_2030_5_1194_60&response_type=code&scope=snsapi_base&state=123#wechat_redirect",
-          data:{
-          },
-          dataType:"json",  
-           
-          success:function(data){
-            // alert(data);
-            
-          },
-          error:function(data){
-            // console.log(data);
-          }
-      });*/
     },
-    // 测试发送code获取token
+    // 2 测试发送code获取token
     sendCode () {
       // wechatauth
       // 请求成功
@@ -282,8 +257,8 @@ export default {
         // console.log(error);
       });*/
 
-      // 封装起来
-      getToken('001RQu2K0c0xT82FuN2K02pO2K0RQu2e');
+      // 封装起来 调用 /wechatauth 接口 传code 获取token及用户信息
+      getToken('001RQu2K0c0xT82FuN2K02pO2K0RQu2e'); //code -> token
 
         /*'/wechatauth', Qs.stringify(prarmData))
         .then(function (response) {
@@ -312,26 +287,30 @@ export default {
 
     },
     // 获取店员列表
-    getList (sex, level) {
-      var prarmData = {
-        nick_name:  "\u963f\u8ff8", // 个人的信息  this.userinfo.nick_name
-        sex: sex,
-        level: level,
-        // token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8'
-      }
-      axios({
-        method: 'post',
-        url: '/get_index',
-        data: Qs.stringify(prarmData),
-        headers:{
-          'token': GetStorage("userinfo").toekn,
-        }
-      }).then(function (response) {
-        console.log(response.data);
-      }).catch(function (error) {
-        // console.log(error);
-      });
+    getList (defaultCheck) {
+      var _this = this;
 
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/get_index",  
+        // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+        data: {
+          nick_name: defaultCheck.nickName, //"\u963f\u8ff8", // 个人的信息  this.userinfo.nick_name
+          sex: defaultCheck.sex,
+          level: defaultCheck.level,
+          page: defaultCheck.curPage
+        },  
+        headers: {'token': GetStorage("userinfo").token},
+        dataType: "json",  
+        success: function(res){  
+                    console.log(res.data);
+                    _this.allList = res.data;
+                    console.log('最新列表为', _this.allList);
+                  },  
+        error: function(e){  
+                     console.log(e);  
+        }  
+      });
     },
     // 测试
     getUserinfo () {
@@ -371,11 +350,6 @@ export default {
          }  
       });
 
-
-
-
-
-
       // 传入url location.href.split('#')[0]获取,而且需要encodeURIComponent）
       /*var curUrl = window.location.href.split('#')[0];
 
@@ -400,19 +374,146 @@ export default {
         // console.log(error);
       });*/
     },
+    // 搜索用户
+    searchInput () {
+      /*if (!this.searchTxt) {
+        return;
+      }*/
+      console.log('开始搜索');
+      this.defaultCheck.nickName = this.searchTxt;
+      this.allList = [];
+      this.getList(this.defaultCheck);
+
+    }
   },
   created () {
     // 默认请求所有店员数据 发送请求 {URL}/api/get_index
     // 先查看本地localstorage是否保存有token及用户信息，如果有 就正常执行 如果没有 就请求登录
-    // console.log( window.localStorage.getItem('aliplayer_lang_data_h5_2_8_2_zh-cn'));
-    // 默认读取所有20个数据 ajax请求 this.getList (sex, level)
-    // 获取页面参数
+
+    // 默认读取所有20个数据 ajax请求 this.getList (sex, level, page)
+    this.getList(this.defaultCheck);
 
   },
-  mounted () {
+  /*mounted () {
     // 读取页面参数  this.$route.query.code,
-    /*console.log('code: ', this.$route.query.code);
-    console.log('abc: ',this.$route.query.abc);*/ 
+    console.log('code: ', this.$route.query.code);
+    console.log('abc: ',this.$route.query.abc); 
+  },*/
+  mounted () {
+    var _this = this;
+
+    // 上拉刷新
+    var loadingEle = document.getElementById("loading-txt");
+    console.log(loadingEle);
+    console.log(_this.$nextTick);
+    // var ulContent = document.querySelector('.content_wrapper');
+    var isLoading = false; // 只有为false 才可以执行刷新
+    window.addEventListener('touchmove', function () {
+        _this.$nextTick(function () {
+          var curScrollTop = getScrollTop();
+          var clientHeight = getClientHeight();
+          var totalHeight = getScrollHeight();
+          console.log(curScrollTop, clientHeight, totalHeight);
+          if (curScrollTop + clientHeight + getPxByRem(.5) >= totalHeight && isLoading == false) {
+              console.log("提前加载");
+              isLoading = true; // 开关打开
+              loadingEle.style.display = 'block';
+
+              // ajax 成功后追加dom 然后执行isLoading = false loadingEle.style.display = 'none'
+              /*clearTimeout(timerAjax);
+              var timerAjax = setTimeout(function () {
+                    loadingEle.style.display = 'none';
+                    _this.allList = _this.allList.concat(_this.allList);
+                    isLoading = false;
+              }, 3000);*/
+
+              $.ajax({
+                type: "POST",  
+                url: BASEURL + "/get_index",  
+                // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+                data: {
+                  nick_name:  _this.defaultCheck.nickName, //"\u963f\u8ff8", // 个人的信息  this.userinfo.nick_name
+                  sex: _this.defaultCheck.sex,
+                  level: _this.defaultCheck.level,
+                  page: ++_this.defaultCheck.curPage
+                },  
+                headers: {'token': GetStorage("userinfo").token},
+                dataType: "json",  
+                success: function(res){  
+                            console.log(res.data);
+                            _this.allList = _this.allList.concat(res.data);
+                            // console.log('最新列表为', _this.allList);
+
+                            loadingEle.style.display = 'none';
+                            isLoading = false;
+                          },  
+                error: function(e){  
+                             console.log(e);  
+                }  
+              });
+
+
+              // 节流
+              clearTimeout(timer);
+              var timer = setTimeout(function () {
+                  isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 isLoading因为是true 不执行if内语句 起到节流作用
+              }, 1000);
+          }          
+        });
+
+    });
+
+    // 获取元素滚动高度
+    function getScrollTop() { 
+        var scrollTop = 0; 
+        if (document.documentElement && document.documentElement.scrollTop) { 
+            scrollTop = document.documentElement.scrollTop; 
+        } else if (document.body) { 
+            scrollTop = document.body.scrollTop; 
+        } 
+        return scrollTop; 
+    }
+
+    // 获取当前可视范围的高度
+    function getClientHeight() { 
+        var clientHeight = 0; 
+        if (document.body.clientHeight && document.documentElement.clientHeight) { 
+        clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight); 
+        } 
+        else { 
+        clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight); 
+        } 
+        return clientHeight; 
+    }
+
+    // 获取文档完整的高度
+    function getScrollHeight() { 
+        return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight); 
+    }
+
+    // 实时获取1rem单位的px值 rem转像素$.(6.4) 输入出375
+    function getPxByRem (remSize){  
+        var deviceWidth = document.body && document.body.clientWidth || document.getElementsByTagName("html")[0].offsetWidth;
+        return remSize * (deviceWidth * 200 / 1280);
+    }
+
+    // 监听页面滚动
+    /*$(document).scroll(function() {
+        var scroH = $(document).scrollTop();  //滚动高度
+        var viewH = $(window).height();  //可见高度 
+        var contentH = $(document).height();  //内容高度
+ 
+        if(scroH >100){  //距离顶部大于100px时
+ 
+        }
+        if (contentH - (scroH + viewH) <= 100){  //距离底部高度小于100px
+             
+        }  
+        if (contentH = (scroH + viewH)){  //滚动条滑到底部啦
+             console.log("滚动条滑到底部啦");
+        }  
+ 
+    });*/
   },
 }
 </script>
@@ -645,6 +746,17 @@ export default {
           }
         }
       }
+    }
+  }
+
+  /* 暂无记录 */
+  .no-record {
+    padding: 1.2rem 0 ;
+    font-size: .25rem;
+    color: $color-text-d;
+    i {
+      display: inline-flex;
+      padding-right: .15rem;
     }
   }
 
