@@ -105,7 +105,7 @@
           </div> -->
           <div class="type-area type-time">
             <ul class="">
-              <li v-for='(item, index) in typeArr'>{{item.txt}}</li>
+              <li v-for='(item, index) in typeArr' @click='doPickType(item)'>{{item.txt}}</li>
             </ul>            
           </div>
 
@@ -114,7 +114,7 @@
           <div class="long-area type-time">
             <h4>时长</h4>
             <ul>
-              <li v-for='(item, index) in timeArr'>{{item.txt}}</li>
+              <li v-for='(item, index) in timeArr' @click='doPickTime(item)'>{{item.txt}}</li>
             </ul>
           </div>
           <!-- 购买数量 -->
@@ -359,7 +359,23 @@ export default {
       // 
       console.log('结束');
       this.isPlaying = false;
-    }
+    },
+
+
+    // 选择库存
+    // x轴
+    doPickType (item) {
+      console.log(item);
+      // 1 改变当前picker中X的值
+      // 2 this x-> y1    y2 y3 遍历 查看库存情况 如果有库存 当前y数据就是可选择状态，如果没有库存，当前y就是禁用状态
+
+      // 3 添加一个计算属性 计算 选择器中 x y是否都被选中 如果被选中了 input就处于激活状态 可以填写数量
+      // 4 添加一个计算属性 计算库存数 * 数量的值 O了
+    },
+    // y轴
+    doPickTime (item) {
+      console.log(item);
+    },
   },
   mounted () {
 
