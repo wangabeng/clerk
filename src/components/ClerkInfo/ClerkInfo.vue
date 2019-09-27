@@ -97,10 +97,15 @@
         <!-- 滚动区 -->
         <div class="select-inner">
           <!-- 类型区 -->
-          <div class="type-area type-time">
+          <!-- <div class="type-area type-time">
             <ul class="">
               <li :class="{'active': xIndex =='1'}" @click="selectType('1')">文字语音条</li>
               <li :class="{'active': xIndex =='2'}" @click="selectType('2')">语音通话</li>
+            </ul>            
+          </div> -->
+          <div class="type-area type-time">
+            <ul class="">
+              <li v-for='(item, index) in typeArr'>{{item.txt}}</li>
             </ul>            
           </div>
 
@@ -109,11 +114,7 @@
           <div class="long-area type-time">
             <h4>时长</h4>
             <ul>
-              <li :class="{'active': yIndex =='1'}" @click="selectTime('1')">半小时</li>
-              <li :class="{'active': yIndex =='2'}" @click="selectTime('2')">一小时</li>
-              <li :class="{'active': yIndex =='3'}" @click="selectTime('3')">一天</li>
-              <li :class="{'active': yIndex =='4'}" @click="selectTime('4')">一周</li>
-              <li :class="{'active': yIndex =='5'}" @click="selectTime('5')">一个月</li>
+              <li v-for='(item, index) in timeArr'>{{item.txt}}</li>
             </ul>
           </div>
           <!-- 购买数量 -->
@@ -202,7 +203,7 @@ export default {
 
       clertDetail: null, // 店员信息详情,
 
-      PriceInfoArr: [],
+      
       xFlag: false, // x轴是否选中
       xIndex: '', // 1 文字语音 2 语音通话
       yFlag: false, // x轴是否选中
@@ -210,6 +211,53 @@ export default {
       amountInput: 1, // 默认数量输入框是1
 
       isPlaying: false, // 音频是否处于播放状态
+
+
+      PriceInfoArr: [], // 详情价格数据 二维数组
+      picker: {  // 当前选择器 
+        y: 0,  // 0代表未选择 y代表往下方向 选择时长 语音 or其他
+        x: 0, // 0代表未选择 x代表往下方向 选择类型 语音 or其他
+      },
+
+      typeArr: [ // 类型方向集合 二位数组二维方向 向右边方向
+        {
+          type: 1,
+          x: 1,
+          txt: "文字语音条"
+        },
+        {
+          type: 2,
+          x: 2,
+          txt: "语音通话"
+        }
+      ],
+      timeArr: [ // 时长方向集合 二位数组一维方向 向下边方向
+        {
+          type: 1,
+          y: 1,
+          txt: "半小时"
+        },
+        {
+          type: 2,
+          y: 2,
+          txt: "一小时"
+        },
+        {
+          type: 3,
+          y: 3,
+          txt: "一天"
+        },
+        {
+          type: 3,
+          y: 3,
+          txt: "一周"
+        },
+        {
+          type: 4,
+          y: 4,
+          txt: "一个月"
+        }
+      ]
 
 
     };
