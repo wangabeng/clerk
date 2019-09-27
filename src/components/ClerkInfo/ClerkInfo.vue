@@ -1,23 +1,21 @@
 <template>
-  <div id="clerk-info">
+  <div id="clerk-info" v-if='clertDetail'>
     <!-- 轮播图 -->
     <swiper :options="swiperOption">
     　　<swiper-slide>
-          <div class='slider-each-wrapper'>
-            <img :src="clertDetail.salesman.image_urls" alt="">   
+          <div class='slider-each-wrapper' v-for='item in clertDetail.salesman.image_urls'>
+            <img :src="item" alt="">   
             <div class="info-txt">
               <div class="name-wrapper">
                 <span class='name'>{{clertDetail.salesman.nick_name}}</span>
                 <span class='star'>{{clertDetail.salesman.sex=='1'? '男': '女'}}</span>
               </div>
               <div class="online-status">
-                <!-- online  offline -->
                 <i class="fa fa-circle online" aria-hidden="true"></i>
                 <span>在线</span>
               </div>
             </div>    
           </div>
-
         </swiper-slide>
     　　<div class="swiper-pagination" slot="pagination"></div>
     　　<!-- <div class="swiper-button-prev" slot="button-prev"></div>
@@ -46,14 +44,16 @@
           <i class="fa fa-volume-up" aria-hidden="true"></i>
           <span>录音</span>
         </div>
-        <div class='paly-icon'></div>
+        <div class='paly-icon' @click='playAudio()' :class='{"playing": isPlaying}'>
+          <audio :src="clertDetail.salesman.audio_url" ref='audioEle' controls="controls" hidden="true" @ended='audioEnd'/>
+        </div>
       </div>
       
       <!-- 性格标签 -->
       <div class="nature-wrapper">
         <p><i class="fa fa-tags" aria-hidden="true"></i><span>性格标签</span></p>
         <ul>
-          <li v-for='item in clertDetail.salesman.character'>{{item}}</li>
+          <li v-if='!clertDetail.salesman.character' v-for='item in clertDetail.salesman.character'>{{item}}</li>
         </ul>
       </div>
 
@@ -64,9 +64,6 @@
           <li v-for='(item, index) in clertDetail.service_price'>
             <span v-for='(innerItem, innnerIndex) in item'>{{innerItem}}</span>
           </li>
-          <!-- <li><span>半小时</span><span>16</span><span>40</span></li>
-          <li><span>一小时</span><span>16</span><span>40</span></li>
-          <li><span>一天</span><span>16</span><span>40</span></li> -->
         </ul>
       </div>
 
@@ -89,7 +86,7 @@
       <div class="top-info">
         <img class='close-icon' src="~common/image/close-icon.png" 
           @click='closeWin' alt="">
-        <div class="pic"><img :src="clertDetail.salesman.image_urls" alt=""></div>
+        <div class="pic"><img :src="clertDetail.salesman.image_urls[0]" alt=""></div>
         <div class="sum-txt">
           <p class='amount'>{{clertDetail.salesman.price}}</p>
           <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;;&nbsp;&nbsp;时长&nbsp;</p>
@@ -168,6 +165,10 @@ import axios from 'src/api/axios';
 import Qs from 'qs';
 import {BASEURL, WEIXINCERTI} from "src/api/config.js";
 
+import getToken from 'src/api/getToken.js';
+
+// import {allList} from 'src/api/mockdata.js';
+import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
 import {clertDetail} from 'src/api/mockdata.js';
 
 export default {
@@ -208,6 +209,8 @@ export default {
       yIndex: '', // 1 2 3 4 5
       amountInput: 1, // 默认数量输入框是1
 
+      isPlaying: false, // 音频是否处于播放状态
+
 
     };
   },
@@ -224,12 +227,33 @@ export default {
 
   },
   created () {
+    var _this = this;
     // console.log("canshu:" + this.$route.params.id);
     // ajx通过id获取详情this.clertDetail = clertDetail;
-    this.clertDetail = clertDetail.data;
+    /*this.clertDetail = clertDetail.data;
     console.log(this.clertDetail);
     this.PriceInfoArr = this.clertDetail.service_price;
-    console.log(this.PriceInfoArr);
+    console.log(this.PriceInfoArr);*/
+
+    // 获取店员详情
+    $.ajax({
+      type: "POST",  
+      url: BASEURL + "/get_salesman",  
+      // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+      data: {
+        salesman_id: _this.$route.params.id, //"\u963f\u8ff8", // 个人的信息  _this.userinfo.nick_name
+      },  
+      headers: {'token': GetStorage("userinfo").token},
+      dataType: "json",  
+      success: function(res){  
+                  console.log('详情为：', res.data);
+                  _this.clertDetail = res.data;
+                  _this.PriceInfoArr = _this.clertDetail.service_price;
+                },  
+      error: function(e){  
+                   console.log(e);  
+      }  
+    });
 
 
   },
@@ -267,9 +291,30 @@ export default {
     plus () {
       this.amountInput == 1? this.amountInput: this.amountInput--;
     },
+    // 播放录音
+    playAudio () {
+      console.log('你点击我了');
+      var ele = this.$refs.audioEle;
+      if (this.isPlaying == false) { // 如果未处在播放状态 则播放
+        console.log('开始播放');
+        this.isPlaying = true;
+        this.$refs.audioEle.play();
+      } else { // 如果处在播放状态 则停止播放
+        console.log('人工结束');
+        this.isPlaying = false;
+        this.$refs.audioEle.pause();
+        this.$refs.audioEle.load();
+      }
+    },
+    // 监听播放结束
+    audioEnd () {
+      // 
+      console.log('结束');
+      this.isPlaying = false;
+    }
   },
   mounted () {
-    // console.log("adfdfdf", $("#m-index").html());
+
   }
 }
 </script>
@@ -701,6 +746,7 @@ export default {
   >img {
     width: 6.4rem!important;
     height: 6.4rem!important;
+    background-color: #9f9f9f;
   }
 
   .info-txt {

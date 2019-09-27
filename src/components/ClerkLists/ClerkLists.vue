@@ -48,7 +48,12 @@
             <p class="desc">{{item.sign}}</p>
             <!-- 播放及价格 -->
             <div class="play-price">
-              <div class='paly-icon playing' @click.stop='doPlay' :data-url="item.audio_url"></div>
+              <!-- <div class='paly-icon playing' @click.stop='doPlay' :data-url="item.audio_url"></div> -->
+              <!-- :class='{"playing": isPlaying}' -->
+              <div class='paly-icon'  @click.stop='playAudio($event)'>
+                <audio :src="item.audio_url" data-isplaying="false" controls="controls" 
+                  @ended='audioEnd($event)' hidden="true"/> 
+              </div>
               <p>{{item.price}}</p>
             </div>
           </div>
@@ -161,7 +166,7 @@ export default {
       return sum.text;
     },
     typeNoToTxt () {
-      var sum = this.typeArr.find(item => item.num == this.defaultCheck.sex);
+      var sum = this.typeArr.find(item => item.num == this.defaultCheck.level);
       return sum.text;
     },
   },
@@ -384,6 +389,38 @@ export default {
       this.allList = [];
       this.getList(this.defaultCheck);
 
+    },
+    // 播放录音
+    // 播放录音
+    playAudio (e) {
+      /*this.$nextTick(() => {
+        var ele = e.target.firstElementChild;
+        console.log('你点击我了',ele.getAttribute("data-isplaying"));
+      })*/
+
+      var ele = e.target.firstElementChild;
+      console.log('你点击我了', ele.getAttribute("data-isplaying"));
+      console.log('你点击我了',ele.getAttribute("data-isplaying"));
+
+      if ( (ele.getAttribute("data-isplaying")) == 'false' ) { // 如果未处在播放状态 则播放
+        console.log('开始播放');
+        $(e.target).addClass('playing');
+        ele.setAttribute("data-isplaying", 'true');
+        ele.play();
+      } else { // 如果处在播放状态 则停止播放
+        console.log('人工结束');
+        ele.setAttribute("data-isplaying", 'false');
+        $(e.target).removeClass('playing');
+        ele.pause();
+        ele.load();
+      }
+    },
+    // 监听播放结束
+    audioEnd (e) {
+      var ele = e.target;
+      console.log('结束');
+      ele.setAttribute("data-isplaying", 'false');
+      $(ele.parentNode).removeClass('playing');
     }
   },
   created () {
@@ -416,7 +453,12 @@ export default {
           console.log(curScrollTop, clientHeight, totalHeight);
           if (curScrollTop + clientHeight + getPxByRem(.5) >= totalHeight && isLoading == false) {
               console.log("提前加载");
-              isLoading = true; // 开关打开
+              // isLoading = true; // 开关打开
+              if (isLoading == false) {
+                isLoading = true;
+              } else {
+                return;
+              }
               loadingEle.style.display = 'block';
 
               // ajax 成功后追加dom 然后执行isLoading = false loadingEle.style.display = 'none'
@@ -445,7 +487,10 @@ export default {
                             // console.log('最新列表为', _this.allList);
 
                             loadingEle.style.display = 'none';
-                            isLoading = false;
+                            // isLoading = false;
+                            setTimeout(function () {
+                                isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 isLoading因为是true 不执行if内语句 起到节流作用
+                            }, 2000);
                           },  
                 error: function(e){  
                              console.log(e);  
@@ -457,7 +502,7 @@ export default {
               clearTimeout(timer);
               var timer = setTimeout(function () {
                   isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 isLoading因为是true 不执行if内语句 起到节流作用
-              }, 1000);
+              }, 2000);
           }          
         });
 
