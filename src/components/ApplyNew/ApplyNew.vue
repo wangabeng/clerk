@@ -758,7 +758,7 @@ export default {
     h3 {
       line-height: 1.5;
       span {
-        color: #d60000;
+        color: #f0ad4e;
         display: inline-flex;
         transform: scale(0.8);     
       }
@@ -1113,7 +1113,7 @@ export default {
     left: 0;
     bottom: 0;
     font-size: .2rem;
-    color: #d60000;
+    color: #f0ad4e;
     box-sizing: border-box;
     padding-left: .1rem;
     transform: scale(.9);

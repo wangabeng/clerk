@@ -90,6 +90,7 @@
         <div class="sum-txt">
           <p class='amount'><span v-if='!curPickYX'>{{clertDetail.salesman.price}}</span><span v-if='curPickYX'>¥{{curPickYX}}元</span></p>
           <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;{{curPickX}};&nbsp;&nbsp;时长&nbsp;{{curPickY}}</p>
+          <p class="check-note" v-if='formCheckFlag && !curPickYX'>请选择服务类型及时长</p>
         </div>
       </div>
       <!-- 选择规格区 -->
@@ -131,9 +132,10 @@
             </div>
           </div>
           <!-- 微信号 -->
-          <div class="weixin-area">
+          <div class="weixin-area form-check">
             <h4>微信号</h4>
-            <input type="text" placeholder="请输入微信号">
+            <input type="text" placeholder="请输入微信号" v-model='wechatNum'>
+            <p class='check-txt' v-if='formCheckFlag && !wechatNum'>请填写您的微信号</p>
           </div>
 
         </div>
@@ -144,7 +146,7 @@
         <p class="total">
           总价：<span v-if='total'>¥{{total}}元</span><span v-if='!total'>-</span>
         </p>
-        <input type="button" value='立即下单'>
+        <input type="button" value='立即下单' @click='orderNow'>
       </div>
     </div>
 
@@ -280,7 +282,12 @@ export default {
           txt: "一个月",
           temp: true,
         }
-      ]
+      ],
+
+      wechatNum: '', // 微信号
+
+      formCheckFlag: false, // 表单提示默认关闭
+
 
 
     };
@@ -487,6 +494,37 @@ export default {
       }
 
     },
+    // 立即下单
+    orderNow () {
+      var _this = this;
+      // 如果微信号为空 提示请输入微信号
+      // 如果没有选择类型和时间 提示请选择服务类型和时间
+      if ( !_this.wechatNum && !_this.curPickYX) {
+        _this.formCheckFlag = true;
+      }
+
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/order",  
+        // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+        data: {
+          salesman_id: _this.$route.params.id, //"\u963f\u8ff8", // 个人的信息  _this.userinfo.nick_name
+          type:  _this.typeArr[_this.picker.x].type,
+          time: _this.timeArr[_this.picker.y].type,
+          num: _this.amountInput,
+          wechat_num: _this.wechatNum,
+        },  
+        headers: {'token': GetStorage("userinfo").token},
+        // dataType: "json",  
+        success: function(res){  
+                    console.log('下单结果为：', res.data);
+                    // 如果下单成功 调用微信支付
+                  },  
+        error: function(e){  
+                     console.log(e);  
+        }  
+      });
+    }
   },
   mounted () {
 
@@ -979,6 +1017,25 @@ export default {
 
   }
 
+}
+
+/* 表单提示 */
+.form-check {
+  position: relative;
+  .check-txt {
+    position: absolute;
+    display: inline-flex;
+    left: 0;
+    bottom: 0;
+    font-size: .2rem;
+    color: #f0ad4e;
+    box-sizing: border-box;
+    padding-left: .1rem;
+    transform: scale(.9);
+  }
+}
+.check-note {
+  color: #f0ad4e;
 }
 </style>
 <!-- @click.stop='doPlay' -->
