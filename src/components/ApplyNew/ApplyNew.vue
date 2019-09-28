@@ -182,7 +182,7 @@
     </div>
   
     <!-- 测试按钮 -->
-    <input type="button" @click='insertOne' value='测试插入数据'>
+    <!-- <input type="button" @click='insertOne' value='测试插入数据'> -->
 
 
 <!--遮罩层 时间选择器-->
@@ -469,7 +469,7 @@ export default {
 
                     // 微信配置
                     wx.config(_this.weixinConfig);
-                    
+
                     /*wx.config({
                       debug: true,
                       "appId":"wxa3c69deeaa1b4948","nonceStr":"7BDmr9cf93H0i8xM","timestamp":1569674579,"signature":"52dd0deb0cce4c596f03a9d5e7fa670631dd68c8",
@@ -552,7 +552,7 @@ export default {
 
           },
           cancel: function () {
-            alert('用户拒绝授权录音');
+            // alert('用户拒绝授权录音');
           }
         });
 
@@ -584,7 +584,7 @@ export default {
             uploadVoice();
           },
           fail: function (res) {
-            alert(JSON.stringify(res));
+            // alert(JSON.stringify(res));
           }
         });
       };
@@ -637,7 +637,7 @@ export default {
       $(document).on("click", "#playAudio", function(){
         _this.ifPlaying = true;
         if (voice.localId == '') {
-          alert('请先使用 startRecord 接口录制一段声音');
+          // alert('请先使用 startRecord 接口录制一段声音');
           return;
         }
         wx.playVoice({
@@ -657,7 +657,7 @@ export default {
       wx.onVoicePlayEnd({
         complete: function (res) {
           _this.ifPlaying = false;
-          alert('录音（' + res.localId + '）播放结束');
+          // alert('录音（' + res.localId + '）播放结束');
         }
       });
 
