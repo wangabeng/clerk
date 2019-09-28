@@ -373,7 +373,7 @@ export default {
       data: {
         salesman_id: _this.$route.params.id, //"\u963f\u8ff8", // 个人的信息  _this.userinfo.nick_name
       },  
-      headers: {'token': GetStorage("userinfo").token},
+      headers: {'token': localStorage.getItem("shiguangshudong")},
       dataType: "json",  
       success: function(res){  
                   console.log('详情为：', res.data);
@@ -514,7 +514,7 @@ export default {
           num: _this.amountInput,
           wechat_num: _this.wechatNum,
         },  
-        headers: {'token': GetStorage("userinfo").token},
+        headers: {'token': localStorage.getItem("shiguangshudong")},
         // dataType: "json",  
         success: function(res){  
                     console.log('下单结果为：', res.data);

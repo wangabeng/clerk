@@ -305,7 +305,7 @@ export default {
           level: defaultCheck.level,
           page: defaultCheck.curPage
         },  
-        headers: {'token': GetStorage("userinfo").token},
+        headers: {'token': localStorage.getItem("shiguangshudong")},
         dataType: "json",  
         success: function(res){  
                     console.log(res.data);
@@ -344,7 +344,7 @@ export default {
          url: "https://www.sgshudong.com/api/get_sign_package",  
          contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
          data: {url: curUrl},  
-         headers: {'token': GetStorage("userinfo").token},
+         headers: {'token': localStorage.getItem("shiguangshudong")},
          dataType: "json",  
          success: function(data){  
                     console.log("成功");  
@@ -479,7 +479,7 @@ export default {
                   level: _this.defaultCheck.level,
                   page: ++_this.defaultCheck.curPage
                 },  
-                headers: {'token': GetStorage("userinfo").token},
+                headers: {'token': localStorage.getItem("shiguangshudong")},
                 dataType: "json",  
                 success: function(res){  
                             console.log(res.data);

@@ -267,7 +267,7 @@ export default {
       firstFlag: true, // 是否是第一次录音
       ifWorking: false, // 是否正在录音
 
-      weixinConfig: {}, // 微信配置
+      weixinConfig: null, // 微信配置
 
       ifPlaying: false, // 是否正在播放
 
@@ -429,12 +429,10 @@ export default {
     // this.getWeixinConfig();
     // 获取微信config
     // 测试layer
-    setTimeout(function () {
-   
-    }, 1000);
 
 
-    //  getSignnature();
+
+    getSignnature();
     // 通过本地存储的token 获取签名
     function getSignnature () {
       var curUrl = window.location.href.split('#')[0];
@@ -444,20 +442,20 @@ export default {
         url: BASEURL + "/get_sign_package",  
         contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
         data: {url: curUrl},  
-        headers: {'token': GetStorage("userinfo").token},
+        headers: {'token': localStorage.getItem("shiguangshudong")},
         dataType: "json",  
         success: function(res){  
                     console.log("成功");  
                     console.log(res.data); // {"appId":"wxa3c69deeaa1b4948","nonceStr":"6ik7gYKkou3YddEa","timestamp":1569467461,"url":"http:\/\/localhost:8080\/","signature":"2b33114b8ab49383092189f69226cf64c0c40336","rawString"
                     // 处理签名
                     // weixinConfig
-                    var {appId, nonceStr, timestamp, signature} = res.data;
+                    // var {appId, nonceStr, timestamp, signature} = res.data;
                     _this.weixinConfig = {
                       'debug': true,
-                      'appId': appId,
-                      'nonceStr': nonceStr,
-                      'timestamp': timestamp,
-                      'signature': signature,
+                      'appId': res.data.appId,
+                      'nonceStr': res.data.nonceStr,
+                      'timestamp': res.data.timestamp,
+                      'signature': res.data.signature,
                       'jsApiList': [
                         'translateVoice',
                         'startRecord',
@@ -485,10 +483,71 @@ export default {
     var _this = this;
     console.log(window.location.href);
 
+
+
+
+
+
+
+    getSignnature();
+    // 通过本地存储的token 获取签名
+    function getSignnature () {
+      var curUrl = window.location.href.split('#')[0];
+
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/get_sign_package",  
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+        data: {url: curUrl},  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",  
+        success: function(res){  
+                    console.log("成功");  
+                    console.log(res.data); // {"appId":"wxa3c69deeaa1b4948","nonceStr":"6ik7gYKkou3YddEa","timestamp":1569467461,"url":"http:\/\/localhost:8080\/","signature":"2b33114b8ab49383092189f69226cf64c0c40336","rawString"
+                    // 处理签名
+                    // weixinConfig
+                    // var {appId, nonceStr, timestamp, signature} = res.data;
+                    _this.weixinConfig = {
+                      'debug': true,
+                      'appId': res.data.appId,
+                      'nonceStr': res.data.nonceStr,
+                      'timestamp': res.data.timestamp,
+                      'signature': res.data.signature,
+                      'jsApiList': [
+                        'translateVoice',
+                        'startRecord',
+                        'stopRecord',
+                        'onRecordEnd',
+                        'playVoice',
+                        'pauseVoice',
+                        'stopVoice',
+                        'uploadVoice',
+                        'downloadVoice'
+                      ]
+                    };
+                    //
+                    console.log('动态配置如下：', _this.weixinConfig, '动态配置结束');
+                  },  
+        error: function(e){  
+                     console.log(e);  
+        }  
+      });      
+    }
+
+    // 获取签名 结束
+
+
+
+
+
+
+
+
+
     // 微信配置
     wx.config({
       debug: true,
-      "appId":"wxa3c69deeaa1b4948","nonceStr":"lRwJQ7bbfsDwXyHC","timestamp":1569510201,"signature":"17f579e594393c8fbb3d39b61e65d0fafabbff79",
+      "appId":"wxa3c69deeaa1b4948","nonceStr":"7BDmr9cf93H0i8xM","timestamp":1569674579,"signature":"52dd0deb0cce4c596f03a9d5e7fa670631dd68c8",
       jsApiList: [
         'translateVoice',
         'startRecord',
@@ -502,7 +561,7 @@ export default {
       ]
     });
 
-    // wx.config(_this.weixinConfig);
+    //wx.config(_this.weixinConfig);
 
     // wx.ready后绑定事件
     wx.ready(function(){
@@ -758,7 +817,7 @@ export default {
     h3 {
       line-height: 1.5;
       span {
-        color: #f0ad4e;
+        color: #d60000;
         display: inline-flex;
         transform: scale(0.8);     
       }
@@ -1113,7 +1172,7 @@ export default {
     left: 0;
     bottom: 0;
     font-size: .2rem;
-    color: #f0ad4e;
+    color: #d60000;
     box-sizing: border-box;
     padding-left: .1rem;
     transform: scale(.9);

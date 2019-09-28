@@ -51,3 +51,21 @@ localStorage.setItem("userinfo", '{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
 https:\/\/www.sgshudong.com\/user_guide\/upload\/pic\/20190925101415th.jpg
 
 https:\/\/www.sgshudong.com\/user_guide\/upload\/pic\/20190925103933th.jpg
+
+
+# 
+localStorage.setItem("shiguangshudong", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ…ruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA/132")
+localStorage.removeItem("shiguangshudong")
+
+
+
+
+code 获取token及用户信息
+{code: 0, msg: "登录成功", count: {,…}, data: []}
+code: 0
+count: {,…}
+avatar_url: "http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJkcRIy499jfgavF3YbbQeH1SCXKcRV4z7jruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA/132"
+nick_name: "阿迸"
+token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8"
+data: []
+msg: "登录成功"
