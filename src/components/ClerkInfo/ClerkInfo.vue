@@ -88,7 +88,7 @@
           @click='closeWin' alt="">
         <div class="pic"><img :src="clertDetail.salesman.image_urls[0]" alt=""></div>
         <div class="sum-txt">
-          <p class='amount'>{{clertDetail.salesman.price}}</p>
+          <p class='amount'><span v-if='!curPickYX'>{{clertDetail.salesman.price}}</span><span v-if='curPickYX'>¥{{curPickYX}}元</span></p>
           <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;{{curPickX}};&nbsp;&nbsp;时长&nbsp;{{curPickY}}</p>
         </div>
       </div>
@@ -124,9 +124,9 @@
           <!-- 购买数量 -->
           <div class="amount-area">
             <h4>购买数量</h4>
-            <div class="amount-wrapper">
+            <div class="amount-wrapper" :class="{'disable': !(picker.x && picker.y)}">
               <a href="javascript:;" @click='plus'><img src="~common/image/minus-icon.png" alt=""></a>
-              <input type="number"  v-model="amountInput">
+              <input type="number"  v-model="amountInput" v-bind:disabled="!(picker.x && picker.y)">
               <a href="javascript:;" @click='add'><img src="~common/image/add-icon.png" alt=""></a>
             </div>
           </div>
@@ -142,7 +142,7 @@
       <!-- 提交按钮区 -->
       <div class="bot-sub">
         <p class="total">
-          总价：<span><!-- {{total}} --></span>{{curPickYX}}
+          总价：<span v-if='total'>¥{{total}}元</span><span v-if='!total'>-</span>
         </p>
         <input type="button" value='立即下单'>
       </div>
@@ -295,9 +295,17 @@ export default {
       }
       return sum;
     }*/
-    curPickYX () { // 根据picker的值生成
+    total () {
+      return this.curPickYX * this.amountInput;
+    },
+    curPickYX () { // 根据picker的值生成 返回单价
       var _this = this;
-      return '您选择' + this.picker.x + ' and ' + this.picker.y ;
+      if (this.picker.x > 0 && this.picker.y > 0) {
+        return `${this.PriceInfoArr[this.picker.y][this.picker.x]}`;
+      } else {
+        return "";
+      }
+      
       // return `选择 服务类型${_this.typeArr[_this.picker.x-1].txt}；服务时长${_this.timeArr[_this.picker.y-1].txt}`;
     },
     curPickX () {
@@ -399,11 +407,16 @@ export default {
     },*/
     // 加库存
     add () {
-      this.amountInput++;
+      if (this.picker.x && this.picker.y) {
+        this.amountInput++;
+      }
     },
     // 减库存
     plus () {
-      this.amountInput == 1? this.amountInput: this.amountInput--;
+      if (this.picker.x && this.picker.y) {
+        this.amountInput == 1? this.amountInput: this.amountInput--;        
+      }
+
     },
     // 播放录音
     playAudio () {
@@ -661,6 +674,9 @@ export default {
           flex-wrap: nowrap;
           align-items: center;
           justify-content: center;
+          &.disable {
+            opacity: .5;
+          }
           a {
             img {
               width: .8rem;
@@ -676,6 +692,7 @@ export default {
             font-size: 0.24rem;
             background-color: #f5f5f5;
             text-align: center;
+
           }
         }
       }
