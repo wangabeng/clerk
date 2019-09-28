@@ -54,7 +54,7 @@ https:\/\/www.sgshudong.com\/user_guide\/upload\/pic\/20190925103933th.jpg
 
 
 # 
-localStorage.setItem("shiguangshudong", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ…ruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA/132")
+localStorage.setItem("shiguangshudong", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8")
 localStorage.removeItem("shiguangshudong")
 
 

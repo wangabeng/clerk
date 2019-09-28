@@ -51,7 +51,7 @@ const router = new Router({
       component: ClerkLists,
       meta: {
         title: '店员列表',
-        requireAuth: true
+        // requireAuth: true
       },
     },
     {
@@ -61,7 +61,7 @@ const router = new Router({
       component: ClerkInfo,
       meta: {
         title: '店员信息',
-        requireAuth: true
+        // requireAuth: true
       },
     },
     {
@@ -70,7 +70,7 @@ const router = new Router({
       component: RandomOrder,
       meta: {
         title: '随机下单',
-        requireAuth: true
+        // requireAuth: true
       },
     },
     {
@@ -79,7 +79,7 @@ const router = new Router({
       component: ApplyNew,
       meta: {
         title: '新店员申请',
-        requireAuth: true
+        // requireAuth: true
       },
     },
     
