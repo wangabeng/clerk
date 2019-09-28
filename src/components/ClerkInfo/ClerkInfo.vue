@@ -105,7 +105,8 @@
           </div> -->
           <div class="type-area type-time">
             <ul class="">
-              <li v-for='(item, index) in typeArr' @click='doPickType(item)'>{{item.txt}}</li>
+              <li v-for='(item, index) in typeArr' @click='doPickType(item)' 
+                :class="{'active': picker.x == item.x, 'disable': !item.temp}">{{item.txt}}</li>
             </ul>            
           </div>
 
@@ -114,7 +115,8 @@
           <div class="long-area type-time">
             <h4>时长</h4>
             <ul>
-              <li v-for='(item, index) in timeArr' @click='doPickTime(item)'>{{item.txt}}</li>
+              <li v-for='(item, index) in timeArr' @click='doPickTime(item)' 
+                :class="{'active': picker.y == item.y && item.temp, 'disable': !item.temp}">{{item.txt}}</li>
             </ul>
           </div>
           <!-- 购买数量 -->
@@ -138,7 +140,7 @@
       <!-- 提交按钮区 -->
       <div class="bot-sub">
         <p class="total">
-          总价：<span>{{total}}</span>
+          总价：<span><!-- {{total}} --></span>
         </p>
         <input type="button" value='立即下单'>
       </div>
@@ -212,10 +214,10 @@ export default {
 
       isPlaying: false, // 音频是否处于播放状态
 
-
+      amountInput: 1, // 默认数量输入框是1
       PriceInfoArr: [], // 详情价格数据 二维数组
       picker: {  // 当前选择器 
-        y: 0,  // 0代表未选择 y代表往下方向 选择时长 语音 or其他
+        y: 0,  // 0代表未选择 y代表往下方向 选择时长 语音 or其他 -1代表 已经选择X情况下对应的Y库存为空
         x: 0, // 0代表未选择 x代表往下方向 选择类型 语音 or其他
       },
 
@@ -223,39 +225,46 @@ export default {
         {
           type: 1,
           x: 1,
-          txt: "文字语音条"
+          txt: "文字语音条",
+          temp: true, // 临时属性 用完就清除
         },
         {
           type: 2,
           x: 2,
-          txt: "语音通话"
+          txt: "语音通话",
+          temp: true,
         }
       ],
       timeArr: [ // 时长方向集合 二位数组一维方向 向下边方向
         {
           type: 1,
           y: 1,
-          txt: "半小时"
+          txt: "半小时",
+          temp: true,
         },
         {
           type: 2,
           y: 2,
-          txt: "一小时"
+          txt: "一小时",
+          temp: true,
         },
         {
           type: 3,
           y: 3,
-          txt: "一天"
-        },
-        {
-          type: 3,
-          y: 3,
-          txt: "一周"
+          txt: "一天",
+          temp: true,
         },
         {
           type: 4,
           y: 4,
-          txt: "一个月"
+          txt: "一周",
+          temp: true,
+        },
+        {
+          type: 5,
+          y: 5,
+          txt: "一个月",
+          temp: true,
         }
       ]
 
@@ -263,7 +272,7 @@ export default {
     };
   },
   computed: {
-    total () {
+    /*total () {
       var sum;
       if (this.xFlag && this.yFlag) {
         sum = parseInt(this.PriceInfoArr[parseInt(this.yIndex)][parseInt(this.xIndex)]) * this.amountInput;
@@ -271,8 +280,18 @@ export default {
         sum = '-';
       }
       return sum;
+    }*/
+    curPickYX () { // 根据picker的值生成
+
     }
 
+  },
+  watch: {
+    picker(val) {
+      if (!val.x && !val.y) { // 如果全未选中
+        console.log('全未选中');
+      }
+    }
   },
   created () {
     var _this = this;
@@ -315,22 +334,21 @@ export default {
       this.maskShow = false;
     },
     // 选择 X轴
-    selectType (xIndex) {
-      // this.xFlag = !this.xFlag;
+    /*selectType (xIndex) {
       this.xFlag = true;
       console.log("选中" + xIndex);
       this.xIndex = xIndex;
 
       console.log(parseInt(this.xIndex));
-    },
+    },*/
     // 选择时长 Y轴
-    selectTime (daysTime) {
+    /*selectTime (daysTime) {
       this.yFlag = true;
       console.log("选中" + daysTime);
       this.yIndex = daysTime;
 
       console.log(parseInt(this.yIndex));
-    },
+    },*/
     // 加库存
     add () {
       this.amountInput++;
@@ -365,16 +383,49 @@ export default {
     // 选择库存
     // x轴
     doPickType (item) {
-      console.log(item);
-      // 1 改变当前picker中X的值
-      // 2 this x-> y1    y2 y3 遍历 查看库存情况 如果有库存 当前y数据就是可选择状态，如果没有库存，当前y就是禁用状态
+      // 先判断当前是否可选 比如已经选择了y 而yx对应的库存数为0 则不可选 return
+      if (!item.temp) { // 已经选择y情况下对应的x库存为空 为true 表示有 空 表示无货 默认为true
+        return;
+      }
 
+      // console.log(item);
+      // 1 改变当前picker中X的值
+      if (this.picker.x == item.x) { // 已经被选中 再次点击 则取消选中
+        this.picker.x = 0; 
+        return;
+      }
+      // 如果不是重复选择 给当前选择器赋新值
+      this.picker.x = item.x; // 如果picker.x == item.x  就处于active状态
+      console.log(this.picker.x);
+      // 2 this x-> y1    y2 y3 遍历 查看库存情况 如果有库存 当前y数据就是可选择状态，如果没有库存，当前y就是禁用状态
+      //  如果y没有被选中
+      for (var  i = 0; i < this.timeArr.length; i++ ) {
+        console.log(this.PriceInfoArr[i][this.picker.x]); // 打印this x -> y1 y2 y3的库存   233 4555 null
+        var XaYx = this.PriceInfoArr[i][this.picker.x]; // 当前价格
+        !!XaYx? this.timeArr[i].temp = true: this.timeArr[i].temp = false; // timeArr[i].temp == false 则为disable状态
+        console.log('分隔符：', this.timeArr[i].temp); 
+      }
       // 3 添加一个计算属性 计算 选择器中 x y是否都被选中 如果被选中了 input就处于激活状态 可以填写数量
       // 4 添加一个计算属性 计算库存数 * 数量的值 O了
     },
     // y轴
     doPickTime (item) {
-      console.log(item);
+      if (!item.temp) { 
+        return;
+      }
+      if (this.picker.y == item.y) { // 已经被选中 再次点击 则取消选中
+        this.picker.y = 0; 
+        return;
+      }
+      // 如果不是重复选择 给当前选择器赋新值
+      this.picker.y = item.y; // 如果picker.x == item.x  就处于active状态
+      for (var  i = 0; i < this.typeArr.length; i++ ) {
+        console.log(this.PriceInfoArr[this.picker.y][i]); // 打印this x -> y1 y2 y3的库存   233 4555 null
+        var XaYx = this.PriceInfoArr[this.picker.y][i]; // 当前价格
+        !!XaYx? this.typeArr[i].temp = true: this.typeArr[i].temp = false; 
+        console.log('分隔符：', this.typeArr[i].temp); 
+      }
+
     },
   },
   mounted () {
@@ -532,6 +583,10 @@ export default {
             &.active {
               background-color: #fdeaec;
               color: #f12d2f;
+            }
+            &.disable {
+              background-color: $color-background-d;
+              opacity: .4;
             }
           }
         }        
