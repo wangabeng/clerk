@@ -982,7 +982,7 @@ export default {
     padding: .2rem 0;
     margin-top: .3rem;
     .place-btn {
-      font-size: .22rem;
+      font-size: .28rem;
       background-color: #ee0d2d;
       color: #fff;
       width: 5.8rem;
