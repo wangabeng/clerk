@@ -1,5 +1,7 @@
 import axios from 'src/api/axios';
 
+import {BASEURL, FRONTEURL, APPID} from "src/api/config.js";
+
 // 获取url特定query 参数 
 export const GetQueryString = function (name) {
   var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
@@ -34,4 +36,16 @@ export const GetSign =  function () {
     console.log(error);
     return '获取不到签名';
   });
+}
+
+// token错误清除本地存储并刷新
+export const TokenError =  function (code, pathName) {
+  if (code = 1004) {
+    //localStorage.removeItem("shiguangshudong");
+    // window.location.reload(); // 刷新页面
+    // 获取当前路由
+    // console.log("当前路由：", pathName);
+    //window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + APPID + '&redirect_uri=http%3A%2F%2F' + FRONTEURL + '%2F%23%2F' + pathName + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+    // return;
+  }
 }

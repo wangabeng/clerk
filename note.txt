@@ -69,3 +69,14 @@ nick_name: "阿迸"
 token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8"
 data: []
 msg: "登录成功"
+
+
+错误处理
+import {GetQueryString, TokenError} from "src/api/utils.js";
+        success: function(res){  
+                    console.log(res.data);
+                    // console.log("当前路由：", this.$route.name);
+                    TokenError(res.code, _this.$route.name); // token错误
+                    _this.allList = res.data;
+                    console.log('最新列表为', _this.allList);
+                  },

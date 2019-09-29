@@ -214,7 +214,7 @@ import {BASEURL} from "src/api/config.js";
 
 
 import getToken from 'src/api/getToken.js';
-import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
+import {GetQueryString, SaveStorage, TokenError} from "src/api/utils.js";
 
 import layer from 'vue-layer'
 import 'vue-layer/lib/vue-layer.css';
@@ -363,8 +363,9 @@ export default {
           async: false,
           contentType: false,
           processData: false,
-          headers: {'token': GetStorage("userinfo").token},
+          headers: {'token': localStorage.getItem("shiguangshudong")},
           success: function (res) {
+            TokenError(res.code, _this.$route.name); // token错误
             console.log(res.data.file);
             _this.uploadArr.push(res.data.file);
           },
@@ -383,37 +384,39 @@ export default {
       this.ifSubmit = true;
       // 如果有表单为空的 
       var _this = this;
-      if (!!this.nick_name && !!this.sex && !!this.birth_year  && !!this.birth_month  && !!this.voice_type && !!this.online_time  && !!this.city_id && !!this.experience  && !!this.game && !!this.wechat_num  && !!this.audio_url  && !!this.types) {
+      if (!!this.nick_name || !!this.sex || !!this.birth_year  || !!this.birth_month  || !!this.voice_type || !!this.online_time  || !!this.city_id || !!this.experience  || !!this.game || !!this.wechat_num  || !!this.audio_url  || !!this.types) {
         // 如果有数据为空 就把警告开关打开
         this.ifSubmit = true;
       }
     },
     // 插入一条数据
     insertOne () {
+      var _this = this;
       $.ajax({
         type: "POST",  
         url: BASEURL + "/apply",  
         contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
         data: {
-          nick_name: 'test23女', // 昵称
-          sex: '2', // 性别
-          birth_year: '1988', // 出生年 计算属性中
-          birth_month: '10', // 出生月 计算属性中
-          voice_type: '温柔型', // 声线类型
-          online_time: '测试', //
-          province_id: '湖北', // 见 data
-          city_id: '长沙', // 见 data
-          specialty: '很多', //
-          experience: '射箭', //
-          game: '游泳', //
-          wechat_num: 'sanfeng', //
-          audio_url: 'https://www.w3school.com.cn/i/horse.ogg', // 上传到服务器中的audio的url地址
-          image_urls: ['http://pic1.sc.chinaz.com/Files/pic/pic9/201909/zzpic20245_s.jpg', 'http://pics.sc.chinaz.com/files/pic/pic9/201909/bpic13704.jpg'].join(), // 见 uploadArr
-          types: [1,2].join(), //
+          nick_name: _this.nick_name, // 昵称
+          sex: _this.sex, // 性别
+          birth_year: _this.birth_year, // 出生年 计算属性中
+          birth_month: _this.birth_month, // 出生月 计算属性中
+          voice_type: _this.voice_type, // 声线类型
+          online_time: _this.online_time, //
+          province_id: _this.province, // 见 data
+          city_id: _this.city, // 见 data
+          specialty: _this.specialty, //
+          experience: _this.experience, //
+          game: _this.game, //
+          wechat_num: _this.wechat_num, //
+          audio_url:  _this.audio_url, // 'https://www.w3school.com.cn/i/horse.ogg', // 上传到服务器中的audio的url地址
+          image_urls: _this.uploadArr.join(), // 见 uploadArr
+          types: _this.types.join(), //
         },  
         headers: {'token': GetStorage("userinfo").token},
         dataType: "json",  
-        success: function(res){  
+        success: function(res){
+                    TokenError(res.code, _this.$route.name); // token错误
                     console.log(res.data); 
                   },  
         error: function(e){  
@@ -442,7 +445,8 @@ export default {
         headers: {'token': localStorage.getItem("shiguangshudong")},
         dataType: "json",  
         success: function(res){  
-                    console.log("成功");  
+                    console.log("成功");
+                    TokenError(res.code, _this.$route.name); // token错误
                     console.log(res.data); // {"appId":"wxa3c69deeaa1b4948","nonceStr":"6ik7gYKkou3YddEa","timestamp":1569467461,"url":"http:\/\/localhost:8080\/","signature":"2b33114b8ab49383092189f69226cf64c0c40336","rawString"
                     // 处理签名
                     // weixinConfig
@@ -598,7 +602,7 @@ export default {
           isShowProgressTips: 1, // 默认为1，显示进度提示
           success: function (res) {
             //把录音在微信服务器上的id（res.serverId）发送到自己的服务器供下载。
-
+            TokenError(res.code, _this.$route.name); // token错误
             console.log("微信录音上传结果：");
             console.log(res);
 

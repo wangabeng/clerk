@@ -173,9 +173,8 @@ import Qs from 'qs';
 import {BASEURL} from "src/api/config.js";
 
 import getToken from 'src/api/getToken.js';
-
 // import {allList} from 'src/api/mockdata.js';
-import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
+import {GetQueryString, TokenError} from "src/api/utils.js";
 
 export default {
   name: 'ClerkInfo',
@@ -374,7 +373,8 @@ export default {
       },  
       headers: {'token': localStorage.getItem("shiguangshudong")},
       dataType: "json",  
-      success: function(res){  
+      success: function(res){
+                  TokenError(res.code, _this.$route.name); // token错误
                   console.log('详情为：', res.data);
                   _this.clertDetail = res.data;
                   _this.PriceInfoArr = _this.clertDetail.service_price;
@@ -518,6 +518,7 @@ export default {
         headers: {'token': localStorage.getItem("shiguangshudong")},
         // dataType: "json",  
         success: function(res){  
+                    TokenError(res.code, _this.$route.name); // token错误
                     console.log('下单结果为：', res.data);
                     // 如果下单成功 调用微信支付
                     _this.$layer.alert("恭喜 下单成功！");
@@ -552,7 +553,7 @@ export default {
   padding: .2rem 0;
   border-top: $border-1px;
   .place-btn {
-    font-size: .22rem;
+    font-size: .28rem;
     background-color: #ee0d2d;
     color: #fff;
     width: 5.8rem;
@@ -778,6 +779,7 @@ export default {
     input {
       display: inline-flex;
       padding: .1rem .3rem;
+      font-size: .26rem;
       border-radius: .05rem;
       background-color: #f12d2f;
       color: #fff;

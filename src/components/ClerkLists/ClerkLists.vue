@@ -118,7 +118,7 @@ import {BASEURL} from "src/api/config.js";
 import getToken from 'src/api/getToken.js';
 
 // import {allList} from 'src/api/mockdata.js';
-import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
+import {GetQueryString, TokenError} from "src/api/utils.js";
 
 
 // import InfiniteLoading from 'vue-infinite-loading';
@@ -156,7 +156,7 @@ export default {
       searchTxt: '', // 搜索框用户
 
       // 个人的token及其他个人信息
-      userinfo: {"code":0,"msg":"\u767b\u5f55\u6210\u529f","count":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8","nick_name":"\u963f\u8ff8","avatar_url":"http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTJkcRIy499jfgavF3YbbQeH1SCXKcRV4z7jruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA\/132"},"data":[]}
+      /*userinfo: {"code":0,"msg":"\u767b\u5f55\u6210\u529f","count":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8","nick_name":"\u963f\u8ff8","avatar_url":"http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTJkcRIy499jfgavF3YbbQeH1SCXKcRV4z7jruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA\/132"},"data":[]}*/
 
     };
   },
@@ -309,6 +309,8 @@ export default {
         dataType: "json",  
         success: function(res){  
                     console.log(res.data);
+                    // console.log("当前路由：", this.$route.name);
+                    TokenError(res.code, _this.$route.name); // token错误
                     _this.allList = res.data;
                     console.log('最新列表为', _this.allList);
                   },  
@@ -429,6 +431,8 @@ export default {
 
     // 默认读取所有20个数据 ajax请求 this.getList (sex, level, page)
     this.getList(this.defaultCheck);
+    // 获取当前路由的
+
 
   },
   /*mounted () {
@@ -483,6 +487,8 @@ export default {
                 dataType: "json",  
                 success: function(res){  
                             console.log(res.data);
+                            TokenError(res.code);
+
                             _this.allList = _this.allList.concat(res.data);
                             // console.log('最新列表为', _this.allList);
 
@@ -574,8 +580,8 @@ export default {
   a {
     background-color: #f02b32;
     color: #fff;
-    font-size: .22rem;
-    padding: .05rem .1rem;
+    font-size: .24rem;
+    padding: .1rem .15rem;
     border-radius: .05rem;
   }
 }
