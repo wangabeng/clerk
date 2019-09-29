@@ -176,7 +176,6 @@ import getToken from 'src/api/getToken.js';
 
 // import {allList} from 'src/api/mockdata.js';
 import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
-import {clertDetail} from 'src/api/mockdata.js';
 
 export default {
   name: 'ClerkInfo',

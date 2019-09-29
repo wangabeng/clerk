@@ -16,7 +16,6 @@
         <input type="radio" name='gender' id='famale' value='2' v-model='sex'>
       </label>
     </div>
-    {{sex}}
     <!-- 选择等级 -->
     <div class="each-option-aera">
       <h3 class='form-check'>
@@ -37,7 +36,6 @@
         <input type="radio" name='level' id='zhendian' value='3' v-model='level'>
       </label>
     </div>
-    {{level}}
     <!-- 选择标签 -->
     <div class="each-option-aera">
       <h3>
@@ -57,14 +55,12 @@
         <input type="checkbox" name='tag' id='erciyuan' value='二次元' v-model="fantag">
       </label>
     </div>
-    {{fantag}}
 
     <!-- 其它要求 -->
     <div class="other-demand">
       <span>其它要求</span>
       <textarea name="" id="" placeholder="如有其它要求，请在此填写" v-model='otherDemand'></textarea>
     </div>
-    {{otherDemand}}
 
     <!-- 下单 -->
     <div class="fixed-place-now">
@@ -74,20 +70,20 @@
 
 
     <!-- 遮罩层 -->
-    <div class="mask-info-random"  :class="{'open': maskShow}"  
+    <div class="mask-info-random"  :class="{'open': maskShow}" @click='closeWin'
       ></div>
 
     <!-- 购买弹出窗 -->
-    <div class="order-window-random" >
+    <div class="order-window-random" :class="{'open': maskShow}">
       <!-- 主图及选择规格 -->
       <div class="top-info">
         <img class='close-icon' src="~common/image/close-icon.png" 
-          alt="">
-        <div class="pic"><img  alt=""></div>
+          @click='closeWin' alt="">
+        <div class="pic"><img  src="~common/image/question.png" alt=""></div>
         <div class="sum-txt">
-          <p class='amount'><span>¥元</span></p>
-          <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;;&nbsp;&nbsp;时长&nbsp;</p>
-          <p class="check-note" >请选择服务类型及时长</p>
+          <p class='amount'>¥<span v-if='curPrice'>{{curPrice}}</span><span v-if='!curPrice'>-</span>元</p>
+          <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;<span>{{typeList[CurTypeIndex]}}</span>;&nbsp;&nbsp;时长&nbsp;{{timeList[curTimeIndex]&&timeList[curTimeIndex].time}}</p>
+          <p class="check-note" v-if='curTimeIndex==-1&&ifPlace'>请选择服务时长</p>
         </div>
       </div>
       <!-- 选择规格区 -->
@@ -95,15 +91,10 @@
         <!-- 滚动区 -->
         <div class="select-inner">
           <!-- 类型区 -->
-          <!-- <div class="type-area type-time">
-            <ul class="">
-              <li :class="{'active': xIndex =='1'}" @click="selectType('1')">文字语音条</li>
-              <li :class="{'active': xIndex =='2'}" @click="selectType('2')">语音通话</li>
-            </ul>            
-          </div> -->
           <div class="type-area type-time">
-            <ul class="">
-              <li >2332323</li>
+            <ul v-if = 'typeList'>
+              <li v-for='(item, index) in typeList' 
+                :class="{'active': CurTypeIndex ==index}" @click='tabType(item, index)'>{{item}}</li>
             </ul>            
           </div>
 
@@ -112,23 +103,24 @@
           <div class="long-area type-time">
             <h4>时长</h4>
             <ul>
-              <li >34324343</li>
+              <li v-if='timeList && item.time' v-for='(item, index) in timeList'  
+                :class="{'active': curTimeIndex ==index}" @click='tabTime(item, index)'>{{item.time}}</li>
             </ul>
           </div>
           <!-- 购买数量 -->
           <div class="amount-area">
             <h4>购买数量</h4>
             <div class="amount-wrapper" >
-              <a href="javascript:;"><img src="~common/image/minus-icon.png" alt=""></a>
-              <input type="number"  >
-              <a href="javascript:;" ><img src="~common/image/add-icon.png" alt=""></a>
+              <a href="javascript:;"><img src="~common/image/minus-icon.png" alt="" @click='plus'></a>
+              <input type="number" v-model='amountInput'>
+              <a href="javascript:;" ><img src="~common/image/add-icon.png" alt="" @click='add'></a>
             </div>
           </div>
           <!-- 微信号 -->
           <div class="weixin-area form-check">
             <h4>微信号</h4>
-            <input type="text" placeholder="请输入微信号">
-            <p class='check-txt' >请填写您的微信号</p>
+            <input type="text" placeholder="请输入微信号" v-model='weixinnumber'>
+            <p class='check-txt' v-if='ifPlace&&!weixinnumber'>请填写您的微信号</p>
           </div>
 
         </div>
@@ -137,9 +129,9 @@
       <!-- 提交按钮区 -->
       <div class="bot-sub">
         <p class="total">
-          总价：<span >¥1000元</span><span>-</span>
+          总价：<span v-if='curPrice'>¥{{curPrice * amountInput}}元</span><span v-if='!curPrice'>-</span>
         </p>
-        <input type="button" value='立即下单'>
+        <input type="button" value='立即下单' @click='placeOrder'>
       </div>
     </div>
 
@@ -156,6 +148,8 @@
 // import {mapGetters, mapActions} from 'vuex'
 import $ from 'jquery'
 
+import {BASEURL} from "src/api/config.js";
+
 // layer
 
 
@@ -170,21 +164,202 @@ export default {
 
       maskShow: false, // 蒙层显示隐藏
       ifSubmit: false, // 提交flag 一旦提交 就执行表单验证
+
+      typeList: [], // 根据level获取的服务类型集合
+      CurTypeIndex: 0, // 默认当前type 处于激活状态的索引值 默认是1 接单类型 1文字语音条 2语音通话 3游戏陪玩 4连麦哄睡（多种类型用逗号,连接）（必填）
+      CurTypeValue: '', // 值
+
+      
+      timeList: [], // 当前时长列表 动态改变
+      curTimeIndex: -1, // 当前type确定后的所有时长
+
+      amountInput: 1, // 默认数量输入框是1
+      curPrice: '', // 当前组合价格
+
+      ifPlace: false, // 如果提交正式下单
+      weixinnumber: '', // 微信号
     }
   },
   methods: {
+    // 弹出窗
     orderIn () {
-      // this.maskShow = true;
-      this.ifSubmit = true;
-      // 如果有表单为空的 
       var _this = this;
-      if (!!this.sex && !!this.level) {
-        // 如果有数据为空 就把警告开关打开
+      // 如果有表单为空的 
+      if (!this.sex || !this.level) {
+        // 如果数据为空 就把警告开关打开
         this.ifSubmit = true;
-      } else {
+      } else { // 如果有数据
         // 打开弹窗
+        console.log('tacnhuang');
+        _this.maskShow = true;
+
+        // 查询根据level获取type 然后根据type获取时长
+        $.ajax({
+          type: "POST",  
+          url: BASEURL + "/get_types",  // 接口15 根据level 获取服务等级  "文字语音条"  "语音通话"
+          // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+          data: {
+            level: _this.level,
+          },  
+          headers: {'token': localStorage.getItem("shiguangshudong")},
+          dataType: "json",  
+          success: function(res){  
+            console.log('type为：', res.data); // 0: "文字语音条" 1: "语音通话"
+            _this.typeList = res.data;
+
+            // 默认激活状态的type 索引值
+            console.log("默认激活状态的type", _this.CurTypeIndex);
+            _this.findTimeByType(_this.typeList[0]); // 默认查询第一个
+            // 遍历0: "文字语音条" 1: "语音通话" 查询对应的 时长 存起来
+            // _this.typeList -> [{'文字语音条'：[{time: "半小时"}, {time: ""}] }]
+
+          },  
+          error: function(e){  
+           console.log(e);  
+          }  
+        });
+
       }
     },
+    // 关闭弹窗
+    closeWin () {
+      var _this = this;
+      this.maskShow = false;
+      // 重置所有
+      _this.typeList = [];
+      _this.CurTypeIndex = 0; // 恢复默认
+      _this.timeList = [];
+      _this.curTimeIndex = -1; // 默认
+      _this.curPrice = '';
+    },
+    // 根据type查询 时长 typeIndex -> timeList
+    findTimeByType (typeIndex) {
+        var _this = this;
+        $.ajax({
+          type: "POST",  
+          url: BASEURL + "/get_time",  // 接口13 根据服务类型  "文字语音条"  "语音通话" -> 获取时长
+          dataType: "json",  
+          data: {
+            /*level: _this.level, 
+            type: i+1, */
+            level: _this.level, 
+            // type: typeIndex, 
+            type: typeIndex, 
+          },  
+          headers: {'token': localStorage.getItem("shiguangshudong")},
+          dataType: "json",   
+          success: function(res){  
+                      // console.log('根据服务类型  "文字语音条"  "语音通话" -> 获取时长:' + typeArr[i] , res.data); 
+                      console.log('根据服务类型  "文字语音条"  "语音通话" -> 获取时长:', res.data); 
+                      // 设置typeTimeArr的值 暂时先定死
+                      _this.timeList = res.data;
+                    },  
+          error: function(e){  
+                       console.log(e);  
+          }  
+        }); 
+    },
+    // 切换服务类型 type
+    tabType (item, index) {
+      var _this = this;
+      // 1 切换样式 当前type的激活状态 如果当前点击的index和CurTypeIndex一致 就什么也不做
+      if (index == this.CurTypeIndex) {
+        console.log("没变化");
+        return;
+      } else {
+        this.CurTypeIndex = index;
+        // 2 重新查询 当前type对应的time
+        _this.findTimeByType(item);
+        // 3 重新设置时长 未空
+        _this.curTimeIndex = -1;
+        // 4 重新设置价格未空
+        _this.curPrice = '';
+      }
+    },
+    // 切换时长
+    tabTime(item, index) {
+      var _this = this;
+      // 如果index未改变 
+      if (index == this.curTimeIndex) {
+        console.log("没变化");
+        return;
+      } else {
+        this.curTimeIndex = index;
+        // 查询价格
+        _this.findPrice();
+      }
+    },
+    // 加库存
+    add () {
+      this.amountInput++;
+    },
+    // 减库存
+    plus () {
+      this.amountInput == 1? this.amountInput: this.amountInput--;        
+    },
+    // 查询价格
+    findPrice () {
+        var _this = this;
+        // console.log('这是什么:', _this.timeList[_this.curTimeIndex - 1]);
+        $.ajax({
+          type: "POST",  
+          url: BASEURL + "/get_price",  // 接口10
+          dataType: "json",  
+          data: {
+            level: _this.level, 
+            type: _this.typeList[_this.CurTypeIndex], 
+            time: _this.timeList[_this.curTimeIndex].time,
+            /*type: '文字语音条', 
+            time: '半小时',*/
+            num: _this.amountInput,
+          },  
+          headers: {'token': localStorage.getItem("shiguangshudong")},
+          dataType: "json",   
+          success: function(res){  
+                      console.log('查询到的价格为:', res.data);
+                      _this.curPrice = res.data.price;
+                    },  
+          error: function(e){  
+                       console.log(e);  
+          }  
+        }); 
+    },
+    // 正式下单
+    placeOrder () {
+      var _this = this;
+
+      this.ifPlace = true; // 开关打开 开始验证 并提交
+
+      // 如果微信号和类型为空 无法提交
+      if (!this.weixinnumber && !this.curPrice) {
+        return;
+      }
+      console.log("执行ajax");
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/random_order",  // 接口11
+        dataType: "json",  
+        data: {
+          sex: _this.sex,
+          level: _this.level,
+          label: _this.fantag.join(''),
+          other_require: _this.otherDemand,
+          type: _this.typeList[_this.CurTypeIndex], 
+          time: _this.timeList[_this.curTimeIndex].time,
+          num: _this.amountInput,
+          wechat_num: _this.weixinnumber,
+        },  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",   
+        success: function(res){  
+                    console.log('下单结果:', res.data);
+                  },  
+        error: function(e){  
+                     console.log(e);  
+        }  
+      }); 
+
+    }
   },
   mounted () {
 
@@ -299,7 +474,7 @@ export default {
 /* 遮罩层 */
 .mask-info-random {
   position: fixed;
-  // display: none;
+  display: none;
   z-index: 10001;
   width: 100%;
   height: 100%;
@@ -330,12 +505,12 @@ export default {
   border-top-right-radius: .1rem;
   // display: none;
 
-  /*transform: translateY(100%);
+  transform: translateY(100%);
   transition: all 500ms ease-in-out;
 
   &.open {
     transform: translateY(0);
-  }*/
+  }
 
   .top-info {
     height: 2.5rem;
