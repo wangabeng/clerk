@@ -134,18 +134,12 @@ router.beforeEach((to, from, next) => {
         console.log( "token:", GetStorage("userinfo").token );*/
         console.log('response.data是：',response.data);
 
-        if (response.data.count.token) {
-          localStorage.setItem("shiguangshudong", response.data.count.token);
-          console.log("进入code页面 跳转前");
-          next(false);
-          window.location.href = 'http://' + FRONTEURL + '/#' + to.name;
-          console.log("进入code页面 跳转后");
-          return false;
-        } else {
-          next();
-        }
-        
+        localStorage.setItem("shiguangshudong", response.data.count.token);
 
+        window.location.href = 'http://' + FRONTEURL + '/#' + to.name;
+        next();
+        //next('/' + to.name);
+        return false;
       }).catch(function (error) {
         console.log("请求不到用户信息");
         // window.location.href = 'www.baidu.com';
@@ -161,15 +155,11 @@ router.beforeEach((to, from, next) => {
       window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + APPID + '&redirect_uri=http%3A%2F%2F' + FRONTEURL + '%2F%23%2F' + to.name + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
       next();
       return false;
-    } else {
-      next();
     }
 
-  } else {
-    next();
   }
 
-  
+  next();
   
 })
 

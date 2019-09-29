@@ -483,6 +483,7 @@ export default {
                   level: _this.defaultCheck.level,
                   page: ++_this.defaultCheck.curPage
                 },  
+                // headers: {'token': localStorage.getItem("shiguangshudong")},
                 headers: {'token': localStorage.getItem("shiguangshudong")},
                 dataType: "json",  
                 success: function(res){  
