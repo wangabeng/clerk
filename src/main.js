@@ -14,6 +14,8 @@ import AwesomePicker from 'vue-awesome-picker'
 Vue.use(AwesomePicker)
 
 // layer
+import layer from 'vue-layer'
+Vue.prototype.$layer = layer(Vue);
 
 
 Vue.config.productionTip = false

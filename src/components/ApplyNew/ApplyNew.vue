@@ -210,7 +210,7 @@ import {GetSign} from "src/api/utils.js";
 // 用封装好的axios
 import axios from 'src/api/axios';
 import Qs from 'qs';
-import {BASEURL, WEIXINCERTI} from "src/api/config.js";
+import {BASEURL} from "src/api/config.js";
 
 
 import getToken from 'src/api/getToken.js';
@@ -1020,7 +1020,7 @@ export default {
   left: 0;
   bottom: 0;
   width: 100%;
-  z-index: 200001;
+  z-index: 201;
   background-color: #fff;
 }
 
@@ -1070,7 +1070,7 @@ export default {
   width: 100%;
   height: 100%;
   position: fixed;
-  z-index: 200000;
+  z-index: 200;
   left: 0;
   top: 0;
   right: 0;

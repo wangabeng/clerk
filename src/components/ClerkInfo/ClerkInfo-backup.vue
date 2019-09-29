@@ -163,7 +163,7 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper'
 // 用封装好的axios
 import axios from 'src/api/axios';
 import Qs from 'qs';
-import {BASEURL, WEIXINCERTI} from "src/api/config.js";
+import {BASEURL} from "src/api/config.js";
 
 import getToken from 'src/api/getToken.js';
 
@@ -327,7 +327,7 @@ export default {
 .fixed-place-now {
   width: 100%;
   position: fixed;
-  z-index: 10000;
+  z-index: 100;
   left: 0;
   bottom: 0;
   display: flex;
@@ -349,7 +349,7 @@ export default {
 .mask-info {
   position: fixed;
   display: none;
-  z-index: 10001;
+  z-index: 101;
   width: 100%;
   height: 100%;
   left: 0;
@@ -366,7 +366,7 @@ export default {
 .order-window {
   width: 100%;
   position: fixed;
-  z-index: 10002;
+  z-index: 102;
   left: 0;
   bottom: 0;
   display: flex;

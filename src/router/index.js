@@ -9,7 +9,7 @@ import RandomOrder from '@/components/RandomOrder/RandomOrder'
 import ApplyNew from '@/components/ApplyNew/ApplyNew'
 
 
-import {BASEURL, WEIXINCERTI, genWeixinDirect} from "src/api/config.js";
+import {BASEURL, FRONTEURL, APPID} from "src/api/config.js";
 // import Index from '@/components/Index/Index'
 
 import {GetQueryString, SaveStorage, GetStorage} from "src/api/utils.js";
@@ -51,7 +51,7 @@ const router = new Router({
       component: ClerkLists,
       meta: {
         title: '店员列表',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     {
@@ -61,7 +61,7 @@ const router = new Router({
       component: ClerkInfo,
       meta: {
         title: '店员信息',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     {
@@ -70,7 +70,7 @@ const router = new Router({
       component: RandomOrder,
       meta: {
         title: '随机下单',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     {
@@ -79,7 +79,7 @@ const router = new Router({
       component: ApplyNew,
       meta: {
         title: '新店员申请',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     
@@ -136,7 +136,7 @@ router.beforeEach((to, from, next) => {
 
         localStorage.setItem("shiguangshudong", response.data.count.token);
 
-        window.location.href = 'http://nicedevelop.nat300.top/' + to.name;
+        window.location.href = 'http://' + FRONTEURL + '/#' + to.name;
         next();
         //next('/' + to.name);
         return false;
@@ -150,8 +150,9 @@ router.beforeEach((to, from, next) => {
     }else if (!localStorage.getItem("shiguangshudong")) {
       console.log("需要权限 没有userinfo信息 需要跳转");
       // 跳转到微信验证页
-      // window.location.href = genWeixinDirect(to.name);
-      window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa3c69deeaa1b4948&redirect_uri=http%3A%2F%2Fnicedevelop.nat300.top%2F%23%2F' + to.name + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+      // FRONTEURL
+      // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa3c69deeaa1b4948&redirect_uri=http%3A%2F%2Fnicedevelop.nat300.top%2F%23%2F' + to.name + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+      window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + APPID + '&redirect_uri=http%3A%2F%2F' + FRONTEURL + '%2F%23%2F' + to.name + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
       next();
       return false;
     }

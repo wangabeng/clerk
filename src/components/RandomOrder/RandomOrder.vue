@@ -82,7 +82,9 @@
         <div class="pic"><img  src="~common/image/question.png" alt=""></div>
         <div class="sum-txt">
           <p class='amount'>¥<span v-if='curPrice'>{{curPrice}}</span><span v-if='!curPrice'>-</span>元</p>
-          <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;<span>{{typeList[CurTypeIndex]}}</span>;&nbsp;&nbsp;时长&nbsp;{{timeList[curTimeIndex]&&timeList[curTimeIndex].time}}</p>
+          <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;<span>{{typeList[CurTypeIndex]}}</span>;&nbsp;&nbsp;时长&nbsp;
+            <span v-if='timeList[curTimeIndex]'>{{timeList[curTimeIndex]&&timeList[curTimeIndex].time}}</span>
+          </p>
           <p class="check-note" v-if='curTimeIndex==-1&&ifPlace'>请选择服务时长</p>
         </div>
       </div>
@@ -331,7 +333,7 @@ export default {
       this.ifPlace = true; // 开关打开 开始验证 并提交
 
       // 如果微信号和类型为空 无法提交
-      if (!this.weixinnumber && !this.curPrice) {
+      if (!this.weixinnumber || !this.curPrice) {
         return;
       }
       console.log("执行ajax");
@@ -353,6 +355,7 @@ export default {
         dataType: "json",   
         success: function(res){  
                     console.log('下单结果:', res.data);
+                    _this.$layer.alert("恭喜 下单成功！");
                   },  
         error: function(e){  
                      console.log(e);  
@@ -365,7 +368,7 @@ export default {
 
   },
   created () {
-
+    // this.$layer.alert("找不到对象！");
   },
 }
 </script>
@@ -377,7 +380,7 @@ export default {
 .fixed-place-now {
   width: 100%;
   position: fixed;
-  z-index: 10000;
+  z-index: 100;
   left: 0;
   bottom: 0;
   display: flex;
@@ -475,7 +478,7 @@ export default {
 .mask-info-random {
   position: fixed;
   display: none;
-  z-index: 10001;
+  z-index: 101;
   width: 100%;
   height: 100%;
   left: 0;
@@ -492,7 +495,7 @@ export default {
 .order-window-random {
   width: 100%;
   position: fixed;
-  z-index: 10002;
+  z-index: 102;
   left: 0;
   bottom: 0;
   display: flex;

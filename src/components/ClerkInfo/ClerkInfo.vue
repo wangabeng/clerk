@@ -170,7 +170,7 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper'
 // 用封装好的axios
 import axios from 'src/api/axios';
 import Qs from 'qs';
-import {BASEURL, WEIXINCERTI} from "src/api/config.js";
+import {BASEURL} from "src/api/config.js";
 
 import getToken from 'src/api/getToken.js';
 
@@ -498,9 +498,11 @@ export default {
       var _this = this;
       // 如果微信号为空 提示请输入微信号
       // 如果没有选择类型和时间 提示请选择服务类型和时间
-      if ( !_this.wechatNum && !_this.curPickYX) {
+      if ( !_this.wechatNum || !_this.curPickYX) {
         _this.formCheckFlag = true;
+        return;
       }
+
 
       $.ajax({
         type: "POST",  
@@ -518,6 +520,7 @@ export default {
         success: function(res){  
                     console.log('下单结果为：', res.data);
                     // 如果下单成功 调用微信支付
+                    _this.$layer.alert("恭喜 下单成功！");
                   },  
         error: function(e){  
                      console.log(e);  
@@ -539,7 +542,7 @@ export default {
 .fixed-place-now {
   width: 100%;
   position: fixed;
-  z-index: 10000;
+  z-index: 100;
   left: 0;
   bottom: 0;
   display: flex;
@@ -561,7 +564,7 @@ export default {
 .mask-info {
   position: fixed;
   display: none;
-  z-index: 10001;
+  z-index: 101;
   width: 100%;
   height: 100%;
   left: 0;
@@ -578,7 +581,7 @@ export default {
 .order-window {
   width: 100%;
   position: fixed;
-  z-index: 10002;
+  z-index: 102;
   left: 0;
   bottom: 0;
   display: flex;

@@ -113,7 +113,7 @@ import wx from 'weixin-js-sdk'
 // 用封装好的axios
 import axios from 'src/api/axios';
 import Qs from 'qs';
-import {BASEURL, WEIXINCERTI} from "src/api/config.js";
+import {BASEURL} from "src/api/config.js";
 
 import getToken from 'src/api/getToken.js';
 
@@ -226,7 +226,7 @@ export default {
     // 1 跳转到微信验证页 微信页
     weixinOpen () {
       // 测试打开微信验证
-      window.location.href = WEIXINCERTI;
+      
     },
     // 2 测试发送code获取token
     sendCode () {
@@ -570,7 +570,7 @@ export default {
   position: fixed;
   right: .2rem;
   bottom: .4rem;
-  z-index: 9999;
+  z-index: 100;
   a {
     background-color: #f02b32;
     color: #fff;
@@ -811,7 +811,7 @@ export default {
 .mask-fixed {
   position: fixed;
   display: none;
-  z-index: 10000;
+  z-index: 101;
   width: 100%;
   height: 100%;
   background-color: black;
@@ -823,7 +823,7 @@ export default {
 /* 选择器 */
 .picker-container {
   position: fixed;
-  z-index: 10001;
+  z-index: 102;
   width: 100%;
   left: 0;
   bottom: 0;
