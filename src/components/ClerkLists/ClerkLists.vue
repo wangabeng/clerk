@@ -310,7 +310,15 @@ export default {
         success: function(res){  
                     console.log(res.data);
                     // console.log("当前路由：", this.$route.name);
-                    TokenError(res.code, _this.$route.name); // token错误
+                    // TokenError(res.code, _this.$route.name); // token错误
+                    // _this.$router.go(0);
+                    if (res.code == 1004) {
+                      localStorage.removeItem("shiguangshudong");
+                      setTimeout(function () {
+                        _this.$router.go(0);
+                      }, 100);
+                    }
+
                     _this.allList = res.data;
                     console.log('最新列表为', _this.allList);
                   },  

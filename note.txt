@@ -80,3 +80,9 @@ import {GetQueryString, TokenError} from "src/api/utils.js";
                     _this.allList = res.data;
                     console.log('最新列表为', _this.allList);
                   },
+
+
+微信重定向
+https://open.weixin.qq.com/connect/oauth2/authorize?appidwxa3c69deeaa1b4948&redirect_uri=http%3A%2F%2Fnicedevelop.nat300.top%2F%23%2FClerkInfo&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+
+

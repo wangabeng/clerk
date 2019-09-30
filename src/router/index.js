@@ -105,7 +105,7 @@ const router = new Router({
 // 路由卫士 鉴权 获取和设置用户token及userInfo信息
 router.beforeEach((to, from, next) => {
   var storage = window.localStorage;
-  console.log('to:', to.name, '获取item:' + GetStorage('userinfo')); // to.name == 'ClerkLists' 
+  console.log('to:', to.name, 'from:',from.name); // to.name == 'ClerkLists' 
   
   // 设置路由页面的title
   if (to.meta.title) {
@@ -119,7 +119,8 @@ router.beforeEach((to, from, next) => {
 
     // 1 如果当前页面 是微信跳转过来的页面 就执行获取code 发送验证请求
     if (GetQueryString("code")) {
-      
+      console.log('获取到code分支');
+
       // 发送ajax请求 携带code 去服务器验证
       var prarmData = {
         code: GetQueryString("code")
@@ -137,11 +138,12 @@ router.beforeEach((to, from, next) => {
         if (response.data.count.token) {
           localStorage.setItem("shiguangshudong", response.data.count.token);
           console.log("进入code页面 跳转前");
-          next(false);
+          // next(false);
           window.location.href = 'http://' + FRONTEURL + '/#' + to.name;
           console.log("进入code页面 跳转后");
           return false;
         } else {
+          console.log("token获取错误");
           next();
         }
         
@@ -154,7 +156,7 @@ router.beforeEach((to, from, next) => {
       });
     // 第2种情况 页面不带code 就判断是否已经有用户信息并且是否有token信息
     }else if (!localStorage.getItem("shiguangshudong")) {
-      console.log("需要权限 没有userinfo信息 需要跳转");
+      console.log("需要权限 没有token信息 需要跳转");
       // 跳转到微信验证页
       // FRONTEURL
       // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa3c69deeaa1b4948&redirect_uri=http%3A%2F%2Fnicedevelop.nat300.top%2F%23%2F' + to.name + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
@@ -166,6 +168,7 @@ router.beforeEach((to, from, next) => {
     }
 
   } else {
+    console.log("不需要权限 什么都没做");
     next();
   }
 
