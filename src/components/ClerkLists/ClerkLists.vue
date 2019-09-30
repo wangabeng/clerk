@@ -62,10 +62,11 @@
       </li>
     </ul>
 
-    <p class="no-record" v-if='allList.length==0'><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span>暂无记录</span></p>
+    <p class="no-record" v-if='allList.length==0 && !isLoading'><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span>暂无记录</span></p>
     
     <!-- SVG动画加载更多 -->
-    <p style="display: none;width: 100%;text-align: center;" ref='loadingTxt' id='loading-txt'><img style='width:2rem;height:.5rem;display: inline-block;' src="./loading.svg" alt=""></p>
+    <p style="width: 100%;text-align: center;" ref='loadingTxt' id='loading-txt'><img style='width:2rem;height:.5rem;display: inline-block;' src="./loading.svg" 
+      v-if='isLoading' alt=""></p>
     
     <!-- 遮罩层 -->
     <div class="mask-fixed" :class="{'open': maskShow}" 
@@ -156,6 +157,8 @@ export default {
       searchTxt: '', // 搜索框用户
 
       bindEvent: null, // document绑定的事件
+
+      isLoading: false, // 是否正在加载
 
       // 个人的token及其他个人信息
       /*userinfo: {"code":0,"msg":"\u767b\u5f55\u6210\u529f","count":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8","nick_name":"\u963f\u8ff8","avatar_url":"http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTJkcRIy499jfgavF3YbbQeH1SCXKcRV4z7jruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA\/132"},"data":[]}*/
@@ -296,6 +299,7 @@ export default {
     // 获取店员列表
     getList (defaultCheck) {
       var _this = this;
+      _this.isLoading = true;
 
       $.ajax({
         type: "POST",  
@@ -320,10 +324,13 @@ export default {
                     }*/
 
                     _this.allList = res.data;
+
+                    _this.isLoading = false;
                     console.log('最新列表为', _this.allList);
                   },  
         error: function(e){  
                      console.log(e);  
+                     _this.isLoading = false;
         }  
       });
     },
@@ -457,7 +464,7 @@ export default {
     console.log(loadingEle);
     console.log(_this.$nextTick);
     // var ulContent = document.querySelector('.content_wrapper');
-    var isLoading = false; // 只有为false 才可以执行刷新
+    // var isLoading = false; // 只有为false 才可以执行刷新
 
     this.bindEvent = function () {
       _this.$nextTick(function () {
@@ -465,24 +472,23 @@ export default {
         var clientHeight = getClientHeight();
         var totalHeight = getScrollHeight();
         console.log(curScrollTop, clientHeight, totalHeight);
-        if (curScrollTop + clientHeight + getPxByRem(.5) >= totalHeight && isLoading == false) {
+        if (curScrollTop + clientHeight + getPxByRem(.5) >= totalHeight && _this.isLoading == false) {
             console.log("提前加载");
-            // isLoading = true; // 开关打开
-            if (isLoading == false) {
-              isLoading = true;
+            if (_this.isLoading == false) {
+              _this.isLoading = true;
             } else {
               return;
             }
             loadingEle.style.display = 'block';
 
-            // ajax 成功后追加dom 然后执行isLoading = false loadingEle.style.display = 'none'
+            // ajax 成功后追加dom 然后执行_this.isLoading = false loadingEle.style.display = 'none'
             /*clearTimeout(timerAjax);
             var timerAjax = setTimeout(function () {
                   loadingEle.style.display = 'none';
                   _this.allList = _this.allList.concat(_this.allList);
-                  isLoading = false;
+                  _this.isLoading = false;
             }, 3000);*/
-
+            // 加载更多
             $.ajax({
               type: "POST",  
               url: BASEURL + "/get_index",  
@@ -503,10 +509,10 @@ export default {
                           // console.log('最新列表为', _this.allList);
 
                           loadingEle.style.display = 'none';
-                          // isLoading = false;
+                          // _this.isLoading = false;
                           setTimeout(function () {
-                              isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 isLoading因为是true 不执行if内语句 起到节流作用
-                          }, 3000);
+                              _this.isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 _this.isLoading因为是true 不执行if内语句 起到节流作用
+                          }, 1000);
                         },  
               error: function(e){  
                            console.log(e);  
@@ -517,8 +523,8 @@ export default {
             // 节流
             clearTimeout(timer);
             var timer = setTimeout(function () {
-                isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 isLoading因为是true 不执行if内语句 起到节流作用
-            }, 3000);
+                _this.isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 isLoading因为是true 不执行if内语句 起到节流作用
+            }, 1000);
         }          
       });
 
