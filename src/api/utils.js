@@ -45,11 +45,7 @@ export const TokenError =  function (code, pathName) {
     // window.location.reload(); // 刷新页面
     // 获取当前路由
     console.log("当前路由：", pathName);
-    setTimeout(function () {
-      window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + APPID + '&redirect_uri=http%3A%2F%2F' + FRONTEURL + '%2F%23%2F' + pathName + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';      
-    }, 100);
-
-
+    // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + APPID + '&redirect_uri=http%3A%2F%2F' + FRONTEURL + '%2F%23%2F' + pathName + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
     // return;
     // window.location = 'http://www.baidu.com';
   }

@@ -387,6 +387,8 @@ export default {
       if (!!this.nick_name || !!this.sex || !!this.birth_year  || !!this.birth_month  || !!this.voice_type || !!this.online_time  || !!this.city_id || !!this.experience  || !!this.game || !!this.wechat_num  || !!this.audio_url  || !!this.types) {
         // 如果有数据为空 就把警告开关打开
         this.ifSubmit = true;
+        // 提交注册
+        this.insertOne();
       }
     },
     // 插入一条数据
@@ -417,7 +419,8 @@ export default {
         dataType: "json",  
         success: function(res){
                     TokenError(res.code, _this.$route.name); // token错误
-                    console.log(res.data); 
+                    console.log(res.data);
+                    _this.$layer.alert("恭喜 下单成功！");
                   },  
         error: function(e){  
                      console.log(e);  
