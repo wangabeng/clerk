@@ -258,7 +258,7 @@ export default {
       experience: '', //
       game: '', //
       wechat_num: '', //
-      audio_url: '', // 上传到服务器中的audio的url地址
+      audio_url: 'https://www.w3school.com.cn/i/horse.ogg', // 上传到服务器中的audio的url地址
       // image_urls: [], // 见 uploadArr
       types: [], //
       // 提交表单数据结束
@@ -365,7 +365,7 @@ export default {
           processData: false,
           headers: {'token': localStorage.getItem("shiguangshudong")},
           success: function (res) {
-            TokenError(res.code, _this.$route.name); // token错误
+            TokenError(res.code, _this); // token错误
             console.log(res.data.file);
             _this.uploadArr.push(res.data.file);
           },
@@ -384,10 +384,12 @@ export default {
       this.ifSubmit = true;
       // 如果有表单为空的 
       var _this = this;
-      if (!!this.nick_name || !!this.sex || !!this.birth_year  || !!this.birth_month  || !!this.voice_type || !!this.online_time  || !!this.city_id || !!this.experience  || !!this.game || !!this.wechat_num  || !!this.audio_url  || !!this.types) {
+      if (!!this.nick_name && !!this.sex && !!this.birth_year  && !!this.birth_month  && !!this.voice_type && !!this.online_time  && !!this.city_id && !!this.experience  && !!this.game && !!this.wechat_num  && !!this.audio_url  && !!this.types) {
         // 如果有数据为空 就把警告开关打开
         this.ifSubmit = true;
         // 提交注册
+        
+      } else {
         this.insertOne();
       }
     },
@@ -415,12 +417,15 @@ export default {
           image_urls: _this.uploadArr.join(), // 见 uploadArr
           types: _this.types.join(), //
         },  
-        headers: {'token': GetStorage("userinfo").token},
+        headers: {'token': localStorage.getItem("shiguangshudong")},
         dataType: "json",  
         success: function(res){
-                    TokenError(res.code, _this.$route.name); // token错误
+                    TokenError(res.code, _this); // token错误
                     console.log(res.data);
-                    _this.$layer.alert("恭喜 下单成功！");
+                    if (res.code == 0) {
+                      _this.$layer.alert("恭喜 下单成功！");
+                    }
+                    
                   },  
         error: function(e){  
                      console.log(e);  
@@ -449,7 +454,7 @@ export default {
         dataType: "json",  
         success: function(res){  
                     console.log("成功");
-                    TokenError(res.code, _this.$route.name); // token错误
+                    TokenError(res.code, _this); // token错误
                     console.log(res.data); // {"appId":"wxa3c69deeaa1b4948","nonceStr":"6ik7gYKkou3YddEa","timestamp":1569467461,"url":"http:\/\/localhost:8080\/","signature":"2b33114b8ab49383092189f69226cf64c0c40336","rawString"
                     // 处理签名
                     // weixinConfig
@@ -605,7 +610,7 @@ export default {
           isShowProgressTips: 1, // 默认为1，显示进度提示
           success: function (res) {
             //把录音在微信服务器上的id（res.serverId）发送到自己的服务器供下载。
-            TokenError(res.code, _this.$route.name); // token错误
+            TokenError(res.code, _this); // token错误
             console.log("微信录音上传结果：");
             console.log(res);
 
@@ -1131,22 +1136,3 @@ export default {
 }
 
 </style>
-
-
-
-<!--       /*let config = {
-  //添加请求头
-  headers: { "Content-Type": "multipart/form-data",'token': GetStorage("userinfo").token},
-  // headers: {'token': GetStorage("userinfo").token},
-  dataType:'json',
-};
-
-axios.post(BASEURL + '/upload_file', param, config)
-  .then(function (response) {
-    // uploadArr.push(response.data.file);
-    console.log('图片上传结果response:', response.data.data.data.file);
-    // _this.uploadSum = response.data;
-  })
-  .catch(function (error) {
-    console.log("上传失败");
-  });*/ -->

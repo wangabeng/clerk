@@ -161,7 +161,7 @@ router.beforeEach((to, from, next) => {
       // FRONTEURL
       // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxa3c69deeaa1b4948&redirect_uri=http%3A%2F%2Fnicedevelop.nat300.top%2F%23%2F' + to.name + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
       window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + APPID + '&redirect_uri=http%3A%2F%2F' + FRONTEURL + '%2F%23%2F' + to.name + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-      next();
+      // next();
       return false;
     } else {
       next();

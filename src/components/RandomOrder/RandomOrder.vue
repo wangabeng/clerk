@@ -206,7 +206,7 @@ export default {
           headers: {'token': localStorage.getItem("shiguangshudong")},
           dataType: "json",  
           success: function(res){  
-            TokenError(res.code, _this.$route.name); // token错误
+            TokenError(res.code, _this); // token错误
             console.log('type为：', res.data); // 0: "文字语音条" 1: "语音通话"
             _this.typeList = res.data;
 
@@ -252,7 +252,7 @@ export default {
           headers: {'token': localStorage.getItem("shiguangshudong")},
           dataType: "json",   
           success: function(res){  
-                      TokenError(res.code, _this.$route.name); // token错误
+                      TokenError(res.code, _this); // token错误
                       // console.log('根据服务类型  "文字语音条"  "语音通话" -> 获取时长:' + typeArr[i] , res.data); 
                       console.log('根据服务类型  "文字语音条"  "语音通话" -> 获取时长:', res.data); 
                       // 设置typeTimeArr的值 暂时先定死
@@ -320,7 +320,7 @@ export default {
           headers: {'token': localStorage.getItem("shiguangshudong")},
           dataType: "json",   
           success: function(res){  
-                      TokenError(res.code, _this.$route.name); // token错误
+                      TokenError(res.code, _this); // token错误
                       console.log('查询到的价格为:', res.data);
                       _this.curPrice = res.data.price;
                     },  
@@ -357,9 +357,12 @@ export default {
         headers: {'token': localStorage.getItem("shiguangshudong")},
         dataType: "json",   
         success: function(res){  
-                    TokenError(res.code, _this.$route.name); // token错误
-                    console.log('下单结果:', res.data);
-                    _this.$layer.alert("恭喜 下单成功！");
+                    TokenError(res.code, _this); // token错误
+                    if (res.code == 0) {
+                      console.log('下单结果:', res.data);
+                      _this.$layer.alert("恭喜 下单成功！");                      
+                    }
+
                   },  
         error: function(e){  
                      console.log(e);  

@@ -374,7 +374,7 @@ export default {
       headers: {'token': localStorage.getItem("shiguangshudong")},
       dataType: "json",  
       success: function(res){
-                  TokenError(res.code, _this.$route.name); // token错误
+                  TokenError(res.code, _this); // token错误
                   console.log('详情为：', res.data);
                   _this.clertDetail = res.data;
                   _this.PriceInfoArr = _this.clertDetail.service_price;
@@ -516,12 +516,15 @@ export default {
           wechat_num: _this.wechatNum,
         },  
         headers: {'token': localStorage.getItem("shiguangshudong")},
-        // dataType: "json",  
+        dataType: "json",  
         success: function(res){  
-                    TokenError(res.code, _this.$route.name); // token错误
-                    console.log('下单结果为：', res.data);
-                    // 如果下单成功 调用微信支付
-                    _this.$layer.alert("恭喜 下单成功！");
+                    TokenError(res.code, _this); // token错误
+                    console.log('下单结果为：', res.code);
+                    if (res.code == 0) {
+                      // 如果下单成功 调用微信支付
+                      _this.$layer.alert("恭喜 下单成功！");
+                    }
+
                   },  
         error: function(e){  
                      console.log(e);  

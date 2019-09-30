@@ -155,6 +155,8 @@ export default {
       allList: [], // 所有店员列表
       searchTxt: '', // 搜索框用户
 
+      bindEvent: null, // document绑定的事件
+
       // 个人的token及其他个人信息
       /*userinfo: {"code":0,"msg":"\u767b\u5f55\u6210\u529f","count":{"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8","nick_name":"\u963f\u8ff8","avatar_url":"http:\/\/thirdwx.qlogo.cn\/mmopen\/vi_32\/Q0j4TwGTfTJkcRIy499jfgavF3YbbQeH1SCXKcRV4z7jruXWK7E6t4lFoVH0UPu0LMhM7guAKnNngnTYhibmMGA\/132"},"data":[]}*/
 
@@ -310,14 +312,12 @@ export default {
         success: function(res){  
                     console.log(res.data);
                     // console.log("当前路由：", this.$route.name);
-                    // TokenError(res.code, _this.$route.name); // token错误
-                    // _this.$router.go(0);
-                    if (res.code == 1004) {
+                    TokenError(res.code, _this); // token错误
+                    /*if (res.code == 1004) {
                       localStorage.removeItem("shiguangshudong");
-                      setTimeout(function () {
-                        _this.$router.go(0);
-                      }, 100);
-                    }
+                      _this.$router.go(0);
+                      return false;
+                    }*/
 
                     _this.allList = res.data;
                     console.log('最新列表为', _this.allList);
@@ -451,77 +451,82 @@ export default {
   mounted () {
     var _this = this;
 
+
     // 上拉刷新
     var loadingEle = document.getElementById("loading-txt");
     console.log(loadingEle);
     console.log(_this.$nextTick);
     // var ulContent = document.querySelector('.content_wrapper');
     var isLoading = false; // 只有为false 才可以执行刷新
-    window.addEventListener('touchmove', function () {
-        _this.$nextTick(function () {
-          var curScrollTop = getScrollTop();
-          var clientHeight = getClientHeight();
-          var totalHeight = getScrollHeight();
-          console.log(curScrollTop, clientHeight, totalHeight);
-          if (curScrollTop + clientHeight + getPxByRem(.5) >= totalHeight && isLoading == false) {
-              console.log("提前加载");
-              // isLoading = true; // 开关打开
-              if (isLoading == false) {
-                isLoading = true;
-              } else {
-                return;
-              }
-              loadingEle.style.display = 'block';
 
-              // ajax 成功后追加dom 然后执行isLoading = false loadingEle.style.display = 'none'
-              /*clearTimeout(timerAjax);
-              var timerAjax = setTimeout(function () {
-                    loadingEle.style.display = 'none';
-                    _this.allList = _this.allList.concat(_this.allList);
-                    isLoading = false;
-              }, 3000);*/
+    this.bindEvent = function () {
+      _this.$nextTick(function () {
+        var curScrollTop = getScrollTop();
+        var clientHeight = getClientHeight();
+        var totalHeight = getScrollHeight();
+        console.log(curScrollTop, clientHeight, totalHeight);
+        if (curScrollTop + clientHeight + getPxByRem(.5) >= totalHeight && isLoading == false) {
+            console.log("提前加载");
+            // isLoading = true; // 开关打开
+            if (isLoading == false) {
+              isLoading = true;
+            } else {
+              return;
+            }
+            loadingEle.style.display = 'block';
 
-              $.ajax({
-                type: "POST",  
-                url: BASEURL + "/get_index",  
-                // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
-                data: {
-                  nick_name:  _this.defaultCheck.nickName, //"\u963f\u8ff8", // 个人的信息  this.userinfo.nick_name
-                  sex: _this.defaultCheck.sex,
-                  level: _this.defaultCheck.level,
-                  page: ++_this.defaultCheck.curPage
-                },  
-                // headers: {'token': localStorage.getItem("shiguangshudong")},
-                headers: {'token': localStorage.getItem("shiguangshudong")},
-                dataType: "json",  
-                success: function(res){  
-                            console.log(res.data);
-                            TokenError(res.code);
+            // ajax 成功后追加dom 然后执行isLoading = false loadingEle.style.display = 'none'
+            /*clearTimeout(timerAjax);
+            var timerAjax = setTimeout(function () {
+                  loadingEle.style.display = 'none';
+                  _this.allList = _this.allList.concat(_this.allList);
+                  isLoading = false;
+            }, 3000);*/
 
-                            _this.allList = _this.allList.concat(res.data);
-                            // console.log('最新列表为', _this.allList);
+            $.ajax({
+              type: "POST",  
+              url: BASEURL + "/get_index",  
+              // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+              data: {
+                nick_name:  _this.defaultCheck.nickName, //"\u963f\u8ff8", // 个人的信息  this.userinfo.nick_name
+                sex: _this.defaultCheck.sex,
+                level: _this.defaultCheck.level,
+                page: ++_this.defaultCheck.curPage
+              },  
+              headers: {'token': localStorage.getItem("shiguangshudong")},
+              dataType: "json",  
+              success: function(res){  
+                          console.log(res.data);
+                          TokenError(res.code, _this);
 
-                            loadingEle.style.display = 'none';
-                            // isLoading = false;
-                            setTimeout(function () {
-                                isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 isLoading因为是true 不执行if内语句 起到节流作用
-                            }, 2000);
-                          },  
-                error: function(e){  
-                             console.log(e);  
-                }  
-              });
+                          _this.allList = _this.allList.concat(res.data);
+                          // console.log('最新列表为', _this.allList);
+
+                          loadingEle.style.display = 'none';
+                          // isLoading = false;
+                          setTimeout(function () {
+                              isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 isLoading因为是true 不执行if内语句 起到节流作用
+                          }, 3000);
+                        },  
+              error: function(e){  
+                           console.log(e);  
+              }  
+            });
 
 
-              // 节流
-              clearTimeout(timer);
-              var timer = setTimeout(function () {
-                  isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 isLoading因为是true 不执行if内语句 起到节流作用
-              }, 2000);
-          }          
-        });
+            // 节流
+            clearTimeout(timer);
+            var timer = setTimeout(function () {
+                isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 isLoading因为是true 不执行if内语句 起到节流作用
+            }, 3000);
+        }          
+      });
 
-    });
+    }
+
+    window.addEventListener('touchmove', _this.bindEvent, false);
+
+
 
     // 获取元素滚动高度
     function getScrollTop() { 
@@ -575,6 +580,12 @@ export default {
  
     });*/
   },
+  // beforeDestroy
+  beforeDestroy () {
+    // 路由销毁前解除绑定
+    var _this = this;
+    window.removeEventListener('touchmove', _this.bindEvent, false);
+  }
 }
 </script>
 
@@ -589,8 +600,8 @@ export default {
   a {
     background-color: #f02b32;
     color: #fff;
-    font-size: .24rem;
-    padding: .1rem .15rem;
+    font-size: .26rem;
+    padding: .13rem .2rem;
     border-radius: .05rem;
   }
 }
@@ -865,171 +876,3 @@ export default {
   }
 }
 </style>
-
-
-
-<!--     /*var weixinConfig ={
-  debug: true,
-  "appId": "wx0da4e67530296351",
-  "nonceStr": "HO4lIaBfubT3x5dl",
-  "timestamp": 1568877171,
-  "signature": "bcffe31a0f643f8f370b001c8761c375809ec822",
-  jsApiList: ['startRecord', 'stopRecord', 'onVoiceRecordEnd', 'playVoice', 'pauseVoice', 'stopVoice', 'onVoicePlayEnd', 'uploadVoice']
-}
-const wx = window['wx']
-wx.config(weixinConfig);
-
-wx.ready(function(){
-  // console.log("准备好了");
-});*/ -->
-
-
-
-
-<!--       // ajax测试成功
-/*$.ajax({
-   type: "POST",  
-   // url: BASEURL + "/api/get_user_info",  
-   url: "http://116.62.23.153:9494/api/get_feedback_types",  
-   contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
-   // data: {username:$("#username").val(), password:$("#password").val()},  
-   dataType: "json",  
-   success: function(data){  
-              console.log("成功");  
-              console.log(data);  
-            },  
-   error: function(e){  
-               console.log(e);  
-   }  
-});*/ -->
-
-
-
-<!--     // 每次进来 看是否有token 如果有 每次请求服务器端数据 都携带上这个token
-if (!!this.token) {
-  // 有token
-  console.log('有token');
-
-} else {
-  // 获取token
-  console.log('没有token');
-  // 发送请求 登录验证 以获取token
-} -->
-
-
-
-
-<!--     feedback () {
-
-
-  axios.post('/get_feedback_types', {
-      params: {
-        // openid: '132332332'
-      },
-      config: {
-        headers: { "Content-Type": "application/x-www-form-urlencoded",'Authorization': 'test'},
-      },
-      withCredentials: true // 携带cookie
-    })
-    .then(function (response) {
-      console.log(response.data);
-    })
-    .catch(function (error) {
-      // console.log(error);
-    });
-}, -->
-<!--     login () {
-  axios.post('/admin/login', {
-      params: {
-        userName: 'abeng',
-        password: '123'
-      },
-      // withCredentials: true // 可以拿到cookie
-    })
-    .then(function (response) {
-      console.log(response.data);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-}, -->
-
-
-
-
-
-<!--   methods: {
-  randomLink () {
-    this.$router.push('/randomorder');
-  },
-
-  getInfoA () {
-    axios.post(BASEURL + '/api/get_user_info', {
-        params: {
-        },
-        config: {
-          headers: { "Content-Type": "multipart/form-data",'Authorization': 'test' },
-        },
-      })
-      .then(function (response) {
-        // console.log(response);
-      })
-      .catch(function (error) {
-        // console.log(error);
-      });
-  },
-  getInfoC () {
-    axios.get('http://localhost:8080/getuser/test?=23231', {
-        params: {
-          openid: '132332332'
-        },
-        // config: {
-        //   headers: { "Content-Type": "multipart/form-data",'Authorization': 'test' },
-        // },
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        // console.log(error);
-      });
-  },
-  feedback () {
-
-
-    axios.post('/get_feedback_types', {
-        params: {
-          // openid: '132332332'
-        },
-        config: {
-          headers: { "Content-Type": "application/x-www-form-urlencoded",'Authorization': 'test'},
-        },
-        withCredentials: true // 携带cookie
-      })
-      .then(function (response) {
-        console.log(response.data);
-      })
-      .catch(function (error) {
-        // console.log(error);
-      });
-  },
-  // 测试获取token
-  getToken () {
-    // 测试ajax
-    $.ajax({
-       type: "POST",  
-       url: "http://116.62.23.153:9494/api/get_user_info",  
-       contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
-       // data: {username:$("#username").val(), password:$("#password").val()},  
-       // headers: {'Authorization': 'test'},
-       dataType: "json",  
-       success: function(data){  
-                  console.log("成功");  
-                  console.log(data);  
-                },  
-       error: function(e){  
-                   console.log(e);  
-       }  
-    });
-  }
-}, -->
