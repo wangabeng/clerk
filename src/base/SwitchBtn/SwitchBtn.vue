@@ -37,8 +37,8 @@ export default {
   position: relative;
   display: inline-block;
   box-sizing: content-box;
-  width: 1rem;
-  height: .5rem;
+  width: .8rem;
+  height: .4rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 1rem;
 
@@ -49,8 +49,8 @@ export default {
   top: 0;
   left: 0;
   z-index: 1;
-  width: .5rem;
-  height: .5rem;
+  width: .4rem;
+  height: .4rem;
   background-color: #fff;
   border-radius: 100%;
   box-shadow: 0 3px 1px 0 rgba(0, 0, 0, 0.05), 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 3px 3px 0 rgba(0, 0, 0, 0.05);
@@ -59,16 +59,17 @@ export default {
 }
 /*打开状态*/
 .switch-container.on {
-  background-color: #1989fa;
+  /*#ac4949深红  #1989fa蓝色*/
+  background-color: #1989fa; 
   transition: background-color 0.3s;
 }
 .switch-container.on .switch-btn {
-  transform: translateX(.5rem);
+  transform: translateX(.4rem);
   transition: transform 0.3s;
 }
 /*关闭状态*/
 .switch-container.off {
-  background-color: #f1f3f4;
+  background-color: #c5c5c5;
   transition: background-color 0.3s;
 }
 .switch-container.off .switch-btn {

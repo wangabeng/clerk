@@ -77,14 +77,14 @@ export default {
       }
 
       i {
-        font-size: .45rem;
+        font-size: .5rem;
         &.mid-icon {
           transform: scale(.8);
         }
       }
       span {
         margin-top: .1rem;
-        font-size: .21rem;
+        font-size: .23rem;
       }
     }
   }
