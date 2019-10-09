@@ -3,10 +3,16 @@ import Router from 'vue-router'
 
 import Index from '@/components/Index/Index'
 
+// 客户端
 import ClerkLists from '@/components/ClerkLists/ClerkLists'
 import ClerkInfo from '@/components/ClerkInfo/ClerkInfo'
 import RandomOrder from '@/components/RandomOrder/RandomOrder'
 import ApplyNew from '@/components/ApplyNew/ApplyNew'
+
+// 管理端
+import AdminCenter from '@/components/AdminCenter/AdminCenter'
+import OrderCenter from '@/components/OrderCenter/OrderCenter'
+import OrderHall from '@/components/OrderHall/OrderHall'
 
 
 import {BASEURL, FRONTEURL, APPID} from "src/api/config.js";
@@ -46,43 +52,70 @@ const router = new Router({
       },
     },*/
     {
-      path: '/clerklists',
+      path: '/clerklists', // 店员列表
       name: 'ClerkLists',
       component: ClerkLists,
       meta: {
         title: '店员列表',
-        requireAuth: true
+        // requireAuth: true
       },
     },
     {
-      // path: '/clerkinfo/:id',
-      path: '/clerkinfo/:id',
+      path: '/clerkinfo/:id', // 店员详情
       name: 'ClerkInfo',
       component: ClerkInfo,
       meta: {
         title: '店员信息',
-        requireAuth: true
+        // requireAuth: true
       },
     },
     {
-      path: '/randomorder',
+      path: '/randomorder', // 随机下单
       name: 'RandomOrder',
       component: RandomOrder,
       meta: {
         title: '随机下单',
-        requireAuth: true
+        // requireAuth: true
       },
     },
     {
-      path: '/applynew',
+      path: '/applynew', // 新店员申请
       name: 'ApplyNew',
       component: ApplyNew,
       meta: {
         title: '新店员申请',
-        requireAuth: true
+        // requireAuth: true
       },
     },
-    
+
+    // 以下为店员管理端页面
+    {
+      path: '/admincenter', // 个人中心（管理端）
+      name: 'AdminCenter',
+      component: AdminCenter,
+      meta: {
+        title: '个人中心',
+        // requireAuth: true
+      },
+    },
+    {
+      path: '/ordercenter', // 订单中心 订单列表（管理端）
+      name: 'OrderCenter',
+      component: OrderCenter,
+      meta: {
+        title: '订单中心',
+        // requireAuth: true
+      },
+    },
+    {
+      path: '/orderhall', // 接单大厅（管理端）
+      name: 'OrderHall',
+      component: OrderHall,
+      meta: {
+        title: '接单大厅',
+        // requireAuth: true
+      },
+    },
     /*{
       path: '/register',
       name: 'Register',
