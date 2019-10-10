@@ -156,10 +156,10 @@
     <!-- 接单类型 -->
     <div class="order-type">
       <h4 class='form-check'><span>接单类型（多选）</span><span class='check-txt' v-if='ifSubmit && types.length==0'>* 接单类型 必填</span></h4>
-      <label for="wenziyuyin">
-        <input type="checkbox"  id='wenziyuyin' value='1' v-model='types'>
-        <span>文字语音条</span>
-      </label>
+      <label :for='item.id' v-for='item in allTypes'> <!-- {"id": "1","service_name": "文字语音条"} -->
+        <input type="checkbox"  :id='item.id' :value='item.id' v-model='types'>
+        <span>{{item.service_name}}</span>
+      </label><!-- 
       <label for="yuyintonghua">
         <input type="checkbox"  id='yuyintonghua' value='2' v-model='types'>
         <span>语音通话</span>
@@ -171,7 +171,7 @@
       <label for="连麦哄睡">
         <input type="checkbox"  id='连麦哄睡' value='4' v-model='types'>
         <span>文字语音条</span>
-      </label>
+      </label> -->
     </div>
     <!-- {{types}} -->
 
@@ -272,6 +272,8 @@ export default {
       ifPlaying: false, // 是否正在播放
 
       ifSubmit: false, // 提交flag 一旦提交 就执行表单验证
+
+      allTypes: [],  // 17.  获取所有接单类型接口  {"id": "1","service_name": "文字语音条"}
 
 
     }
@@ -433,6 +435,26 @@ export default {
       });   
     }
 
+  },
+  beforeCreate () {
+    var _this = this;
+    // 17.  获取所有接单类型接口
+    $.ajax({
+       type: "POST",  
+       url: "https://www.sgshudong.com/api/get_all_types",  
+       contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+       headers: {'token': localStorage.getItem("shiguangshudong")},
+       dataType: "json",  
+       success: function(data){  
+                  console.log("接口17成功");  
+                  console.log(data.data);
+                  _this.allTypes = data.data;
+                  console.log("接口17 结束", _this.allTypes);
+                },  
+       error: function(e){  
+                   console.log(e);  
+       }  
+    });
   },
   created () {
     var _this = this;
