@@ -156,7 +156,7 @@
     <!-- 接单类型 -->
     <div class="order-type">
       <h4 class='form-check'><span>接单类型（多选）</span><span class='check-txt' v-if='ifSubmit && types.length==0'>* 接单类型 必填</span></h4>
-      <label :for='item.id' v-for='item in allTypes'> <!-- {"id": "1","service_name": "文字语音条"} -->
+      <label v-if='allTypes' :for='item.id' v-for='item in allTypes'> <!-- {"id": "1","service_name": "文字语音条"} -->
         <input type="checkbox"  :id='item.id' :value='item.id' v-model='types'>
         <span>{{item.service_name}}</span>
       </label><!-- 
@@ -441,7 +441,7 @@ export default {
     // 17.  获取所有接单类型接口
     $.ajax({
        type: "POST",  
-       url: "https://www.sgshudong.com/api/get_all_types",  
+       url: BASEURL + "/get_all_types",  
        contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
        headers: {'token': localStorage.getItem("shiguangshudong")},
        dataType: "json",  

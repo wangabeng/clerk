@@ -359,7 +359,7 @@ export default {
 
       $.ajax({
          type: "POST",  
-         url: "https://www.sgshudong.com/api/get_sign_package",  
+         url: BASEURL + "/get_sign_package",  
          contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
          data: {url: curUrl},  
          headers: {'token': localStorage.getItem("shiguangshudong")},
@@ -453,7 +453,7 @@ export default {
     **/
     $.ajax({
        type: "POST",  
-       url: "https://www.sgshudong.com/api/get_all_levels",  
+       url: BASEURL + "/get_all_levels",  
        contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
        // data: {url: curUrl},  
        headers: {'token': localStorage.getItem("shiguangshudong")},

@@ -121,6 +121,27 @@ export default {
     swiper,
     swiperSlide
   },
+  created () {
+    $.ajax({
+       type: "POST",  
+       url: BASEURL + "/get_accept_orders",  
+       contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+       data: {
+        'order_type': 1, // 0 所有 1   2
+        'page': 1,
+      },  
+       headers: {'token': localStorage.getItem("shiguangshudong")},
+       dataType: "json",  
+       success: function(data){  
+                  console.log("接口19成功");  
+                  console.log(data.data);
+                  console.log("接口19 结束");
+                },  
+       error: function(e){  
+                   console.log(e);  
+       }  
+    });
+  },
   mounted () {
   },
   methods: {
