@@ -63,11 +63,11 @@ export default {
     ClerkFooter
   },
   mounted () {
-    console.log('副组件1', this.$refs.btnComponent.curStatus);
+    // console.log('副组件1', this.$refs.btnComponent.curStatus);
   },
   methods: {
     getcur () {
-      console.log('dangqian开关', this.$refs.btnComponent.curStatus);
+      // console.log('dangqian开关', this.$refs.btnComponent.curStatus);
     }
   }
 }

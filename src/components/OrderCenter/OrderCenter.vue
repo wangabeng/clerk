@@ -1,13 +1,43 @@
 <template>
   <div class="order-center">
-    订单中心
-    <switch-btn ref='btnComponent' :propStatus='false'></switch-btn>
-    <br>
-    <br>
-    <!-- <switch-btn ref='btnComponent2'></switch-btn> -->
-  
+    <!-- 导航区 -->
+    <ul class="nav-container">
+      <li class='active'><a href="javascript:;">全部</a></li>
+      <li><a href="javascript:;">待服务</a></li>
+      <li><a href="javascript:;">服务中</a></li>
+      <li><a href="javascript:;">已结束</a></li>
+      <li><a href="javascript:;">已取消</a></li>
+    </ul>
 
-    <input type="button" value='get' @click='getcur'>
+    <!-- 用户单列表 -->
+    <div class="client-order-lists">
+      <!-- 每一个订单 -->
+      <div class="each-order">
+        <p>用户名称：<span class='content'>张三</span></p>
+        <p>服务类型：<span class='content'>文字语音条</span></p>
+        <p>时&emsp;&emsp;长：<span class='content'>一天 × 1</span></p>
+        <p>价&emsp;&emsp;格：<span class='content'>88.00</span></p>
+        <p>性&emsp;&emsp;别：<span class='content'>小哥哥</span></p>
+        <p>等&emsp;&emsp;级：<span class='content'>金牌</span></p>
+        <p>订单类型：<span class='content'>指定</span></p>
+        <p>下单时间：<span class='content'>2019年08月11日 16:16:25</span></p>
+        <input type="button" value='立即抢单'>
+        <!-- <input type="button" value='开始接单'> -->
+      </div>
+      <!-- 每一个订单 -->
+      <div class="each-order">
+        <p>用户名称：<span class='content'>张三</span></p>
+        <p>服务类型：<span class='content'>文字语音条</span></p>
+        <p>时&emsp;&emsp;长：<span class='content'>一天 × 1</span></p>
+        <p>价&emsp;&emsp;格：<span class='content'>88.00</span></p>
+        <p>性&emsp;&emsp;别：<span class='content'>小哥哥</span></p>
+        <p>等&emsp;&emsp;级：<span class='content'>金牌</span></p>
+        <p>订单类型：<span class='content'>指定</span></p>
+        <p>下单时间：<span class='content'>2019年08月11日 16:16:25</span></p>
+        <input type="button" value='开始接单'>
+        <!-- <input type="button" value='开始接单'> -->
+      </div>
+    </div>
 
     <clerk-footer :propSubject='"orderCenter"'></clerk-footer>
   </div>
@@ -27,11 +57,9 @@ export default {
     ClerkFooter
   },
   mounted () {
-    console.log('副组件1', this.$refs.btnComponent.curStatus);
   },
   methods: {
     getcur () {
-      console.log('dangqian开关', this.$refs.btnComponent.curStatus);
     }
   }
 }
@@ -41,6 +69,83 @@ export default {
 <style scoped lang="scss">
 @import "common/sass/variable.scss";
 .order-center {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  padding-bottom: 1.6rem;
+
+  .nav-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: .1rem;
+    padding-top: .2rem;
+    background-color: #97acc1;
+    li {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      &.active {
+        a {
+          border-bottom: 2px solid $color-sub-red;
+        }
+      }
+      a {
+        display: inline-flex;
+        padding: .2rem 0;
+        color: #fff;
+        font-size: .25rem;
+      }
+    }
+  }
+
+  .client-order-lists {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .each-order {
+      width: 6rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border: $border-1px;
+      box-shadow:$box-shadow;
+      border-radius: .1rem;
+      margin-top: .3rem;
+      padding: .2rem;
+      box-sizing: border-box;
+      font-size: .22rem;
+      line-height: 1.5;
+
+      p {
+        color: $color-text-dd;
+        span {
+          color: $color-text-d;
+        }
+      }
+
+      input {
+        border: 1px solid $color-sub-red;
+        background-color: transparent;
+        color: $color-sub-red;
+        border-radius: .1rem;
+        font-size: .23rem;
+        padding: .08rem .16rem;
+        position: absolute;
+        top: 50%;
+        right: .3rem;
+        transform: translateY(-50%);
+      }
+    }
+  }
+
 }
 </style>
 
