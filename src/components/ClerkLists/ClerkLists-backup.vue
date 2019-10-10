@@ -135,8 +135,7 @@ export default {
       token: '',
 
       genderArr: [{text: '所有', num: 0}, {text: '只看男生', num: 1}, {text: '只看女生', num: 2}], // 性别  1男 2女
-      typeArr: [{text: '全部', num: 0}], // 等级 1普通 2金牌 3镇店
-      // typeArr: [{text: '全部', num: 0}, {text: '普通', num: 1}, {text: '金牌', num: 2}, {text: '镇店', num: 3}], // 等级 1普通 2金牌 3镇店
+      typeArr: [{text: '全部', num: 0}, {text: '普通', num: 1}, {text: '金牌', num: 2}, {text: '镇店', num: 3}], // 等级 1普通 2金牌 3镇店
       pickerArr: [], // 默认不显示 下拉选择器要呈现的内容
       defaultCheck: {
         'nickName': '', //默认为空字符串
@@ -441,42 +440,7 @@ export default {
       $(ele.parentNode).removeClass('playing');
     }
   },
-  beforeCreate () {
-    // var typeArrList = [{text: '全部', num: 0}];
-    var _this = this;
-    // 获取所有服务等级接口 接口18
-    /**
-    *0: {id: "1", level_name: "普通"}
-    *1: {id: "2", level_name: "金牌"}
-    *2: {id: "3", level_name: "镇店"}
-    *[{text: '全部', num: 0}, {text: '普通', num: 1}, {text: '金牌', num: 2}, {text: '镇店', num: 3}],
-    **/
-    $.ajax({
-       type: "POST",  
-       url: "https://www.sgshudong.com/api/get_all_levels",  
-       contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
-       // data: {url: curUrl},  
-       headers: {'token': localStorage.getItem("shiguangshudong")},
-       dataType: "json",  
-       success: function(data){  
-                  console.log("接口18成功");  
-                  console.log(data.data);
-                  for (var i = 0; i < data.data.length; i++ ) {
-                    console.log(data.data[i]);
-                    _this.typeArr.push({
-                      text: data.data[i].level_name,
-                      num: parseInt(data.data[i].id),
-                    });
-                  }
-                  console.log("接口18 结束", _this.typeArr);
-                },  
-       error: function(e){  
-                   console.log(e);  
-       }  
-    });
-  },
   created () {
-
     // 默认请求所有店员数据 发送请求 {URL}/api/get_index
     // 先查看本地localstorage是否保存有token及用户信息，如果有 就正常执行 如果没有 就请求登录
 
