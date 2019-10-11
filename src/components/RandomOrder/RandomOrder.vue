@@ -139,10 +139,10 @@
 
     <!-- 测试区 -->
     <div class="test-api" style='padding-bottom: .6rem;'>
-      <input type="button" value='统一下单12api 获取appid等' @click='testprepay'>
+      <input type="button" value='统一下单12api 获取appid等' @click='getWeixinPay'>
       <br>
       <br>
-      <input type="button" value='调用微信支付js' @click='testweixinpay'>
+      <input type="button" value='调用微信支付js' @click='weixinPay'>
       <br>
       <br>
       <input type="button" value='testlayer' @click='testlayer'>
@@ -372,7 +372,22 @@ export default {
                     if (res.code == 0) {
                       console.log('下单结果:', res.data);
                       // 弹出下单成功 请求12接口 服务端调用统一下单api
-                      _this.$layer.alert("恭喜 下单成功！");                      
+                      // 弹出层 提示支付
+                      _this.$layer.alert(`
+                          <p>总金额：¥${_this.curPrice * _this.amountInput}元</p>
+                          <p>总金额：¥${_this.curPrice * _this.amountInput}元</p>
+                        `, {
+                        title: '下单成功',
+                        shade: true,//是否显示遮罩
+                        shadeClose: true,//点击遮罩是否关闭
+                      }, function (layerid) {
+                        // 调用统一支付下单接口 12接口
+
+                        _this.getWeixinPay (res.data)
+
+                        _this.$layer.close(layerid);
+
+                      });                  
                     }
 
                   },  
@@ -382,8 +397,8 @@ export default {
       }); 
 
     },
-    // 测试 接口12
-    testprepay () {
+    // 接口12 获取支付参数签名等
+    getWeixinPay (orderNumber) {
       var _this = this;
       // 测试接口12
       $.ajax({
@@ -391,7 +406,7 @@ export default {
         url: BASEURL + "/unifiedorder",  // 接口12
         dataType: "json",  
         data: {
-          order_no: 'R20191011155021350231',
+          order_no: orderNumber,
         },  
         headers: {'token': localStorage.getItem("shiguangshudong")},
         dataType: "json",   
@@ -399,6 +414,17 @@ export default {
                     TokenError(res.code, _this); // token错误
                     if (res.code == 0) {
                       console.log('接口12下单结果:', res.data);
+                      // 利用生成的签名参数调用微信支付  _this.weixinPay()
+
+                      // 弹出层 提示支付
+                      /*_this.$layer.alert("订单信息 金额等等", {
+                        title: '下单成功',
+                        shade: true,//是否显示遮罩
+                        shadeClose: true,//点击遮罩是否关闭
+                      }, function (layerid) {
+                        console.log('确定');
+                        _this.$layer.close(layerid);
+                      });*/
                     }
 
                   },  
@@ -408,7 +434,7 @@ export default {
       }); 
     },
     // 测试微信支付
-    testweixinpay () {
+    weixinPay () {
       // {"code":0,"msg":"\u6210\u529f","count":0,"data":{"parameters":{"appId":"wxa3c69deeaa1b4948","timeStamp":"1570781810","nonceStr":"zFyFs5Ls9mSaZqRBr4HfiggpGB5tmnNm","package":"prepay_id=wx1116165084859627e71a842f1773051300","signType":"MD5","paySign":"48298FDD372B96D0DF056E8E5BB87B09"}}}
       function onBridgeReady(){
          WeixinJSBridge.invoke(
@@ -449,17 +475,12 @@ export default {
       //   style: 'background-color:#09C1FF; color:#fff; border:none;', // 自定风格
       //   time: 2 //2秒后自动关闭
       // });
-      this.$layer.confirm(`
-          <p>成功</p>
-          <p>成功2</p>
-        `, {
+      this.$layer.alert("订单信息 金额等等", {
         title: '下单成功',
+        shade: true,//是否显示遮罩
+        shadeClose: true,//点击遮罩是否关闭
       }, function (layerid) {
-
         console.log('确定');
-        _this.$layer.close(layerid);
-      },function (layerid) {
-        console.log('取消');
         _this.$layer.close(layerid);
       });
 
