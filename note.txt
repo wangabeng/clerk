@@ -99,7 +99,7 @@ ClerkInfo    店员详情  完成
 RandomOrder  随机下单  完成
 
 UserOrderlist    用户端订单列表
-            用户端订单详情
+UserOrderDetail            用户端订单详情
 
 
 -----------------------------------

@@ -414,7 +414,7 @@ export default {
                     TokenError(res.code, _this); // token错误
                     if (res.code == 0) {
                       console.log('接口12下单结果:', res.data);
-                      // 利用生成的签名参数调用微信支付  _this.weixinPay()
+                      // 利用生成的签名参数调用微信支付  _this.weixinPay() 把签名传入
 
                       // 弹出层 提示支付
                       /*_this.$layer.alert("订单信息 金额等等", {
