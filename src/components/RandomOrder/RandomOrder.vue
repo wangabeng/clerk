@@ -137,6 +137,17 @@
       </div>
     </div>
 
+    <!-- 测试区 -->
+    <div class="test-api" style='padding-bottom: .6rem;'>
+      <input type="button" value='统一下单12api 获取appid等' @click='testprepay'>
+      <br>
+      <br>
+      <input type="button" value='调用微信支付js' @click='testweixinpay'>
+      <br>
+      <br>
+      <input type="button" value='testlayer' @click='testlayer'>
+    </div>
+
   </div>
 </template>
 
@@ -360,6 +371,7 @@ export default {
                     TokenError(res.code, _this); // token错误
                     if (res.code == 0) {
                       console.log('下单结果:', res.data);
+                      // 弹出下单成功 请求12接口 服务端调用统一下单api
                       _this.$layer.alert("恭喜 下单成功！");                      
                     }
 
@@ -368,6 +380,88 @@ export default {
                      console.log(e);  
         }  
       }); 
+
+    },
+    // 测试 接口12
+    testprepay () {
+      var _this = this;
+      // 测试接口12
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/unifiedorder",  // 接口12
+        dataType: "json",  
+        data: {
+          order_no: 'R20191011155021350231',
+        },  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",   
+        success: function(res){  
+                    TokenError(res.code, _this); // token错误
+                    if (res.code == 0) {
+                      console.log('接口12下单结果:', res.data);
+                    }
+
+                  },  
+        error: function(e){  
+                     console.log(e);  
+        }  
+      }); 
+    },
+    // 测试微信支付
+    testweixinpay () {
+      // {"code":0,"msg":"\u6210\u529f","count":0,"data":{"parameters":{"appId":"wxa3c69deeaa1b4948","timeStamp":"1570781810","nonceStr":"zFyFs5Ls9mSaZqRBr4HfiggpGB5tmnNm","package":"prepay_id=wx1116165084859627e71a842f1773051300","signType":"MD5","paySign":"48298FDD372B96D0DF056E8E5BB87B09"}}}
+      function onBridgeReady(){
+         WeixinJSBridge.invoke(
+            'getBrandWCPayRequest', {
+               "appId":"wxa3c69deeaa1b4948",     //公众号名称，由商户传入     
+               "timeStamp":"1570781810",         //时间戳，自1970年以来的秒数     
+               "nonceStr":"zFyFs5Ls9mSaZqRBr4HfiggpGB5tmnNm", //随机串     
+               "package":"prepay_id=wx1116165084859627e71a842f1773051300",     
+               "signType":"MD5",         //微信签名方式：     
+               "paySign":"48298FDD372B96D0DF056E8E5BB87B09" //微信签名 
+            },
+            function(res){
+            if(res.err_msg == "get_brand_wcpay_request:ok" ){
+              alert('成功啦');
+            // 使用以上方式判断前端返回,微信团队郑重提示：
+                  //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+            } 
+         }); 
+      }
+      if (typeof WeixinJSBridge == "undefined"){
+         if( document.addEventListener ){
+             document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+         }else if (document.attachEvent){
+             document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+             document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+         }
+      }else{
+         onBridgeReady();
+      }
+    },
+    // 测试layer 弹出层
+    testlayer () {
+      var _this = this;
+      console.log('layer test');
+      // this.$layer.alert("恭喜 下单成功！");
+      // this.$layer.open({
+      //   content: '通过style设置你想要的样式',
+      //   style: 'background-color:#09C1FF; color:#fff; border:none;', // 自定风格
+      //   time: 2 //2秒后自动关闭
+      // });
+      this.$layer.confirm(`
+          <p>成功</p>
+          <p>成功2</p>
+        `, {
+        title: '下单成功',
+      }, function (layerid) {
+
+        console.log('确定');
+        _this.$layer.close(layerid);
+      },function (layerid) {
+        console.log('取消');
+        _this.$layer.close(layerid);
+      });
 
     }
   },

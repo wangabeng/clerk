@@ -3,10 +3,9 @@
     <!-- 导航区 -->
     <ul class="nav-container">
       <li class='active'><a href="javascript:;">全部</a></li>
-      <li><a href="javascript:;">待服务</a></li>
-      <li><a href="javascript:;">服务中</a></li>
-      <li><a href="javascript:;">已结束</a></li>
-      <li><a href="javascript:;">已取消</a></li>
+      <li><a href="javascript:;">待接单</a></li>
+      <li><a href="javascript:;">已接单</a></li>
+      <li><a href="javascript:;">已完成</a></li>
     </ul>
 
     <!-- 用户单列表 -->
@@ -30,7 +29,7 @@
       </div>
     </div>
 
-    <clerk-footer :propSubject='"orderCenter"'></clerk-footer>
+    <!-- <clerk-footer :propSubject='"orderCenter"'></clerk-footer> -->
   </div>
 </template>
 
@@ -39,7 +38,7 @@ import SwitchBtn from 'base/SwitchBtn/SwitchBtn.vue'
 import ClerkFooter from 'base/ClerkFooter/ClerkFooter.vue'
 
 export default {
-  name: 'AdminCenter',
+  name: 'UserOrderlist',
   props: {
     msg: String
   },

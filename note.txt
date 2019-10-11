@@ -86,3 +86,28 @@ import {GetQueryString, TokenError} from "src/api/utils.js";
 https://open.weixin.qq.com/connect/oauth2/authorize?appidwxa3c69deeaa1b4948&redirect_uri=http%3A%2F%2Fnicedevelop.nat300.top%2F%23%2FClerkInfo&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
 
 
+
+微信支付测试
+{"code":0,"msg":"\u6210\u529f","count":0,"data":{"parameters":{"appId":"wxa3c69deeaa1b4948","timeStamp":"1570781251","nonceStr":"hhBjYx97BGeVx77tdBsdrBzkIetSJpG5","package":"prepay_id=wx1116073113627127e71a842f1466601100","signType":"MD5","paySign":"8B444FCBE8B39914C887F675AC2ACC58"}}}
+
+----------------------------------
+组件目录
+
+用户端
+ClerkLists   店员列表  完成
+ClerkInfo    店员详情  完成
+RandomOrder  随机下单  完成
+
+UserOrderlist    用户端订单列表
+            用户端订单详情
+
+
+-----------------------------------
+店员管理端
+ApplyNew   新店员申请    完成
+AdminCenter   店员个人中心
+
+
+OrderHall  店员接单大厅
+OrderCenter 店员端订单列表
+OrderDetail  店员端订单详情

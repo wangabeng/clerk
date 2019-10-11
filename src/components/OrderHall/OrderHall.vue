@@ -36,6 +36,8 @@
     <div class="client-order-lists">
       <!-- 每一个订单 -->
       <div class="each-order">
+        <p class='line'>订单编号：<span class='content'>5565656565564555</span></p>
+        <p class='line'>下单时间：<span class='content'>2019年08月11日 16:16:25</span></p>
         <p>用户名称：<span class='content'>张三</span></p>
         <p>服务类型：<span class='content'>文字语音条</span></p>
         <p>时&emsp;&emsp;长：<span class='content'>一天 × 1</span></p>
@@ -43,21 +45,8 @@
         <p>性&emsp;&emsp;别：<span class='content'>小哥哥</span></p>
         <p>等&emsp;&emsp;级：<span class='content'>金牌</span></p>
         <p>订单类型：<span class='content'>指定</span></p>
-        <p>下单时间：<span class='content'>2019年08月11日 16:16:25</span></p>
+        <p class='line'>其他要求：<span class='content'>文字文字说明</span></p>
         <input type="button" value='立即抢单'>
-        <!-- <input type="button" value='开始接单'> -->
-      </div>
-      <!-- 每一个订单 -->
-      <div class="each-order">
-        <p>用户名称：<span class='content'>张三</span></p>
-        <p>服务类型：<span class='content'>文字语音条</span></p>
-        <p>时&emsp;&emsp;长：<span class='content'>一天 × 1</span></p>
-        <p>价&emsp;&emsp;格：<span class='content'>88.00</span></p>
-        <p>性&emsp;&emsp;别：<span class='content'>小哥哥</span></p>
-        <p>等&emsp;&emsp;级：<span class='content'>金牌</span></p>
-        <p>订单类型：<span class='content'>指定</span></p>
-        <p>下单时间：<span class='content'>2019年08月11日 16:16:25</span></p>
-        <input type="button" value='开始接单'>
         <!-- <input type="button" value='开始接单'> -->
       </div>
     </div>
@@ -197,7 +186,8 @@ export default {
     .each-order {
       width: 6rem;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      flex-wrap: wrap;
       position: relative;
       border: $border-1px;
       box-shadow:$box-shadow;
@@ -208,10 +198,15 @@ export default {
       font-size: .22rem;
       line-height: 1.5;
 
+
       p {
+        width: 50%;
         color: $color-text-dd;
         span {
           color: $color-text-d;
+        }
+        &.line {
+          width: 100%;
         }
       }
 
@@ -221,11 +216,10 @@ export default {
         color: $color-sub-red;
         border-radius: .1rem;
         font-size: .23rem;
-        padding: .08rem .16rem;
+        // padding: .08rem .16rem;
         position: absolute;
-        top: 50%;
+        top: .2rem;
         right: .3rem;
-        transform: translateY(-50%);
       }
     }
   }

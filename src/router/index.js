@@ -7,13 +7,15 @@ import Index from '@/components/Index/Index'
 import ClerkLists from '@/components/ClerkLists/ClerkLists'
 import ClerkInfo from '@/components/ClerkInfo/ClerkInfo'
 import RandomOrder from '@/components/RandomOrder/RandomOrder'
-import ApplyNew from '@/components/ApplyNew/ApplyNew'
+import UserOrderlist from '@/components/UserOrderlist/UserOrderlist'
+import UserOrderdetail from '@/components/UserOrderdetail/UserOrderdetail'
 
 // 管理端
 import AdminCenter from '@/components/AdminCenter/AdminCenter'
 import OrderCenter from '@/components/OrderCenter/OrderCenter'
 import OrderHall from '@/components/OrderHall/OrderHall'
-
+import OrderDetail from '@/components/OrderDetail/OrderDetail'
+import ApplyNew from '@/components/ApplyNew/ApplyNew'
 
 import {BASEURL, FRONTEURL, APPID} from "src/api/config.js";
 // import Index from '@/components/Index/Index'
@@ -108,6 +110,16 @@ const router = new Router({
       },
     },
     {
+      path: '/orderdetail', // 订单中心 订单列表（管理端）
+      name: 'OrderDetail',
+      component: OrderDetail,
+      meta: {
+        title: '订单详情',
+        // requireAuth: true
+      },
+    },
+    
+    {
       path: '/orderhall', // 接单大厅（管理端）
       name: 'OrderHall',
       component: OrderHall,
@@ -116,6 +128,28 @@ const router = new Router({
         // requireAuth: true
       },
     },
+
+
+    // 用户 客户端
+    {
+      path: '/userorderlist', // 接单大厅（管理端）
+      name: 'UserOrderlist',
+      component: UserOrderlist,
+      meta: {
+        title: '订单中心',
+        // requireAuth: true
+      },
+    },
+    {
+      path: '/userorderdetail', // 接单大厅（管理端）
+      name: 'UserOrderdetail',
+      component: UserOrderdetail,
+      meta: {
+        title: '订单详情',
+        // requireAuth: true
+      },
+    },
+
     /*{
       path: '/register',
       name: 'Register',
