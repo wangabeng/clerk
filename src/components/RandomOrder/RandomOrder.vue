@@ -375,9 +375,10 @@ export default {
                       // 弹出层 提示支付
                       _this.$layer.alert(`
                           <p>总金额：¥${_this.curPrice * _this.amountInput}元</p>
-                          <p>总金额：¥${_this.curPrice * _this.amountInput}元</p>
+                          <p>订单号：¥${res.data}</p>
                         `, {
                         title: '下单成功',
+                        btn: '确定支付',
                         shade: true,//是否显示遮罩
                         shadeClose: true,//点击遮罩是否关闭
                       }, function (layerid) {
@@ -413,9 +414,9 @@ export default {
         success: function(res){  
                     TokenError(res.code, _this); // token错误
                     if (res.code == 0) {
-                      console.log('接口12下单结果:', res.data);
+                      console.log('接口12下单结果:', res.data.parameters);
                       // 利用生成的签名参数调用微信支付  _this.weixinPay() 把签名传入
-
+                      _this.weixinPay(res.data.parameters);
                       // 弹出层 提示支付
                       /*_this.$layer.alert("订单信息 金额等等", {
                         title: '下单成功',
@@ -434,21 +435,22 @@ export default {
       }); 
     },
     // 测试微信支付
-    weixinPay () {
+    weixinPay (signJson) {
       // {"code":0,"msg":"\u6210\u529f","count":0,"data":{"parameters":{"appId":"wxa3c69deeaa1b4948","timeStamp":"1570781810","nonceStr":"zFyFs5Ls9mSaZqRBr4HfiggpGB5tmnNm","package":"prepay_id=wx1116165084859627e71a842f1773051300","signType":"MD5","paySign":"48298FDD372B96D0DF056E8E5BB87B09"}}}
       function onBridgeReady(){
          WeixinJSBridge.invoke(
-            'getBrandWCPayRequest', {
+            'getBrandWCPayRequest', signJson/*{
                "appId":"wxa3c69deeaa1b4948",     //公众号名称，由商户传入     
                "timeStamp":"1570781810",         //时间戳，自1970年以来的秒数     
                "nonceStr":"zFyFs5Ls9mSaZqRBr4HfiggpGB5tmnNm", //随机串     
                "package":"prepay_id=wx1116165084859627e71a842f1773051300",     
                "signType":"MD5",         //微信签名方式：     
                "paySign":"48298FDD372B96D0DF056E8E5BB87B09" //微信签名 
-            },
+            }*/,
             function(res){
             if(res.err_msg == "get_brand_wcpay_request:ok" ){
               alert('成功啦');
+              // 页面跳转到客户端订单详情
             // 使用以上方式判断前端返回,微信团队郑重提示：
                   //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
             } 
@@ -477,6 +479,7 @@ export default {
       // });
       this.$layer.alert("订单信息 金额等等", {
         title: '下单成功',
+        btn: '确定支付',
         shade: true,//是否显示遮罩
         shadeClose: true,//点击遮罩是否关闭
       }, function (layerid) {
