@@ -4,7 +4,7 @@
     <ul class="nav-container">
       <div class="go-back">
         <i class="fa fa-angle-left" aria-hidden="true"></i>
-        <span>返回</span>
+        <span>所有订单</span>
       </div>
       <h2>订单详情</h2>
     </ul>

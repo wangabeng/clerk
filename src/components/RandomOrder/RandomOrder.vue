@@ -384,7 +384,7 @@ export default {
                       }, function (layerid) {
                         // 调用统一支付下单接口 12接口
 
-                        _this.getWeixinPay (res.data)
+                        _this.getWeixinPay (res.data); // orderNumber订单号传入
                         _this.$layer.close(layerid);
 
                       });                  
@@ -415,7 +415,7 @@ export default {
                     if (res.code == 0) {
                       console.log('接口12下单结果:', res.data.parameters);
                       // 利用生成的签名参数调用微信支付  _this.weixinPay() 把签名传入
-                      _this.weixinPay(res.data.parameters);
+                      _this.weixinPay(res.data.parameters, orderNumber);
                       // 弹出层 提示支付
                       /*_this.$layer.alert("订单信息 金额等等", {
                         title: '下单成功',
@@ -434,7 +434,7 @@ export default {
       }); 
     },
     // 测试微信支付
-    weixinPay (signJson) {
+    weixinPay (signJson, orderNumber) {
       var _this = this;
       // {"code":0,"msg":"\u6210\u529f","count":0,"data":{"parameters":{"appId":"wxa3c69deeaa1b4948","timeStamp":"1570781810","nonceStr":"zFyFs5Ls9mSaZqRBr4HfiggpGB5tmnNm","package":"prepay_id=wx1116165084859627e71a842f1773051300","signType":"MD5","paySign":"48298FDD372B96D0DF056E8E5BB87B09"}}}
       function onBridgeReady(){
@@ -455,7 +455,7 @@ export default {
                 time: 1
               }, function (layerid) {
                 // this.$router.push({ path: `/clerkinfo/${id}`});
-                _this.$router.push({ path: `/userorderdetail`});
+                _this.$router.push({ path: `/userorderdetail`}); // 订单号为 orderNumber
                 _this.$layer.close(layerid);
                 console.log('支付成功');
               });

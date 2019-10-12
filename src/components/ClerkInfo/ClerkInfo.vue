@@ -380,7 +380,7 @@ export default {
                   _this.PriceInfoArr = _this.clertDetail.service_price;
                 },  
       error: function(e){  
-                   console.log(e);  
+                   console.log(e);
       }  
     });
 
@@ -493,7 +493,7 @@ export default {
       }
 
     },
-    // 立即下单
+    // 立即下单 正式下单
     orderNow () {
       var _this = this;
       // 如果微信号为空 提示请输入微信号
@@ -521,8 +521,24 @@ export default {
                     TokenError(res.code, _this); // token错误
                     console.log('下单结果为：', res.code);
                     if (res.code == 0) {
-                      // 如果下单成功 调用微信支付
-                      _this.$layer.alert("恭喜 下单成功！");
+                      console.log('下单结果:', res.data);
+                      // 弹出下单成功 请求12接口 服务端调用统一下单api
+                      // 弹出层 提示支付
+                      _this.$layer.alert(`
+                          <p>总金额：¥${_this.total}元</p>
+                          <p>订单号：¥${res.data}</p>
+                        `, {
+                        title: '下单成功',
+                        btn: '确定支付',
+                        shade: true,//是否显示遮罩
+                        shadeClose: true,//点击遮罩是否关闭
+                      }, function (layerid) {
+                        // 调用统一支付下单接口 12接口
+
+                        _this.getWeixinPay (res.data); // orderNumber订单号传入
+                        _this.$layer.close(layerid);
+
+                      });
                     }
 
                   },  
@@ -530,7 +546,85 @@ export default {
                      console.log(e);  
         }  
       });
-    }
+    },
+    // 接口12 获取支付参数签名等
+    getWeixinPay (orderNumber) {
+      var _this = this;
+      // 测试接口12
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/unifiedorder",  // 接口12
+        dataType: "json",  
+        data: {
+          order_no: orderNumber,
+        },  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",   
+        success: function(res){  
+                    TokenError(res.code, _this); // token错误
+                    if (res.code == 0) {
+                      console.log('接口12下单结果:', res.data.parameters);
+                      // 利用生成的签名参数调用微信支付  _this.weixinPay() 把签名传入
+                      _this.weixinPay(res.data.parameters, orderNumber);
+                      // 弹出层 提示支付
+                      /*_this.$layer.alert("订单信息 金额等等", {
+                        title: '下单成功',
+                        shade: true,//是否显示遮罩
+                        shadeClose: true,//点击遮罩是否关闭
+                      }, function (layerid) {
+                        console.log('确定');
+                        _this.$layer.close(layerid);
+                      });*/
+                    }
+
+                  },  
+        error: function(e){  
+                     console.log(e);  
+        }  
+      }); 
+    },
+    // 测试微信支付
+    weixinPay (signJson, orderNumber) {
+      var _this = this;
+      // {"code":0,"msg":"\u6210\u529f","count":0,"data":{"parameters":{"appId":"wxa3c69deeaa1b4948","timeStamp":"1570781810","nonceStr":"zFyFs5Ls9mSaZqRBr4HfiggpGB5tmnNm","package":"prepay_id=wx1116165084859627e71a842f1773051300","signType":"MD5","paySign":"48298FDD372B96D0DF056E8E5BB87B09"}}}
+      function onBridgeReady(){
+         WeixinJSBridge.invoke(
+            'getBrandWCPayRequest', signJson/*{
+               "appId":"wxa3c69deeaa1b4948",     //公众号名称，由商户传入     
+               "timeStamp":"1570781810",         //时间戳，自1970年以来的秒数     
+               "nonceStr":"zFyFs5Ls9mSaZqRBr4HfiggpGB5tmnNm", //随机串     
+               "package":"prepay_id=wx1116165084859627e71a842f1773051300",     
+               "signType":"MD5",         //微信签名方式：     
+               "paySign":"48298FDD372B96D0DF056E8E5BB87B09" //微信签名 
+            }*/,
+            function(res){
+            if(res.err_msg == "get_brand_wcpay_request:ok" ){
+              // alert('成功啦');
+              // 页面跳转到客户端订单详情
+              _this.$layer.msg('订单支付成功...',{
+                time: 1
+              }, function (layerid) {
+                // this.$router.push({ path: `/clerkinfo/${id}`});
+                _this.$router.push({ path: `/userorderdetail`}); // 订单号为 orderNumber
+                _this.$layer.close(layerid);
+                console.log('支付成功');
+              });
+            // 使用以上方式判断前端返回,微信团队郑重提示：
+                  //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+            } 
+         }); 
+      }
+      if (typeof WeixinJSBridge == "undefined"){
+         if( document.addEventListener ){
+             document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+         }else if (document.attachEvent){
+             document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+             document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+         }
+      }else{
+         onBridgeReady();
+      }
+    },
   },
   mounted () {
 
