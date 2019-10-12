@@ -1,10 +1,10 @@
 <template>
   <div class="admin-center">
     <div class="option-wrapper">
-      <div class="each-line-switch">
+      <!-- <div class="each-line-switch">
         <span>接受随机单提醒</span>
         <switch-btn ref='btnComponent1' :propStatus='false'></switch-btn>
-      </div>
+      </div> -->
       <div class="each-line-switch">
         <span>语音连麦</span>
         <switch-btn ref='btnComponent2' :propStatus='false'></switch-btn>

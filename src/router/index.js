@@ -59,7 +59,7 @@ const router = new Router({
       component: ClerkLists,
       meta: {
         title: '店员列表',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     {
@@ -68,7 +68,7 @@ const router = new Router({
       component: ClerkInfo,
       meta: {
         title: '店员信息',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     {
@@ -77,7 +77,7 @@ const router = new Router({
       component: RandomOrder,
       meta: {
         title: '随机下单',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     {
@@ -86,7 +86,7 @@ const router = new Router({
       component: ApplyNew,
       meta: {
         title: '新店员申请',
-        // requireAuth: true
+        requireAuth: true
       },
     },
 
@@ -97,7 +97,7 @@ const router = new Router({
       component: AdminCenter,
       meta: {
         title: '个人中心',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     {
@@ -106,7 +106,7 @@ const router = new Router({
       component: OrderCenter,
       meta: {
         title: '订单中心',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     {
@@ -115,7 +115,7 @@ const router = new Router({
       component: OrderDetail,
       meta: {
         title: '订单详情',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     
@@ -125,7 +125,7 @@ const router = new Router({
       component: OrderHall,
       meta: {
         title: '接单大厅',
-        // requireAuth: true
+        requireAuth: true
       },
     },
 
@@ -137,7 +137,7 @@ const router = new Router({
       component: UserOrderlist,
       meta: {
         title: '订单中心',
-        // requireAuth: true
+        requireAuth: true
       },
     },
     {
@@ -146,7 +146,7 @@ const router = new Router({
       component: UserOrderdetail,
       meta: {
         title: '订单详情',
-        // requireAuth: true
+        requireAuth: true
       },
     },
 
