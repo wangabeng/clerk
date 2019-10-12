@@ -385,7 +385,6 @@ export default {
                         // 调用统一支付下单接口 12接口
 
                         _this.getWeixinPay (res.data)
-
                         _this.$layer.close(layerid);
 
                       });                  
@@ -436,6 +435,7 @@ export default {
     },
     // 测试微信支付
     weixinPay (signJson) {
+      var _this = this;
       // {"code":0,"msg":"\u6210\u529f","count":0,"data":{"parameters":{"appId":"wxa3c69deeaa1b4948","timeStamp":"1570781810","nonceStr":"zFyFs5Ls9mSaZqRBr4HfiggpGB5tmnNm","package":"prepay_id=wx1116165084859627e71a842f1773051300","signType":"MD5","paySign":"48298FDD372B96D0DF056E8E5BB87B09"}}}
       function onBridgeReady(){
          WeixinJSBridge.invoke(
@@ -449,8 +449,16 @@ export default {
             }*/,
             function(res){
             if(res.err_msg == "get_brand_wcpay_request:ok" ){
-              alert('成功啦');
+              // alert('成功啦');
               // 页面跳转到客户端订单详情
+              _this.$layer.msg('订单支付成功...',{
+                time: 1
+              }, function (layerid) {
+                // this.$router.push({ path: `/clerkinfo/${id}`});
+                _this.$router.push({ path: `/userorderdetail`});
+                _this.$layer.close(layerid);
+                console.log('支付成功');
+              });
             // 使用以上方式判断前端返回,微信团队郑重提示：
                   //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
             } 
@@ -477,7 +485,7 @@ export default {
       //   style: 'background-color:#09C1FF; color:#fff; border:none;', // 自定风格
       //   time: 2 //2秒后自动关闭
       // });
-      this.$layer.alert("订单信息 金额等等", {
+      /*this.$layer.alert("订单信息 金额等等", {
         title: '下单成功',
         btn: '确定支付',
         shade: true,//是否显示遮罩
@@ -485,6 +493,12 @@ export default {
       }, function (layerid) {
         console.log('确定');
         _this.$layer.close(layerid);
+      });*/
+      _this.$layer.msg('订单支付成功...',{
+        time: 1
+      }, function (layerid) {
+        _this.$layer.close(layerid);
+        console.log('支付成功');
       });
 
     }
