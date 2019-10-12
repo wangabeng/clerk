@@ -526,7 +526,7 @@ export default {
                       // 弹出层 提示支付
                       _this.$layer.alert(`
                           <p>总金额：¥${_this.total}元</p>
-                          <p>订单号：¥${res.data}</p>
+                          <p>订单号：${res.data}</p>
                         `, {
                         title: '下单成功',
                         btn: '确定支付',

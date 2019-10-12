@@ -27,27 +27,27 @@
 
     <!-- 导航区 -->
     <ul class="nav-container">
-      <li class='active'><a href="javascript:;">全部</a></li>
-      <li><a href="javascript:;">指定单</a></li>
-      <li><a href="javascript:;">随机单</a></li>
+      <li class='active'><a href="javascript:;" @click='tabHallOrder(0)'>全部</a></li>
+      <li><a href="javascript:;" @click='tabHallOrder(2)'>指定单</a></li>
+      <li><a href="javascript:;" @click='tabHallOrder(1)'>随机单</a></li>
     </ul>
 
     <!-- 用户单列表 -->
     <div class="client-order-lists">
       <!-- 每一个订单 -->
-      <div class="each-order">
-        <p class='line'>订单编号：<span class='content'>5565656565564555</span></p>
-        <p class='line'>下单时间：<span class='content'>2019年08月11日 16:16:25</span></p>
-        <p>用户名称：<span class='content'>张三</span></p>
+      <div class="each-order" v-for='(item, index) in allHallOrders'>
+        <p class='line'>订单编号：<span class='content'>{{item.order_no}}</span></p>
+        <p class='line'>下单时间：<span class='content'>{{item.create_time}}</span></p>
+        <p>用户名称：<span class='content'>{{item.nick_name}}</span></p>
         <p>服务类型：<span class='content'>文字语音条</span></p>
-        <p>时&emsp;&emsp;长：<span class='content'>一天 × 1</span></p>
-        <p>价&emsp;&emsp;格：<span class='content'>88.00</span></p>
-        <p>性&emsp;&emsp;别：<span class='content'>小哥哥</span></p>
-        <p>等&emsp;&emsp;级：<span class='content'>金牌</span></p>
-        <p>订单类型：<span class='content'>指定</span></p>
-        <p class='line'>其他要求：<span class='content'>文字文字说明</span></p>
-        <input type="button" value='立即抢单'>
-        <!-- <input type="button" value='开始接单'> -->
+        <p>时&emsp;&emsp;长：<span class='content'>{{item.time}} × {{item.num}}</span></p>
+        <p>价&emsp;&emsp;格：<span class='content'>¥{{item.price}}</span></p>
+        <p>性&emsp;&emsp;别：<span class='content'>{{item.sex == 1? '小哥哥': '小姐姐'}}</span></p><!-- 1小哥哥 2小姐姐 -->
+        <p>等&emsp;&emsp;级：<span class='content'>{{item.level_name}}</span></p>
+        <p>订单类型：<span class='content'>{{item.order_type == 1? '随机单': '指定单'}}</span></p> <!-- 1随机单  2指定单 -->
+        <p class='line'>其他要求：<span class='content'></span></p>
+        <input type="button" value='立即抢单' v-if='item.order_type == 1'> <!-- 随机单 -->
+        <input type="button" value='开始接单' v-if='item.order_type == 2'> <!-- 指定单 -->
       </div>
     </div>
     
@@ -82,6 +82,7 @@ export default {
   name: 'AdminCenter',
   data () {
     return {
+      // 轮播图
       swiperOption: {
       　　pagination: {
       　　　　el: '.swiper-pagination',
@@ -99,6 +100,12 @@ export default {
           observer: true,
           observeParents: true,
       },
+
+      // 接单大厅接口12查询条件
+      curPage: 1, // 默认第一页
+      order_type: 0, // 订单类型 0表示所有订单  1随机单  2指定单
+
+      allHallOrders: [], // 所有接单大厅数据
     };
   },
   props: {
@@ -111,30 +118,37 @@ export default {
     swiperSlide
   },
   created () {
-    $.ajax({
-       type: "POST",  
-       url: BASEURL + "/get_accept_orders",  
-       contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
-       data: {
-        'order_type': 1, // 0 所有 1   2
-        'page': 1,
-      },  
-       headers: {'token': localStorage.getItem("shiguangshudong")},
-       dataType: "json",  
-       success: function(data){  
-                  console.log("接口19成功");  
-                  console.log(data.data);
-                  console.log("接口19 结束");
-                },  
-       error: function(e){  
-                   console.log(e);  
-       }  
-    });
+    this.getHallOrder();
   },
   mounted () {
   },
   methods: {
-
+    // 获取接单大厅的订单列表
+    getHallOrder () {
+      var _this = this;
+      $.ajax({
+         type: "POST",  
+         url: BASEURL + "/get_accept_orders",  
+         contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+         data: {
+          'order_type': _this.order_type, // 0 所有 1   2
+          'page': _this.curPage,
+        },  
+         headers: {'token': localStorage.getItem("shiguangshudong")},
+         dataType: "json",  
+         success: function(data){  
+                    console.log("接口19成功");  
+                    console.log(data.data);
+                    _this.allHallOrders = _this.allHallOrders.concat(data.data);
+                    // _this.allHallOrders = data.data;
+                    console.log(_this.allHallOrders);
+                    console.log("接口19 结束");
+                  },  
+         error: function(e){  
+                     console.log(e);  
+         }  
+      });
+    }
   }
 }
 </script>
