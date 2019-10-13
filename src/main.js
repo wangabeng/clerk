@@ -17,12 +17,14 @@ Vue.use(AwesomePicker)
 import layer from 'vue-layer'
 Vue.prototype.$layer = layer(Vue);
 
+import store from './store/index'
 
 Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
   router,
+  store,
   updated () {
 
   }

@@ -123,7 +123,6 @@ import {GetQueryString, TokenError} from "src/api/utils.js";
 
 
 // import InfiniteLoading from 'vue-infinite-loading';
-// const api = '//hn.algolia.com/api/v1/search_by_date?tags=story';
 
 export default {
   name: 'ClerkLists',
