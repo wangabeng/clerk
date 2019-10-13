@@ -30,7 +30,7 @@
         <div class="level-price">
           <div class="level-wrapper">
             <i class="fa fa-diamond" aria-hidden="true"></i>
-            <span>{{clertDetail.salesman.level_name}}</span>
+            <span>{{clertDetail.salesman.level}}</span>
           </div>
           <p class="price-form">{{clertDetail.salesman.price}}</p>
         </div>
@@ -81,20 +81,16 @@
       @click='closeWin'></div>
 
     <!-- 购买弹出窗 -->
-    <div class="order-window-random" :class="{'open': maskShow}">
+    <div class="order-window" :class="{'open': maskShow}">
       <!-- 主图及选择规格 -->
       <div class="top-info">
         <img class='close-icon' src="~common/image/close-icon.png" 
           @click='closeWin' alt="">
-        <div class="pic"><img  src="~common/image/question.png" alt=""></div>
+        <div class="pic"><img :src="clertDetail.salesman.image_urls[0]" alt=""></div>
         <div class="sum-txt">
-          <p class='amount'>¥<span v-if='curPrice'>{{curPrice}}</span><span v-if='!curPrice'>-</span>元</p>
-          <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;
-            <span v-if='typeList[CurTypeIndex]'>{{typeList[CurTypeIndex].service_name}}</span>;&nbsp;&nbsp;时长&nbsp;
-            <span v-if='timeList[curTimeIndex]'>{{timeList[curTimeIndex]&&timeList[curTimeIndex].time}}</span>
-            <span v-if='!timeList[curTimeIndex]'>请选择时长</span>
-          </p>
-          <p class="check-note" v-if='curTimeIndex==-1&&ifPlace'>请选择服务时长</p>
+          <p class='amount'><span v-if='!curPickYX'>{{clertDetail.salesman.price}}</span><span v-if='curPickYX'>¥{{curPickYX}}元</span></p>
+          <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;{{curPickX}};&nbsp;&nbsp;时长&nbsp;{{curPickY}}</p>
+          <p class="check-note" v-if='formCheckFlag && !curPickYX'>请选择服务类型及时长</p>
         </div>
       </div>
       <!-- 选择规格区 -->
@@ -102,10 +98,17 @@
         <!-- 滚动区 -->
         <div class="select-inner">
           <!-- 类型区 -->
+          <!-- <div class="type-area type-time">
+            <ul class="">
+              <li :class="{'active': xIndex =='1'}" @click="selectType('1')">文字语音条</li>
+              <li :class="{'active': xIndex =='2'}" @click="selectType('2')">语音通话</li>
+            </ul>            
+          </div> -->
           <div class="type-area type-time">
-            <ul v-if = 'typeList'>
-              <li v-for='(item, index) in typeList' 
-                :class="{'active': CurTypeIndex ==index}" @click='tabType(item, index)'>{{item.service_name}}</li>
+            <ul class="">
+              <li v-for='(item, index) in typeArr' @click='doPickType(item)' 
+                :class="{'active': picker.x == item.x, 'disable': !item.temp}" 
+                v-if='index!==0'>{{item.txt}}</li>
             </ul>            
           </div>
 
@@ -114,24 +117,25 @@
           <div class="long-area type-time">
             <h4>时长</h4>
             <ul>
-              <li v-if='timeList && item.time' v-for='(item, index) in timeList'  
-                :class="{'active': curTimeIndex ==index}" @click='tabTime(item, index)'>{{item.time}}</li>
+              <li v-for='(item, index) in timeArr' @click='doPickTime(item)' 
+                :class="{'active': picker.y == item.y && item.temp, 'disable': !item.temp}" 
+                v-if='index!==0'>{{item.txt}}</li>
             </ul>
           </div>
           <!-- 购买数量 -->
           <div class="amount-area">
             <h4>购买数量</h4>
-            <div class="amount-wrapper" >
-              <a href="javascript:;"><img src="~common/image/minus-icon.png" alt="" @click='plus'></a>
-              <input type="number" v-model='amountInput'>
-              <a href="javascript:;" ><img src="~common/image/add-icon.png" alt="" @click='add'></a>
+            <div class="amount-wrapper" :class="{'disable': !(picker.x && picker.y)}">
+              <a href="javascript:;" @click='plus'><img src="~common/image/minus-icon.png" alt=""></a>
+              <input type="number"  v-model="amountInput" v-bind:disabled="!(picker.x && picker.y)">
+              <a href="javascript:;" @click='add'><img src="~common/image/add-icon.png" alt=""></a>
             </div>
           </div>
           <!-- 微信号 -->
           <div class="weixin-area form-check">
             <h4>微信号</h4>
-            <input type="text" placeholder="请输入微信号" v-model='weixinnumber'>
-            <p class='check-txt' v-if='ifPlace&&!weixinnumber'>请填写您的微信号</p>
+            <input type="text" placeholder="请输入微信号" v-model='wechatNum'>
+            <p class='check-txt' v-if='formCheckFlag && !wechatNum'>请填写您的微信号</p>
           </div>
 
         </div>
@@ -140,9 +144,9 @@
       <!-- 提交按钮区 -->
       <div class="bot-sub">
         <p class="total">
-          总价：<span v-if='curPrice'>¥{{curPrice * amountInput}}元</span><span v-if='!curPrice'>-</span>
+          总价：<span v-if='total'>¥{{total}}元</span><span v-if='!total'>-</span>
         </p>
-        <input type="button" value='立即下单' @click='placeOrder'>
+        <input type="button" value='立即下单' @click='orderNow'>
       </div>
     </div>
 
@@ -208,10 +212,11 @@ export default {
       xIndex: '', // 1 文字语音 2 语音通话
       yFlag: false, // x轴是否选中
       yIndex: '', // 1 2 3 4 5
+      amountInput: 1, // 默认数量输入框是1
 
       isPlaying: false, // 音频是否处于播放状态
 
-      // amountInput: 1, // 默认数量输入框是1
+      amountInput: 1, // 默认数量输入框是1
       PriceInfoArr: [], // 详情价格数据 二维数组
       picker: {  // 当前选择器 
         y: 0,  // 0代表未选择 y代表往下方向 选择时长 语音 or其他 -1代表 已经选择X情况下对应的Y库存为空
@@ -282,21 +287,6 @@ export default {
       formCheckFlag: false, // 表单提示默认关闭
 
 
-
-      // 1013日调整
-      level: '', // 等级
-
-      typeList: [], // 根据level获取的服务类型集合
-      CurTypeIndex: 0, // 默认当前type 处于激活状态的索引值 默认是1 接单类型 1文字语音条 2语音通话 3游戏陪玩 
-
-      timeList: [], // 当前时长列表 动态改变
-      curTimeIndex: -1, // 当前type确定后的所有时长
-
-      amountInput: 1, // 默认数量输入框是1
-      curPrice: '', // 当前组合价格
-
-      ifPlace: false, // 如果提交正式下单
-      weixinnumber: '', // 微信号
 
     };
   },
@@ -385,14 +375,9 @@ export default {
       dataType: "json",  
       success: function(res){
                   TokenError(res.code, _this); // token错误
-                  if (res.code == 0) {
-                    console.log('详情为：', res.data);
-                    _this.clertDetail = res.data;
-                    _this.PriceInfoArr = _this.clertDetail.service_price;
-                    // 获取等级
-                    _this.level = _this.clertDetail.salesman.level; 
-                  }
-
+                  console.log('详情为：', res.data);
+                  _this.clertDetail = res.data;
+                  _this.PriceInfoArr = _this.clertDetail.service_price;
                 },  
       error: function(e){  
                    console.log(e);
@@ -405,171 +390,142 @@ export default {
     // 下单弹出弹窗
     orderIn () {
       this.maskShow = true;
-      var _this = this;
+    },
+    // 关闭弹窗
+    closeWin () {
+      this.maskShow = false;
+    },
+    // 选择 X轴
+    /*selectType (xIndex) {
+      this.xFlag = true;
+      console.log("选中" + xIndex);
+      this.xIndex = xIndex;
 
-      // 查询根据level获取type 然后根据type获取时长
+      console.log(parseInt(this.xIndex));
+    },*/
+    // 选择时长 Y轴
+    /*selectTime (daysTime) {
+      this.yFlag = true;
+      console.log("选中" + daysTime);
+      this.yIndex = daysTime;
+
+      console.log(parseInt(this.yIndex));
+    },*/
+    // 加库存
+    add () {
+      if (this.picker.x && this.picker.y) {
+        this.amountInput++;
+      }
+    },
+    // 减库存
+    plus () {
+      if (this.picker.x && this.picker.y) {
+        this.amountInput == 1? this.amountInput: this.amountInput--;        
+      }
+
+    },
+    // 播放录音
+    playAudio () {
+      console.log('你点击我了');
+      var ele = this.$refs.audioEle;
+      if (this.isPlaying == false) { // 如果未处在播放状态 则播放
+        console.log('开始播放');
+        this.isPlaying = true;
+        this.$refs.audioEle.play();
+      } else { // 如果处在播放状态 则停止播放
+        console.log('人工结束');
+        this.isPlaying = false;
+        this.$refs.audioEle.pause();
+        this.$refs.audioEle.load();
+      }
+    },
+    // 监听播放结束
+    audioEnd () {
+      // 
+      console.log('结束');
+      this.isPlaying = false;
+    },
+
+    // 选择库存
+    // x轴
+    doPickType (item) {
+      // 先判断当前是否可选 比如已经选择了y 而yx对应的库存数为0 则不可选 return
+      if (!item.temp) { // 已经选择y情况下对应的x库存为空 为true 表示有 空 表示无货 默认为true
+        return;
+      }
+
+      // console.log(item);
+      // 1 改变当前picker中X的值
+      if (this.picker.x == item.x) { // 已经被选中 再次点击 则取消选中
+        this.picker.x = 0; 
+        return;
+      }
+      // 如果不是重复选择 给当前选择器赋新值
+      this.picker.x = item.x; // 如果picker.x == item.x  就处于active状态
+      console.log('当前选择x轴：', this.picker.x);
+      // 2 this x-> y1    y2 y3 遍历 查看库存情况 如果有库存 当前y数据就是可选择状态，如果没有库存，当前y就是禁用状态
+      //  如果y没有被选中
+      for (var  i = 1; i < this.timeArr.length; i++ ) {
+        console.log(this.PriceInfoArr[i][this.picker.x]); // 打印this x -> y1 y2 y3的库存   233 4555 null
+        var XaYx = this.PriceInfoArr[i][this.picker.x]; // 当前价格
+        !!XaYx? this.timeArr[i].temp = true: this.timeArr[i].temp = false; // timeArr[i].temp == false 则为disable状态
+        console.log('分隔符：', this.timeArr[i].temp); 
+      }
+      // 3 添加一个计算属性 计算 选择器中 x y是否都被选中 如果被选中了 input就处于激活状态 可以填写数量
+      // 4 添加一个计算属性 计算库存数 * 数量的值 O了
+    },
+    // y轴
+    doPickTime (item) {
+      if (!item.temp) { 
+        return;
+      }
+      if (this.picker.y == item.y) { // 已经被选中 再次点击 则取消选中
+        this.picker.y = 0; 
+        return;
+      }
+      // 如果不是重复选择 给当前选择器赋新值
+      this.picker.y = item.y; // 如果picker.x == item.x  就处于active状态
+      for (var  i = 1; i < this.typeArr.length; i++ ) {
+        console.log(this.PriceInfoArr[this.picker.y][i]); // 打印this x -> y1 y2 y3的库存   233 4555 null
+        var XxYa = this.PriceInfoArr[this.picker.y][i]; // 当前价格
+        !!XxYa? this.typeArr[i].temp = true: this.typeArr[i].temp = false; 
+        console.log('分隔符：', this.typeArr[i].temp); 
+      }
+
+    },
+    // 立即下单 正式下单
+    orderNow () {
+      var _this = this;
+      // 如果微信号为空 提示请输入微信号
+      // 如果没有选择类型和时间 提示请选择服务类型和时间
+      if ( !_this.wechatNum || !_this.curPickYX) {
+        _this.formCheckFlag = true;
+        return;
+      }
+
+
       $.ajax({
         type: "POST",  
-        url: BASEURL + "/get_types",  // 接口15 根据level 获取服务等级  "文字语音条"  "语音通话"
+        url: BASEURL + "/order",  
         // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
         data: {
-          level: _this.level,
-        },  
-        headers: {'token': localStorage.getItem("shiguangshudong")},
-        dataType: "json",  
-        success: function(res){  
-          TokenError(res.code, _this); // token错误
-
-          if (res.code == 0) {
-            console.log('type为：', res.data); // 0: "文字语音条" 1: "语音通话"  改为：data: [{id: "1", service_name: "文字语音条"}, {id: "2", service_name: "语音通话"}]
-            _this.typeList = res.data;
-
-            // 默认激活状态的type 索引值
-            console.log("默认激活状态的type", _this.CurTypeIndex);
-            _this.findTimeByType(_this.typeList[0].id); // 默认查询第一个
-            // 遍历0: "文字语音条" 1: "语音通话" 查询对应的 时长 存起来
-            // _this.typeList -> [{'文字语音条'：[{time: "半小时"}, {time: ""}] }]
-          }
-
-        },  
-        error: function(e){  
-         console.log(e);  
-        }  
-      });
-
-
-    },
-
-
-    // 根据type查询 时长 typeIndex -> timeList
-    findTimeByType (typeIndex) {
-        var _this = this;
-        $.ajax({
-          type: "POST",  
-          url: BASEURL + "/get_time",  // 接口13 根据服务类型  "文字语音条"  "语音通话" -> 获取时长
-          dataType: "json",  
-          data: {
-            /*level: _this.level, 
-            type: i+1, */
-            level: _this.level, 
-            // type: typeIndex, 
-            type: typeIndex, 
-          },  
-          headers: {'token': localStorage.getItem("shiguangshudong")},
-          dataType: "json",   
-          success: function(res){  
-                      TokenError(res.code, _this); // token错误
-                      // console.log('根据服务类型  "文字语音条"  "语音通话" -> 获取时长:' + typeArr[i] , res.data); 
-                      if (res.code == 0) {
-                        console.log('根据服务类型  "文字语音条"  "语音通话" -> 获取时长:', res.data); 
-                        // 设置typeTimeArr的值 暂时先定死
-                        _this.timeList = res.data; // data: [{id: "1", time: "半小时"}, {id: "2", time: "一小时"}, {id: "3", time: "一天"}, {id: "4", time: "一个月"},…]
-                      }
-                    },  
-          error: function(e){  
-                       console.log(e);  
-          }  
-        }); 
-    },
-    // 切换服务类型 type
-    tabType (item, index) {
-      var _this = this;
-      // 1 切换样式 当前type的激活状态 如果当前点击的index和CurTypeIndex一致 就什么也不做
-      if (index == this.CurTypeIndex) {
-        console.log("没变化");
-        return;
-      } else {
-        this.CurTypeIndex = index;
-        // 2 重新查询 当前type对应的time
-        _this.findTimeByType(item.id);
-        // 3 重新设置时长 未空
-        _this.curTimeIndex = -1;
-        // 4 重新设置价格未空
-        _this.curPrice = '';
-      }
-    },
-    // 切换时长
-    tabTime(item, index) {
-      var _this = this;
-      // 如果index未改变 
-      if (index == this.curTimeIndex) {
-        console.log("没变化");
-        return;
-      } else {
-        this.curTimeIndex = index;
-        // 查询价格
-        _this.findPrice();
-      }
-    },
-        // 查询价格
-    findPrice () {
-        var _this = this;
-        // console.log('这是什么:', _this.timeList[_this.curTimeIndex - 1]);
-        $.ajax({
-          type: "POST",  
-          url: BASEURL + "/get_price",  // 接口10
-          dataType: "json",  
-          data: {
-            level: _this.level, 
-            type: _this.typeList[_this.CurTypeIndex].id, 
-            time: _this.timeList[_this.curTimeIndex].time,
-            /*type: '文字语音条', 
-            time: '半小时',*/
-            num: _this.amountInput,
-          },  
-          headers: {'token': localStorage.getItem("shiguangshudong")},
-          dataType: "json",   
-          success: function(res){  
-                      TokenError(res.code, _this); // token错误
-                      console.log('查询到的价格为:', res.data);
-                      _this.curPrice = res.data.price;
-                    },  
-          error: function(e){  
-                       console.log(e);
-          }  
-        }); 
-    },
-    // 正式下单
-    placeOrder () {
-      var _this = this;
-
-      this.ifPlace = true; // 开关打开 开始验证 并提交
-
-      // 如果微信号和类型为空 无法提交
-      if (!this.weixinnumber || !this.curPrice) {
-        return;
-      }
-      console.log("执行ajax");
-      $.ajax({
-        type: "POST",  
-        url: BASEURL + "/order",  // 接口11
-        dataType: "json",  
-        data: {
           salesman_id: _this.$route.params.id, //"\u963f\u8ff8", // 个人的信息  _this.userinfo.nick_name
-          type: _this.typeList[_this.CurTypeIndex].id, 
-          time: _this.timeList[_this.curTimeIndex].time,
+          type:  _this.typeArr[_this.picker.x].type,
+          time: _this.timeArr[_this.picker.y].type,
           num: _this.amountInput,
-          wechat_num: _this.weixinnumber,
-
-          /*sex: _this.sex,
-          level: _this.level,
-          label: _this.fantag.join(''),
-          other_require: _this.otherDemand,
-          type: _this.typeList[_this.CurTypeIndex].id, 
-          time: _this.timeList[_this.curTimeIndex].time,
-          num: _this.amountInput,
-          wechat_num: _this.weixinnumber,*/
+          wechat_num: _this.wechatNum,
         },  
         headers: {'token': localStorage.getItem("shiguangshudong")},
-        dataType: "json",   
+        dataType: "json",  
         success: function(res){  
                     TokenError(res.code, _this); // token错误
+                    console.log('下单结果为：', res.code);
                     if (res.code == 0) {
                       console.log('下单结果:', res.data);
                       // 弹出下单成功 请求12接口 服务端调用统一下单api
                       // 弹出层 提示支付
                       _this.$layer.alert(`
-                          <p>总金额：¥${_this.curPrice * _this.amountInput}元</p>
+                          <p>总金额：¥${_this.total}元</p>
                           <p>订单号：${res.data}</p>
                         `, {
                         title: '下单成功',
@@ -582,15 +538,14 @@ export default {
                         _this.getWeixinPay (res.data); // orderNumber订单号传入
                         _this.$layer.close(layerid);
 
-                      });                  
+                      });
                     }
 
                   },  
         error: function(e){  
                      console.log(e);  
         }  
-      }); 
-
+      });
     },
     // 接口12 获取支付参数签名等
     getWeixinPay (orderNumber) {
@@ -670,109 +625,6 @@ export default {
          onBridgeReady();
       }
     },
-
-
-
-
-    // 关闭弹窗
-    closeWin () {
-      this.maskShow = false;
-    },
-    // 选择 X轴
-    /*selectType (xIndex) {
-      this.xFlag = true;
-      console.log("选中" + xIndex);
-      this.xIndex = xIndex;
-
-      console.log(parseInt(this.xIndex));
-    },*/
-    // 选择时长 Y轴
-    /*selectTime (daysTime) {
-      this.yFlag = true;
-      console.log("选中" + daysTime);
-      this.yIndex = daysTime;
-
-      console.log(parseInt(this.yIndex));
-    },*/
-    // 加库存
-    add () {
-      this.amountInput++;
-    },
-    // 减库存
-    plus () {
-      this.amountInput == 1? this.amountInput: this.amountInput--;        
-    },
-    // 播放录音
-    playAudio () {
-      console.log('你点击我了');
-      var ele = this.$refs.audioEle;
-      if (this.isPlaying == false) { // 如果未处在播放状态 则播放
-        console.log('开始播放');
-        this.isPlaying = true;
-        this.$refs.audioEle.play();
-      } else { // 如果处在播放状态 则停止播放
-        console.log('人工结束');
-        this.isPlaying = false;
-        this.$refs.audioEle.pause();
-        this.$refs.audioEle.load();
-      }
-    },
-    // 监听播放结束
-    audioEnd () {
-      // 
-      console.log('结束');
-      this.isPlaying = false;
-    },
-
-    // 选择库存
-    // x轴
-    doPickType (item) {
-      // 先判断当前是否可选 比如已经选择了y 而yx对应的库存数为0 则不可选 return
-      if (!item.temp) { // 已经选择y情况下对应的x库存为空 为true 表示有 空 表示无货 默认为true
-        return;
-      }
-
-      // console.log(item);
-      // 1 改变当前picker中X的值
-      if (this.picker.x == item.x) { // 已经被选中 再次点击 则取消选中
-        this.picker.x = 0; 
-        return;
-      }
-      // 如果不是重复选择 给当前选择器赋新值
-      this.picker.x = item.x; // 如果picker.x == item.x  就处于active状态
-      console.log('当前选择x轴：', this.picker.x);
-      // 2 this x-> y1    y2 y3 遍历 查看库存情况 如果有库存 当前y数据就是可选择状态，如果没有库存，当前y就是禁用状态
-      //  如果y没有被选中
-      for (var  i = 1; i < this.timeArr.length; i++ ) {
-        console.log(this.PriceInfoArr[i][this.picker.x]); // 打印this x -> y1 y2 y3的库存   233 4555 null
-        var XaYx = this.PriceInfoArr[i][this.picker.x]; // 当前价格
-        !!XaYx? this.timeArr[i].temp = true: this.timeArr[i].temp = false; // timeArr[i].temp == false 则为disable状态
-        console.log('分隔符：', this.timeArr[i].temp); 
-      }
-      // 3 添加一个计算属性 计算 选择器中 x y是否都被选中 如果被选中了 input就处于激活状态 可以填写数量
-      // 4 添加一个计算属性 计算库存数 * 数量的值 O了
-    },
-    // y轴
-    doPickTime (item) {
-      if (!item.temp) { 
-        return;
-      }
-      if (this.picker.y == item.y) { // 已经被选中 再次点击 则取消选中
-        this.picker.y = 0; 
-        return;
-      }
-      // 如果不是重复选择 给当前选择器赋新值
-      this.picker.y = item.y; // 如果picker.x == item.x  就处于active状态
-      for (var  i = 1; i < this.typeArr.length; i++ ) {
-        console.log(this.PriceInfoArr[this.picker.y][i]); // 打印this x -> y1 y2 y3的库存   233 4555 null
-        var XxYa = this.PriceInfoArr[this.picker.y][i]; // 当前价格
-        !!XxYa? this.typeArr[i].temp = true: this.typeArr[i].temp = false; 
-        console.log('分隔符：', this.typeArr[i].temp); 
-      }
-
-    },
-
-
   },
   mounted () {
 
@@ -824,7 +676,7 @@ export default {
 
 }
 /* 弹出窗 */
-.order-window-random {
+.order-window {
   width: 100%;
   position: fixed;
   z-index: 102;
@@ -838,7 +690,6 @@ export default {
   color: $color-text-dd;
   border-top-left-radius: .1rem;
   border-top-right-radius: .1rem;
-  // display: none;
 
   transform: translateY(100%);
   transition: all 500ms ease-in-out;

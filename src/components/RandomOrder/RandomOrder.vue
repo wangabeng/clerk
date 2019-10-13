@@ -85,7 +85,7 @@
           <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;
             <span v-if='typeList[CurTypeIndex]'>{{typeList[CurTypeIndex].service_name}}</span>;&nbsp;&nbsp;时长&nbsp;
             <span v-if='timeList[curTimeIndex]'>{{timeList[curTimeIndex]&&timeList[curTimeIndex].time}}</span>
-            <span v-if='!timeList[curTimeIndex]'>请选择时长</span>
+            <span v-if='!timeList[curTimeIndex]'>选择时长</span>
           </p>
           <p class="check-note" v-if='curTimeIndex==-1&&ifPlace'>请选择服务时长</p>
         </div>
@@ -182,7 +182,7 @@ export default {
 
       typeList: [], // 根据level获取的服务类型集合
       CurTypeIndex: 0, // 默认当前type 处于激活状态的索引值 默认是1 接单类型 1文字语音条 2语音通话 3游戏陪玩 4连麦哄睡（多种类型用逗号,连接）（必填）
-      CurTypeValue: '', // 值
+      // CurTypeValue: '', // 值
 
       
       timeList: [], // 当前时长列表 动态改变
