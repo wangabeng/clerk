@@ -82,10 +82,8 @@
         <div class="pic"><img  src="~common/image/question.png" alt=""></div>
         <div class="sum-txt">
           <p class='amount'>¥<span v-if='curPrice'>{{curPrice}}</span><span v-if='!curPrice'>-</span>元</p>
-          <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;
-            <span v-if='typeList[CurTypeIndex]'>{{typeList[CurTypeIndex].service_name}}</span>;&nbsp;&nbsp;时长&nbsp;
+          <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;<span>{{typeList[CurTypeIndex]}}</span>;&nbsp;&nbsp;时长&nbsp;
             <span v-if='timeList[curTimeIndex]'>{{timeList[curTimeIndex]&&timeList[curTimeIndex].time}}</span>
-            <span v-if='!timeList[curTimeIndex]'>请选择时长</span>
           </p>
           <p class="check-note" v-if='curTimeIndex==-1&&ifPlace'>请选择服务时长</p>
         </div>
@@ -98,7 +96,7 @@
           <div class="type-area type-time">
             <ul v-if = 'typeList'>
               <li v-for='(item, index) in typeList' 
-                :class="{'active': CurTypeIndex ==index}" @click='tabType(item, index)'>{{item.service_name}}</li>
+                :class="{'active': CurTypeIndex ==index}" @click='tabType(item, index)'>{{item}}</li>
             </ul>            
           </div>
 
@@ -220,17 +218,14 @@ export default {
           dataType: "json",  
           success: function(res){  
             TokenError(res.code, _this); // token错误
+            console.log('type为：', res.data); // 0: "文字语音条" 1: "语音通话"
+            _this.typeList = res.data;
 
-            if (res.code == 0) {
-              console.log('type为：', res.data); // 0: "文字语音条" 1: "语音通话"  改为：data: [{id: "1", service_name: "文字语音条"}, {id: "2", service_name: "语音通话"}]
-              _this.typeList = res.data;
-
-              // 默认激活状态的type 索引值
-              console.log("默认激活状态的type", _this.CurTypeIndex);
-              _this.findTimeByType(_this.typeList[0].id); // 默认查询第一个
-              // 遍历0: "文字语音条" 1: "语音通话" 查询对应的 时长 存起来
-              // _this.typeList -> [{'文字语音条'：[{time: "半小时"}, {time: ""}] }]
-            }
+            // 默认激活状态的type 索引值
+            console.log("默认激活状态的type", _this.CurTypeIndex);
+            _this.findTimeByType(_this.typeList[0]); // 默认查询第一个
+            // 遍历0: "文字语音条" 1: "语音通话" 查询对应的 时长 存起来
+            // _this.typeList -> [{'文字语音条'：[{time: "半小时"}, {time: ""}] }]
 
           },  
           error: function(e){  
@@ -270,11 +265,9 @@ export default {
           success: function(res){  
                       TokenError(res.code, _this); // token错误
                       // console.log('根据服务类型  "文字语音条"  "语音通话" -> 获取时长:' + typeArr[i] , res.data); 
-                      if (res.code == 0) {
-                        console.log('根据服务类型  "文字语音条"  "语音通话" -> 获取时长:', res.data); 
-                        // 设置typeTimeArr的值 暂时先定死
-                        _this.timeList = res.data; // data: [{id: "1", time: "半小时"}, {id: "2", time: "一小时"}, {id: "3", time: "一天"}, {id: "4", time: "一个月"},…]
-                      }
+                      console.log('根据服务类型  "文字语音条"  "语音通话" -> 获取时长:', res.data); 
+                      // 设置typeTimeArr的值 暂时先定死
+                      _this.timeList = res.data;
                     },  
           error: function(e){  
                        console.log(e);  
@@ -291,7 +284,7 @@ export default {
       } else {
         this.CurTypeIndex = index;
         // 2 重新查询 当前type对应的time
-        _this.findTimeByType(item.id);
+        _this.findTimeByType(item);
         // 3 重新设置时长 未空
         _this.curTimeIndex = -1;
         // 4 重新设置价格未空
@@ -329,7 +322,7 @@ export default {
           dataType: "json",  
           data: {
             level: _this.level, 
-            type: _this.typeList[_this.CurTypeIndex].id, 
+            type: _this.typeList[_this.CurTypeIndex], 
             time: _this.timeList[_this.curTimeIndex].time,
             /*type: '文字语音条', 
             time: '半小时',*/
@@ -343,7 +336,7 @@ export default {
                       _this.curPrice = res.data.price;
                     },  
           error: function(e){  
-                       console.log(e);
+                       console.log(e);  
           }  
         }); 
     },
@@ -367,7 +360,7 @@ export default {
           level: _this.level,
           label: _this.fantag.join(''),
           other_require: _this.otherDemand,
-          type: _this.typeList[_this.CurTypeIndex].id, 
+          type: _this.typeList[_this.CurTypeIndex], 
           time: _this.timeList[_this.curTimeIndex].time,
           num: _this.amountInput,
           wechat_num: _this.weixinnumber,
