@@ -86,13 +86,14 @@
       <div class="top-info">
         <img class='close-icon' src="~common/image/close-icon.png" 
           @click='closeWin' alt="">
-        <div class="pic"><img  src="~common/image/question.png" alt=""></div>
+        <div class="pic"><img :src="clertDetail.salesman.image_urls[0]" alt=""></div>
         <div class="sum-txt">
-          <p class='amount'>¥<span v-if='curPrice'>{{curPrice}}</span><span v-if='!curPrice'>-</span>元</p>
+          <p class='amount'  v-if='!curPrice'><span>{{clertDetail.salesman.price}}</span></p>
+          <p class='amount'  v-if='curPrice'>¥<span>{{curPrice}}</span><span v-if='!curPrice'>-</span>元</p>
           <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;
             <span v-if='typeList[CurTypeIndex]'>{{typeList[CurTypeIndex].service_name}}</span>;&nbsp;&nbsp;时长&nbsp;
             <span v-if='timeList[curTimeIndex]'>{{timeList[curTimeIndex]&&timeList[curTimeIndex].time}}</span>
-            <span v-if='!timeList[curTimeIndex]'>请选择时长</span>
+            <span v-if='!timeList[curTimeIndex]'>请选择</span>
           </p>
           <p class="check-note" v-if='curTimeIndex==-1&&ifPlace'>请选择服务时长</p>
         </div>

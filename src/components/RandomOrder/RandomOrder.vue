@@ -85,7 +85,7 @@
           <p class='size'>选择&nbsp;&nbsp;服务类型&nbsp;
             <span v-if='typeList[CurTypeIndex]'>{{typeList[CurTypeIndex].service_name}}</span>;&nbsp;&nbsp;时长&nbsp;
             <span v-if='timeList[curTimeIndex]'>{{timeList[curTimeIndex]&&timeList[curTimeIndex].time}}</span>
-            <span v-if='!timeList[curTimeIndex]'>选择时长</span>
+            <span v-if='!timeList[curTimeIndex]'>请选择</span>
           </p>
           <p class="check-note" v-if='curTimeIndex==-1&&ifPlace'>请选择服务时长</p>
         </div>
