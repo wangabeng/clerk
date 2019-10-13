@@ -22,6 +22,7 @@ export default {
     tabOpen: function () {
       this.curStatus = !this.curStatus;
       // console.log(this.curStatus);
+      this.$emit('switchFunction', this.curStatus);
     }
   }
 }

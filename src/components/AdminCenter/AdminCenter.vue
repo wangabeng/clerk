@@ -7,11 +7,15 @@
       </div> -->
       <div class="each-line-switch">
         <span>语音连麦</span>
-        <switch-btn ref='btnComponentSound' :propStatus='userInfo.salesman.is_voice == 1? true: false'></switch-btn>
+        <switch-btn ref='btnComponentSound' 
+          :propStatus='userInfo.salesman.is_voice == 1? true: false' 
+          @switchFunction = "tabSound"></switch-btn>
       </div>
       <div class="each-line-switch">
         <span>在线</span>
-        <switch-btn ref='btnComponentOnline' :propStatus='userInfo.salesman.is_online == 1? true: false'></switch-btn>
+        <switch-btn ref='btnComponentOnline' 
+          :propStatus='userInfo.salesman.is_online == 1? true: false' 
+          @switchFunction = "tabOnline"></switch-btn>
       </div>
     </div>
 
@@ -46,10 +50,6 @@
 
     <!-- 测试区 -->
     <input type="button" name="" value='test' @click='getcur'>
-    ifSound{{$refs.btnComponentSound.curStatus}}
-    <br>
-    btnComponentOnline
-    {{$refs.btnComponentOnline.curStatus}}
 
     <!-- 管理端公共 footer -->
     <clerk-footer :propSubject='"adminCenter"'></clerk-footer>
@@ -130,6 +130,15 @@ export default {
     // 点击进入全部订单
     allOrder () {
       this.$router.push('/ordercenter');
+    },
+    // 监听连麦
+    tabSound (data) {
+      console.log('父组件监听到：', data);
+      // ajax请求 改变连麦状态
+    },
+    // 监听是否在线
+    tabOnline (data) {
+      console.log('tabOnline父组件监听到：', data);
     }
   }
 }
