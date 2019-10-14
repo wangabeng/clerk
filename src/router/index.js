@@ -140,7 +140,7 @@ const router = new Router({
       },
     },
     {
-      path: '/orderdetail', // 订单中心 订单列表（管理端）
+      path: '/orderdetail/:id', // 订单中心 订单列详情（管理端）
       name: 'OrderDetail',
       component: OrderDetail,
       meta: {

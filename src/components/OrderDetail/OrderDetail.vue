@@ -2,7 +2,7 @@
   <div class="order-center">
     <!-- 导航区 -->
     <ul class="nav-container">
-      <div class="go-back">
+      <div class="go-back" @click='goBack'>
         <i class="fa fa-angle-left" aria-hidden="true"></i>
         <span>返回</span>
       </div>
@@ -60,8 +60,25 @@
 import SwitchBtn from 'base/SwitchBtn/SwitchBtn.vue'
 import ClerkFooter from 'base/ClerkFooter/ClerkFooter.vue'
 
+import $ from 'jquery'
+
+// 用封装好的axios
+import axios from 'src/api/axios';
+import Qs from 'qs';
+import {BASEURL} from "src/api/config.js";
+
+import getToken from 'src/api/getToken.js';
+// import {allList} from 'src/api/mockdata.js';
+import {GetQueryString, TokenError} from "src/api/utils.js";
+
+
 export default {
   name: 'OrderDetail',
+  data () {
+    return {
+      orderDetail: [], // 订单详情
+    }
+  },
   props: {
     msg: String
   },
@@ -69,10 +86,38 @@ export default {
     SwitchBtn,
     ClerkFooter
   },
+  created () {
+    console.log(this.$route.params.id);
+    var _this = this;
+    $.ajax({
+      type: "POST",  
+      url: BASEURL + "/get_order_detail",  
+      // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+      data: {
+        order_no: _this.$route.params.id,
+      },  
+      headers: {'token': localStorage.getItem("shiguangshudong")},
+      dataType: "json",  
+      success: function(res){
+                  TokenError(res.code, _this); // token错误
+                  if (res.code == 0) {
+                    console.log('详情为：', res.data);
+                    _this.orderDetail = res.data;
+                  }
+
+                },  
+      error: function(e){  
+                   console.log(e);
+      }  
+    });
+  },
   mounted () {
   },
   methods: {
     getcur () {
+    },
+    goBack () {
+      this.$router.back(-1);
     }
   }
 }

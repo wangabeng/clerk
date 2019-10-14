@@ -13,7 +13,8 @@
     <!-- 用户单列表 -->
     <div class="client-order-lists">
       <!-- 每一个订单 -->
-      <div class="each-order" v-for='(item, index) in showOrders' v-if='showOrders'>
+      <div class="each-order" v-for='(item, index) in showOrders' v-if='showOrders' 
+        @click='getOrderDetail(item.order_no)'>
         <p class='line'>订单编号：<span class='content'>{{item.order_no}}</span></p>
         <p class='line'>下单时间：<span class='content'>{{item.create_time}}</span></p>
         <p>订单类型：<span class='content'>{{item.order_type =='1'? '随机单': '指定单'}}</span></p><!-- 订单类型  1随机单  2指定单 -->
@@ -286,6 +287,9 @@ export default {
             return
             break;
       }
+    },
+    getOrderDetail (id) {
+      this.$router.push({ name: 'OrderDetail', params:{ id: id}});
     }
   }
 }
