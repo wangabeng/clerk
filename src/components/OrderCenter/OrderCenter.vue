@@ -2,17 +2,17 @@
   <div class="order-center">
     <!-- 导航区 -->
     <ul class="nav-container">
+      <!-- 1待接单  2已接单未服务  3服务中  4服务完成 -->
       <li class='active'><a href="javascript:;">全部</a></li>
+      <li><a href="javascript:;">待接单</a></li>
       <li><a href="javascript:;">待服务</a></li>
-      <li><a href="javascript:;">服务中</a></li>
-      <li><a href="javascript:;">已结束</a></li>
-      <li><a href="javascript:;">已取消</a></li>
+      <li><a href="javascript:;">已完成</a></li>
     </ul>
 
     <!-- 用户单列表 -->
     <div class="client-order-lists">
       <!-- 每一个订单 -->
-      <div class="each-order" v-for='(item, index) in allOrders' v-if='allOrders'>
+      <div class="each-order" v-for='(item, index) in showOrders' v-if='showOrders'>
         <p class='line'>订单编号：<span class='content'>{{item.order_no}}</span></p>
         <p class='line'>下单时间：<span class='content'>{{item.create_time}}</span></p>
         <p>订单类型：<span class='content'>{{item.order_type =='1'? '随机单': '指定单'}}</span></p><!-- 订单类型  1随机单  2指定单 -->
@@ -23,7 +23,7 @@
         <p>价&emsp;&emsp;格：<span class='content'>{{item.price}}</span></p>
         
         <!-- 待接单 已接单 已完成 -->
-        <input type="button" value='待接单'>
+        <input type="button" :value="item.service_status"><!-- 接单状态  1待接单  2已接单未服务  3服务中  4服务完成 -->
         <!-- <input type="button" value='开始接单'> -->
       </div>
     </div>
@@ -74,6 +74,41 @@ export default {
   components: {
     SwitchBtn,
     ClerkFooter
+  },
+  computed: {
+    showOrders () {
+      var arrys = [];
+      for (var i = 0; i < this.allOrders.length; i++) {
+        this.allOrders[i].service_status;
+        // 接单状态  1待接单  2已接单未服务  3服务中  4服务完成
+        switch(this.allOrders[i].service_status) {
+          case '1':
+              this.allOrders[i].service_status = '待接单'
+              break;
+          case '2':
+              this.allOrders[i].service_status = '已接单未服务'
+              break;
+          case '3':
+              this.allOrders[i].service_status = '服务中'
+              break;
+          case '4':
+              this.allOrders[i].service_status = '服务完成'
+              break;     
+          default:
+              break;
+        } 
+        arrys.push(this.allOrders[i]);
+      }
+      return arrys;
+
+      /*var _this = this;
+      if (_this.filterActor == '0') {
+        return this.allOrders;
+      } else {
+        return this.allOrders.filter((element) => (element.order_type == _this.filterActor));
+      }*/
+
+    }
   },
   created () {
     var _this = this;
@@ -162,7 +197,7 @@ export default {
       border-radius: .1rem;
       margin-top: .3rem;
       padding: .2rem;
-      padding-right: .6rem;
+      padding-right: 1rem;
       box-sizing: border-box;
       font-size: .22rem;
       line-height: 1.5;

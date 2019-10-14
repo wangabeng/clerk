@@ -189,9 +189,9 @@ export default {
           'order_type': _this.order_type, // 0 所有 1   2
           'page': _this.curPage,
         },  
-         headers: {'token': localStorage.getItem("shiguangshudong")},
-         dataType: "json",  
-         success: function(res){  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",  
+        success: function(res){  
                     console.log("接口19成功");  
                     console.log(res.data);
                     _this.allHallOrders = _this.allHallOrders.concat(res.data);
@@ -199,9 +199,9 @@ export default {
                     console.log(_this.allHallOrders);
                     console.log("接口19 结束");
                   },  
-         error: function(e){
+        error: function(e){
                     console.log(e);  
-         }  
+        }  
       });
     },
     // 上拉刷新 监听页面滚动
