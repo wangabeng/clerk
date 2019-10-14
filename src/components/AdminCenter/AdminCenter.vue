@@ -21,12 +21,12 @@
 
     <!-- 导航列表 -->
     <ul class="nav-lists">
-      <li>
+      <li @click='adminSortLink'>
         <i class="fa fa-bar-chart" aria-hidden="true"></i>
         <span>我的排名及收入</span>
         <i class="fa fa-angle-right" aria-hidden="true"></i>
       </li>
-      <li>
+      <li @click='adminModifyLink'>
         <i class="fa fa-address-card-o" aria-hidden="true"></i>
         <span>修改个人信息</span>
         <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -41,7 +41,7 @@
         <span>平台数据统计</span>
         <i class="fa fa-angle-right" aria-hidden="true"></i>
       </li> -->
-      <li>
+      <li @click='placeOrderLink'>
         <i class="fa fa-shopping-bag" aria-hidden="true"></i>
         <span>我要下单</span>
         <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -49,7 +49,7 @@
     </ul>
 
     <!-- 测试区 -->
-    <input type="button" name="" value='test' @click='getcur'>
+    <!-- <input type="button" name="" value='test' @click='getcur'> -->
 
     <!-- 管理端公共 footer -->
     <clerk-footer :propSubject='"adminCenter"'></clerk-footer>
@@ -130,6 +130,19 @@ export default {
     // 点击进入全部订单
     allOrder () {
       this.$router.push('/ordercenter');
+    },
+    // 点击进入个人排名页
+    adminSortLink () {
+      console.log('add');
+      this.$router.push('/Adminsort');
+    },
+    // 修改店员个人信息
+    adminModifyLink () {
+      this.$router.push('/adminmodify');
+    },
+    // 点击我要下单
+    placeOrderLink () {
+      this.$router.push('/clerklists');
     },
     // 监听连麦
     tabSound (data) {

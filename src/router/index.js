@@ -16,6 +16,9 @@ import OrderCenter from '@/components/OrderCenter/OrderCenter'
 import OrderHall from '@/components/OrderHall/OrderHall'
 import OrderDetail from '@/components/OrderDetail/OrderDetail'
 import ApplyNew from '@/components/ApplyNew/ApplyNew'
+import AdminSort from '@/components/AdminSort/AdminSort'
+import AdminWeek from '@/components/AdminWeek/AdminWeek'
+import AdminModify from '@/components/AdminModify/AdminModify'
 
 import {BASEURL, FRONTEURL, APPID} from "src/api/config.js";
 // import Index from '@/components/Index/Index'
@@ -97,6 +100,33 @@ const router = new Router({
       component: AdminCenter,
       meta: {
         title: '个人中心',
+        requireAuth: true
+      },
+    },
+    {
+      path: '/adminsort', // 个人排名（管理端）
+      name: 'AdminSort',
+      component: AdminSort,
+      meta: {
+        title: '个人排名',
+        requireAuth: true
+      },
+    },
+    {
+      path: '/adminweek', // 本周收入（管理端）
+      name: 'AdminWeek',
+      component: AdminWeek,
+      meta: {
+        title: '本周收入',
+        requireAuth: true
+      },
+    },
+    {
+      path: '/adminmodify', // 修改个人信息（管理端）
+      name: 'AdminModify',
+      component: AdminModify,
+      meta: {
+        title: '修改个人信息',
         requireAuth: true
       },
     },
