@@ -1,7 +1,7 @@
 <template>
   <div class="order-hall">
     <div class="swiper-outer-container">
-      <div class="name-infos">
+      <div class="name-infos" v-if='userInfo'>
         <p>{{userInfo.nick_name}}</p>
       </div>
 
