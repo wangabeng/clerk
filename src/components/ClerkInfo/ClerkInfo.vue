@@ -11,8 +11,11 @@
                 <span class='star'>{{clertDetail.salesman.sex=='1'? '男': '女'}}</span>
               </div>
               <div class="online-status">
-                <i class="fa fa-circle online" aria-hidden="true"></i>
-                <span>在线</span>
+                <!-- online  offline -->
+                <i class="fa fa-circle online" 
+                  :class="{'online': clertDetail.salesman.is_online == '1', 'offline': clertDetail.salesman.is_online == '2'}" aria-hidden="true"></i>
+                <span>{{clertDetail.salesman.is_online == '1'? "在线": "离线"}}</span>
+                <!-- <span>{{clertDetail.salesman.is_online}}</span> -->
               </div>
             </div>    
           </div>

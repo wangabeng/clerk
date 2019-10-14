@@ -39,8 +39,9 @@
               </div>
               <div class="online-status">
                 <!-- online  offline -->
-                <i class="fa fa-circle online" aria-hidden="true"></i>
-                <span>在线</span>
+                <i class="fa fa-circle online" 
+                  :class="{'online': item.is_online == '1', 'offline': item.is_online == '2'}" aria-hidden="true"></i>
+                <span>{{item.is_online == '1'? "在线": "离线"}}</span>
               </div>
 
             </div>
@@ -798,14 +799,16 @@ export default {
                 display: inline-flex;
                 font-size: .22rem;
                 font-weight: 600;
+                color: $color-text-d;
               }
               i {
                 margin-right: .07rem;
+
                 &.online {
                   color: #46bf29;
                 }
                 &.offline {
-                  color: $color-text-d
+                  color: $color-background-dd;
                 }
               }
             }
