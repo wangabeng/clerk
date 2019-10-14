@@ -245,7 +245,7 @@ export default {
                 // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
                 data: {
                   'order_type': _this.order_type, // 0 所有 1   2
-                  'page': _this.curPage,
+                  'page': ++_this.curPage,
                 },  
                 headers: {'token': localStorage.getItem("shiguangshudong")},
                 dataType: "json",  
