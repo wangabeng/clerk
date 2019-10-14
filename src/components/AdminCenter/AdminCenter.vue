@@ -146,12 +146,61 @@ export default {
     },
     // 监听连麦
     tabSound (data) {
+      var _this = this;
       console.log('父组件监听到：', data);
+      var soundStatus = data ? 1: 2;
       // ajax请求 改变连麦状态
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/set_voice",  // 接口21 token获取用户信息
+        data: {
+          is_voice: soundStatus,
+        },  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",  
+        success: function(res){  
+          TokenError(res.code, _this); // token错误
+
+          if (res.code == 0) {
+            console.log('连麦修改为：', res.data);
+            // 修改vuex的连麦状态
+            _this.userInfo.salesman.is_voice = soundStatus;
+            console.log(_this.userInfo.salesman.is_voice);
+          }
+        },  
+        error: function(e){  
+         console.log(e);  
+        }  
+      });
     },
     // 监听是否在线
     tabOnline (data) {
+      var _this = this;
       console.log('tabOnline父组件监听到：', data);
+      var ifOnStatus = data ? 1: 2;
+      // ajax请求 改变连麦状态
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/set_online",  // 接口21 token获取用户信息
+        data: {
+          is_online: ifOnStatus,
+        },  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",  
+        success: function(res){  
+          TokenError(res.code, _this); // token错误
+
+          if (res.code == 0) {
+            console.log('在线状态改为：', res.data);
+            // 修改vuex的在线状态
+            _this.userInfo.salesman.is_online = ifOnStatus;
+            console.log(_this.userInfo.salesman.is_online);
+          }
+        },  
+        error: function(e){  
+         console.log(e);  
+        }  
+      });
     }
   }
 }
