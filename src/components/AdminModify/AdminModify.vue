@@ -134,7 +134,7 @@ export default {
   created () {
     var _this = this;
     // 获取用户或店员信息 先判断vuex中用户信息是否存在
-    /*if (!this.userInfo) {
+    if (!this.userInfo) {
       $.ajax({
         type: "POST",  
         url: BASEURL + "/get_user_info",  // 接口16 token获取用户信息
@@ -155,7 +155,7 @@ export default {
          console.log(e);  
         }  
       });      
-    }*/
+    }
 
   },
 

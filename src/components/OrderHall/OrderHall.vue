@@ -51,8 +51,8 @@
         <p>等&emsp;&emsp;级：<span class='content'>{{item.level_name}}</span></p>
         <p>订单类型：<span class='content'>{{item.order_type == 1? '随机单': '指定单'}}</span></p> <!-- 1随机单  2指定单 -->
         <p class='line'>其他要求：<span class='content'></span></p>
-        <input class='random-btn' type="button" value='立即抢单' v-if='item.order_type == 1'> <!-- 随机单 -->
-        <input class='fixed-btn' type="button" value='开始接单' v-if='item.order_type == 2'> <!-- 指定单 -->
+        <input class='random-btn' @click='grabOrder(item.order_no)' type="button" value='立即抢单' v-if='item.order_type == 1'> <!-- 随机单 -->
+        <input class='fixed-btn' @click='startService(item.order_no)' type="button" value='开始接单' v-if='item.order_type == 2'> <!-- 指定单 -->
       </div>
     </div>
     
@@ -319,6 +319,54 @@ export default {
     // 过滤订单
     tabHallOrder (filterIndex) {
       this.filterActor = filterIndex;
+    },
+    // 立即抢单 25
+    grabOrder (orderNo) {
+      var _this = this;
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/receipt_order", // receipt_order 抢单
+        // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+        data: {
+          order_no: orderNo,
+        },  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",  
+        success: function(res){
+                    TokenError(res.code, _this); // token错误
+                    if (res.code == 0) {
+                      console.log('接口25：', res.data);
+                    }
+
+                  },  
+        error: function(e){  
+                     console.log(e);
+        }  
+      }); 
+    },
+    // 接口26 开始服务
+    startService (orderNo) {
+      var _this = this;
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/start_service",  
+        // contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
+        data: {
+          order_no: orderNo,
+        },  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",  
+        success: function(res){
+                    TokenError(res.code, _this); // token错误
+                    if (res.code == 0) {
+                      console.log('接口26：', res.data);
+                    }
+
+                  },  
+        error: function(e){  
+                     console.log(e);
+        }  
+      });
     }
   },
   // beforeDestroy
