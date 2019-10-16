@@ -78,7 +78,9 @@
 
     <input type="button" value='显示citypicker' name="" @click='showCityPicker'>
 
-    <city-picker v-if='ifShowCity'></city-picker>
+    <city-picker v-if='ifShowCity' 
+      @hidePicker='hidePicker' 
+      @sumPicker = 'sumPicker'></city-picker>
 
   </div>
 </template>
@@ -136,7 +138,7 @@ export default {
       newTag: [], // 个人标签
 
 
-      ifShowCity: false, // 是否显示城市选择器
+      ifShowCity: false, // 是否显示城市选择器 是否隐藏 只在父元素控制
 
 
     };
@@ -228,6 +230,7 @@ export default {
     },
     // 城市选择 结束
 
+    // 城市选择 自定义
     getCity () {
       var _this = this;
       $.ajax({
@@ -252,7 +255,16 @@ export default {
     },
     showCityPicker () {
       this.ifShowCity = !this.ifShowCity;
-    }
+    },
+    // 监听子元素 隐藏
+    hidePicker (flag) {
+      this.ifShowCity = flag;
+    },
+    // 子组件选择city后 获取省份结果
+    sumPicker (p, c) {
+      console.log(p, c);
+    },
+    // 城市选择 自定义 结束
   }
 }
 </script>
