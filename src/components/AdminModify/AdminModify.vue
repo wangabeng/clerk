@@ -75,6 +75,11 @@
     <!-- 测试区 -->
     <input type="button" value='测试获取城市' name="" @click='getCity'>
 
+
+    <input type="button" value='显示citypicker' name="" @click='showCityPicker'>
+
+    <city-picker v-if='ifShowCity'></city-picker>
+
   </div>
 </template>
 
@@ -93,6 +98,8 @@ import {mapGetters, mapActions} from 'vuex'
 import VueDatepickerLocal from 'vue-datepicker-local'
 import VDistpicker from 'v-distpicker'
 
+import CityPicker from 'base/CityPicker/CityPicker.vue'
+
 export default {
   name: 'AdminModify',
   components: {
@@ -100,6 +107,8 @@ export default {
     VDistpicker, // 城市选择
 
     ClerkFooter,
+
+    CityPicker, // 城市选择
     
   },
   data () {
@@ -125,6 +134,9 @@ export default {
       // 新的 出生日期 见计算属性 birth_year birth_month
       // 新的 城市 city
       newTag: [], // 个人标签
+
+
+      ifShowCity: false, // 是否显示城市选择器
 
 
     };
@@ -238,6 +250,9 @@ export default {
         }  
       });
     },
+    showCityPicker () {
+      this.ifShowCity = !this.ifShowCity;
+    }
   }
 }
 </script>
