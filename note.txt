@@ -105,9 +105,13 @@ UserOrderDetail            用户端订单详情
 -----------------------------------
 店员管理端
 ApplyNew   新店员申请    完成
-AdminCenter   店员个人中心
 
+
+AdminCenter   店员个人中心
+AdminSort 店员个人排名
 
 OrderHall  店员接单大厅
 OrderCenter 店员端订单列表
 OrderDetail  店员端订单详情
+
+

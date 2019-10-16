@@ -1,34 +1,41 @@
 <template>
   <div class="admin-modify">
     <div class="all-modify-lsits">
+      <!-- {{userInfo}} -->
+
       <div class="each-modify-wrapper">
         <h2>微信号<span>*</span></h2>
-        <input type="请输入您的微信号" name="">
+        <input type="请输入您的微信号" name="" v-model='newWeixin'>
       </div>
 
       <div class="each-modify-wrapper">
         <h2>性别<span>*</span></h2>
         <div class="gender-wrapper">
-          <label for="male"><span>男</span><input type="radio" id='male' name='gender' value='1' v-model='sex'></label>
-          <label for="famale"><span>女</span><input type="radio" id='famale' name='gender' value='2' v-model='sex'></label>
+          <label for="male"><span>男</span><input type="radio" id='male' name='gender' value='1' v-model='newSex'></label>
+          <label for="famale"><span>女</span><input type="radio" id='famale' name='gender' value='2' v-model='newSex'></label>
         </div>
       </div>
      
 
       <div class="each-modify-wrapper">
         <h2>出生日期<span>*</span></h2>
-        <vue-datepicker-local :disabledDate="disabledDate" v-model="time" format="YYYY-MM" clearable/>
+        <div class='data-container'>
+          <!-- <p class='default'>默认时间2019-10</p> -->
+          <vue-datepicker-local :disabledDate="disabledDate" v-model="time" format="YYYY-MM" clearable/>
+        </div>
       </div>
-      {{birth_year}}{{birth_month}}
+      <br>
+      <br>
+      出生年{{birth_year}}月{{birth_month}}
 
       <!-- <div class="each-modify-wrapper">
         <h2>所在城市<span>*</span></h2>
       </div> -->
 
-      <div class="each-input-fill form-check">
-        <span class='title'  >所在城市</span>
+      <div class="each-modify-wrapper">
+        <h2>所在城市<span>*</span></h2>
         <div class="city-container">
-          <span @click="choose" v-if='!city'>&nbsp;修改&nbsp;</span>
+          <span @click="choose" v-if='!city'>&nbsp;某地某地  修改&nbsp;</span>
           <span @click="choose" v-if='city'>&nbsp;已选择&nbsp;</span>
           <span @click="choose">{{city}}</span>
            <!--省市区三级联动-->
@@ -39,6 +46,8 @@
         </div>
         <p class="check-txt" v-if='ifSubmit && !city'>* 所在城市必填</p>
       </div>
+
+      <!-- 城市{{city}} -->
 
 
 
@@ -62,6 +71,9 @@
 
     <!-- 管理端公共 footer -->
     <clerk-footer :propSubject='""'></clerk-footer>
+
+    <!-- 测试区 -->
+    <input type="button" value='测试获取城市' name="" @click='getCity'>
 
   </div>
 </template>
@@ -92,7 +104,7 @@ export default {
   },
   data () {
     return {
-      time: '',
+      time: new Date('2019/05'), // 出生日期 初始化时间
 
       // 省市区选择  
       // lxr: '',
@@ -105,16 +117,23 @@ export default {
       // 省市区选择 结束
 
 
-      sex: '1',
-
       ifSubmit: false,
+
+      // 修改表单列表
+      newWeixin: '',
+      newSex: '1',
+      // 新的 出生日期 见计算属性 birth_year birth_month
+      // 新的 城市 city
+      newTag: [], // 个人标签
+
+
     };
   },
   props: {
   },
   computed: {
     ...mapGetters([
-      'userInfo'
+      'userInfo' // 原始点店员数据
     ]),
     birth_year () {
       if (!!this.time) {
@@ -149,6 +168,8 @@ export default {
             console.log('get_user_info为：', res.data);
             _this.setUserInfo(res.data);
             console.log('_this.userInfo', _this.userInfo);
+            // 新属性的默认值设置未老数据
+            // _this.res.data
           }
         },  
         error: function(e){  
@@ -165,6 +186,7 @@ export default {
     ]),
     // 日期选择
     disabledDate(time){
+      console.log('开始选择', time.getTime());
       if(time.getTime() > new Date().getTime()) return true;
     },
     // 城市选择
@@ -193,6 +215,29 @@ export default {
       this.area = a.value;
     },
     // 城市选择 结束
+
+    getCity () {
+      var _this = this;
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/get_areas",  // 接口14 获取城市接口
+        data: {
+          'parent_id': '10'
+        },  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",  
+        success: function(res){  
+          TokenError(res.code, _this); // token错误
+
+          if (res.code == 0) {
+            console.log('接口14为：', res.data);
+          }
+        },  
+        error: function(e){  
+         console.log(e);  
+        }  
+      });
+    },
   }
 }
 </script>
@@ -206,16 +251,65 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100VH;
-  background-color: #d3dce3;
+  background-color: $color-background-d;
   padding-top: .3rem;
   box-sizing: border-box;
   align-items: center;
 
+  .all-modify-lsits {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .each-modify-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: .1rem .3rem;
+      box-sizing: border-box;
+      margin-bottom: .2rem;
+      h2 {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: .15rem;
+        font-size: .24rem;
+        font-weight: bold;
+      }
+      >input {
+        box-sizing: border-box;
+        padding: .1rem;
+      }
+
+      // 日期选择
+      .data-container {
+        width: 100%;
+        position: relative;
+        .default {
+          position: absolute;
+          z-index: 200;
+          left: .15rem;
+          top: .15rem;
+        }
+      }
+
+      .gender-wrapper {
+        label {
+          margin-right: .3rem;
+        }
+      }
+    }
+
+  }
 
 }
 
 
 /* 日期选择 */
+.datepicker {
+  width: 100%;
+}
 .date-wrapper {
   font-size: .22rem;
 }
