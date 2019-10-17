@@ -11,7 +11,7 @@
     <!-- 用户单列表 -->
     <div class="client-order-lists">
       <!-- 每一个订单 -->
-      <div class="each-order">
+      <div class="each-order" @click='getOrderDetail'>
         <p class='line'>订单编号：<span class='content'>5565656565564555</span></p>
         <p class='line'>下单时间：<span class='content'>2019年08月11日 16:16:25</span></p>
         <p>服务类型：<span class='content'>文字语音条</span></p>
@@ -50,6 +50,11 @@ export default {
   },
   methods: {
     getcur () {
+    },
+    // 获取订单详情
+    getOrderDetail () {
+      // this.$router.push({ path: `/clerkinfo/${id}`});
+      // this.$router.push({ path: `/userorderdetail/${id}`});
     }
   }
 }
