@@ -17,10 +17,10 @@
       <ul class="lists">
         <li>
           <p>订单编号：<span>abdbdbdbdddddd</span></p>
-          <p>下单时间：<span>abdbdbdbdddddd</span></p>
-        </li>
-        <li>
-          <p>订单编号：<span>abdbdbdbdddddd</span></p>
+          <p>
+            订单信息：<span>文字语音条 × 12</span>
+            &nbsp;&nbsp;<span>小哥哥 金牌 随机单</span>
+          </p>
           <p>下单时间：<span>abdbdbdbdddddd</span></p>
         </li>
       </ul> 
