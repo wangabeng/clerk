@@ -149,7 +149,7 @@
       <br>
       <input type="button" value='testlayer' @click='testlayer'>
     </div> -->
-
+    <user-footer :propSubject='"randomOrder"'></user-footer>
   </div>
 </template>
 
@@ -167,9 +167,14 @@ import {BASEURL} from "src/api/config.js";
 
 import {GetQueryString, TokenError} from "src/api/utils.js";
 
+import UserFooter from 'base/UserFooter/UserFooter.vue'
 
 export default {
   name: 'RandomOrder',
+  components: {
+    // InfiniteLoading,
+    UserFooter,
+  },
   data () {
     return {
       sex: '', // 性别
@@ -528,7 +533,7 @@ export default {
   position: fixed;
   z-index: 100;
   left: 0;
-  bottom: 0;
+  bottom: 1.1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -551,7 +556,7 @@ export default {
   flex-direction: column;
   align-items: center;
   background-color: $color-background-d;
-  padding-bottom: 1rem;
+  padding-bottom: 2rem;
 
   .each-option-aera {
     width: 100%;

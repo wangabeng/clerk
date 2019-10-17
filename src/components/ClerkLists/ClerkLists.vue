@@ -1,9 +1,9 @@
 <template>
   <div class="clerk-lists">
     <!-- 随机下单 -->
-    <div class="random-link">
+    <!-- <div class="random-link">
       <a href="javascript:;" @click='linkRandom'>随机下单</a>
-    </div>
+    </div> -->
 
     <!-- 搜索栏 -->
     <div class="search-wrapper">
@@ -95,7 +95,7 @@
       <br>
       <p @click="testSign()">测试签名</p> -->
       <!-- 测试 -->
-
+      <user-footer :propSubject='"orderCommon"'></user-footer>
   </div>
 </template>
 
@@ -105,6 +105,7 @@
 // import SideBar from 'base/SideBar/SideBar.vue'
 // import MHeader from 'base/MHeader/MHeader.vue'
 // import MFooter from 'base/MFooter/MFooter.vue'
+import UserFooter from 'base/UserFooter/UserFooter.vue'
 
 import {mapGetters, mapActions} from 'vuex'
 import $ from 'jquery'
@@ -129,6 +130,7 @@ export default {
   name: 'ClerkLists',
   components: {
     // InfiniteLoading,
+    UserFooter,
   },
   data () {
     return {

@@ -29,13 +29,13 @@
       </div>
     </div>
 
-    <!-- <clerk-footer :propSubject='"orderCenter"'></clerk-footer> -->
+    <user-footer :propSubject='"userOrderList"'></user-footer>
   </div>
 </template>
 
 <script>
 import SwitchBtn from 'base/SwitchBtn/SwitchBtn.vue'
-import ClerkFooter from 'base/ClerkFooter/ClerkFooter.vue'
+import UserFooter from 'base/UserFooter/UserFooter.vue'
 
 export default {
   name: 'UserOrderlist',
@@ -44,7 +44,7 @@ export default {
   },
   components: {
     SwitchBtn,
-    ClerkFooter
+    UserFooter
   },
   mounted () {
   },
