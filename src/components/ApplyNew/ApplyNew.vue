@@ -48,21 +48,38 @@
       </div>
       <!-- {{online_time}} -->
 
-      <div class="each-input-fill form-check">
+      <!-- <div class="each-input-fill form-check">
         <span class='title'  >所在城市</span>
         <div class="city-container">
           <span @click="choose" v-if='!city'>&nbsp;请选择&nbsp;</span>
           <span @click="choose" v-if='city'>&nbsp;已选择&nbsp;</span>
           <span @click="choose">{{city}}</span>
-           <!--省市区三级联动-->
           <div class="divwrap" v-if="show">
             <v-distpicker type="mobile" @province="onChangeProvince1" @city="onChangeCity"
-                           hide-area></v-distpicker><!-- @area="onChangeArea" -->
+                           hide-area></v-distpicker>
           </div>
         </div>
         <p class="check-txt" v-if='ifSubmit && !city'>* 所在城市必填</p>
-      </div>
+      </div> -->
       <!-- {{city}} -->
+
+
+
+
+      <!-- 自定义城市选择器 -->
+      <div class="each-input-fill form-check">
+        <span class='title'  >所在城市</span>
+        <div class="city-container"  @click='showCityPicker'>
+          <span v-if='!newCity'>&nbsp;请选择&nbsp;</span>
+          <span v-if='newCity'>&nbsp;已选择&nbsp;</span>
+          <span>{{newCity}}</span>
+        </div>
+      </div>
+      {{newProvince}}{{newCity}}
+
+
+
+
 
       <div class="each-input-fill form-check">
         <span class='title'>技能特长</span>
@@ -184,6 +201,10 @@
     <!-- 测试按钮 -->
     <!-- <input type="button" @click='insertOne' value='测试插入数据'> -->
 
+    <city-picker v-if='ifShowCity' 
+      @hidePicker='hidePicker' 
+      @sumPicker = 'sumPicker'></city-picker>
+
 
 <!--遮罩层 时间选择器-->
 <div class="blacks" v-if="show" @click="countermand"></div>
@@ -219,11 +240,15 @@ import {GetQueryString, SaveStorage, TokenError} from "src/api/utils.js";
 import layer from 'vue-layer'
 import 'vue-layer/lib/vue-layer.css';
 
+import CityPicker from 'base/CityPicker/CityPicker.vue'
+
 export default {
   name: 'ApplyNew',
   components: {
     VueDatepickerLocal, //  日期选择
     VDistpicker, // 城市选择
+
+    CityPicker, // 城市选择
     
   },
   data () {
@@ -275,6 +300,13 @@ export default {
 
       allTypes: [],  // 17.  获取所有接单类型接口  {"id": "1","service_name": "文字语音条"}
 
+
+      newCity: '', // 新的 城市 city
+      newCityId: '', // 新的 城市 city_id
+      newProvince: '', // 新的 省份 province
+      newProvinceId: '', // 新的 省份 province_id
+
+      ifShowCity: false, // 是否显示城市选择器 是否隐藏 只在父元素控制
 
     }
   },
@@ -395,7 +427,7 @@ export default {
         this.insertOne();
       }
     },
-    // 插入一条数据
+    // 插入一条数据 提交新店员申请
     insertOne () {
       var _this = this;
       $.ajax({
@@ -409,8 +441,11 @@ export default {
           birth_month: _this.birth_month, // 出生月 计算属性中
           voice_type: _this.voice_type, // 声线类型
           online_time: _this.online_time, //
-          province_id: _this.province, // 见 data
-          city_id: _this.city, // 见 data
+          // province_id: _this.province, // 见 data
+          // city_id: _this.city, // 见 data
+
+          province_id: _this.newProvinceId, // 见 data
+          city_id: _this.newCityId, // 见 data
           specialty: _this.specialty, //
           experience: _this.experience, //
           game: _this.game, //
@@ -425,7 +460,7 @@ export default {
                     TokenError(res.code, _this); // token错误
                     console.log(res.data);
                     if (res.code == 0) {
-                      _this.$layer.alert("恭喜 下单成功！");
+                      _this.$layer.alert("恭喜 申请提交成功！");
                     }
                     
                   },  
@@ -433,7 +468,48 @@ export default {
                      console.log(e);  
         }  
       });   
-    }
+    },
+
+    // 城市选择 自定义
+    getCity () {
+      var _this = this;
+      $.ajax({
+        type: "POST",  
+        url: BASEURL + "/get_areas",  // 接口14 获取城市接口
+        data: {
+          'parent_id': '10'
+        },  
+        headers: {'token': localStorage.getItem("shiguangshudong")},
+        dataType: "json",  
+        success: function(res){  
+          TokenError(res.code, _this); // token错误
+
+          if (res.code == 0) {
+            console.log('接口14为：', res.data);
+          }
+        },  
+        error: function(e){  
+         console.log(e);  
+        }  
+      });
+    },
+    showCityPicker () {
+      this.ifShowCity = !this.ifShowCity;
+    },
+    // 监听子元素 隐藏
+    hidePicker (flag) {
+      this.ifShowCity = flag;
+    },
+    // 子组件选择city后 获取省份结果
+    sumPicker (p, c) {
+      var _this  = this;
+      console.log(p, c);
+      _this.newCity = c.area_name;
+      _this.newCityId = c.id;
+      _this.newProvince = p.area_name;
+      _this.newProvinceId = p.id;
+    },
+    // 城市选择 自定义 结束
 
   },
   beforeCreate () {
@@ -445,10 +521,11 @@ export default {
        contentType: 'application/x-www-form-urlencoded;charset=utf-8',  
        headers: {'token': localStorage.getItem("shiguangshudong")},
        dataType: "json",  
-       success: function(data){  
+       success: function(res){  
                   console.log("接口17成功");  
-                  console.log(data.data);
-                  _this.allTypes = data.data;
+                  TokenError(res.code, _this); // token错误
+                  console.log(res.data);
+                  _this.allTypes = res.data;
                   console.log("接口17 结束", _this.allTypes);
                 },  
        error: function(e){  
