@@ -30,14 +30,14 @@
       </div>
 
       <!-- 联系方式 -->
-      <!-- <div class="contact-info">
+      <div class="contact-info">
         <h3>联系方式</h3>
         <div class="each-contact">
-          <p class='line'>微信号：<span>张三丰张三丰</span></p>
-          <p>QQ：<span>12345678912</span></p>
-          <p>电话：<span>13800138000</span></p>
+          <p class='line'>微信号：<span>{{orderDetail.salesman_wechat_num}}</span></p>
+          <!-- <p>QQ：<span>12345678912</span></p>
+          <p>电话：<span>13800138000</span></p> -->
         </div>
-      </div> -->
+      </div>
 
       <!-- 服务状态 -->
       <div class="order-status">

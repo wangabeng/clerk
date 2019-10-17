@@ -654,7 +654,7 @@ export default {
                 time: 1
               }, function (layerid) {
                 // this.$router.push({ path: `/clerkinfo/${id}`});
-                _this.$router.push({ path: `/userorderdetail`}); // 订单号为 orderNumber
+                _this.$router.push({ path: `/userorderdetail/${orderNumber}`}); // 订单号为 orderNumber
                 _this.$layer.close(layerid);
                 console.log('支付成功');
               });

@@ -171,7 +171,7 @@ const router = new Router({
       },
     },
     {
-      path: '/userorderdetail', // 接单大厅（管理端）
+      path: '/userorderdetail/:id', // 接单大厅（管理端）
       name: 'UserOrderdetail',
       component: UserOrderdetail,
       meta: {

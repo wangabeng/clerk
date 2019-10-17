@@ -140,7 +140,7 @@
     </div>
 
     <!-- 测试区 -->
-    <div class="test-api" style='padding-bottom: .6rem;'>
+    <!-- <div class="test-api" style='padding-bottom: .6rem;'>
       <input type="button" value='统一下单12api 获取appid等' @click='getWeixinPay'>
       <br>
       <br>
@@ -148,7 +148,7 @@
       <br>
       <br>
       <input type="button" value='testlayer' @click='testlayer'>
-    </div>
+    </div> -->
 
   </div>
 </template>
@@ -462,7 +462,7 @@ export default {
                 time: 1
               }, function (layerid) {
                 // this.$router.push({ path: `/clerkinfo/${id}`});
-                _this.$router.push({ path: `/userorderdetail`}); // 订单号为 orderNumber
+                _this.$router.push({ path: `/userorderdetail/${orderNumber}`});
                 _this.$layer.close(layerid);
                 console.log('支付成功');
               });

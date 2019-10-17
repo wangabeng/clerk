@@ -338,6 +338,12 @@ export default {
     },
     // 确定修改 提交
     confirmModify () {
+      console.log(this.newTag);
+      if (this.newTag == 0) {
+        this.$layer.msg('请添加个性化标签');
+        return;
+      }
+
       var _this = this;
       $.ajax({
         type: "POST",  
@@ -349,7 +355,7 @@ export default {
           'birth_month': _this.birth_month,
           'province_id': _this.newProvinceId,
           'city_id': _this.newCityId,
-          'character': _this.newTag? _this.newTag.join(','): ' ', 
+          'character': _this.newTag.join('#'), 
         },  
         headers: {'token': localStorage.getItem("shiguangshudong")},
         dataType: "json",  
