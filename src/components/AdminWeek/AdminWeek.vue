@@ -1,30 +1,33 @@
 <template>
   <div class="admin-week">
-    <div class="cur-week-info">
+    <div class="cur-week-info" v-if='!!weekStatistics'>
       <h2>本周预计收益：</h2>
-      <p class="total">0.00</p>
+      <p class="total">{{weekStatistics.week_income}}</p>
       <div class="last-note">
-        <p>上周收益： 0.00</p>
+        <p>上周收益： {{weekStatistics.last_week_income}}</p>
         <p style='opacity: .7'>每周日24:00前发货</p>
       </div>
     </div>
 
     <div class="complete-wait">
       <ul class="navs">
-        <li class='active'>完成</li>
-        <li>未完成</li>
+        <li :class="{'active': showOrderIndex == 0}" @click='tabOrder(0)'>完成</li>
+        <li :class="{'active': showOrderIndex == 1}" @click='tabOrder(1)'>未完成</li>
       </ul>
-      <ul class="lists">
-        <li>
-          <p>订单编号：<span>abdbdbdbdddddd</span></p>
+      <ul class="lists" >
+        <li v-for='item in showOrders'>
+          <p>订单编号：<span>{{item.order_no}}</span></p>
           <p>
-            订单信息：<span>文字语音条 × 12</span>
-            &nbsp;&nbsp;<span>小哥哥 金牌 随机单</span>
+            订单信息：<span>{{item.service_name}} × {{item.num}}</span>
+            &nbsp;&nbsp;<span>{{item.sex == '1'? '小哥哥': '小姐姐'}} {{item.level_name}} {{item.order_type =='1'? '随机单': '指定单'}}</span>
           </p>
-          <p>下单时间：<span>abdbdbdbdddddd</span></p>
+          <p>下单时间：<span>{{item.create_time}}</span></p>
         </li>
       </ul> 
     </div>
+
+    <!-- v-if='showOrders.length==0' -->
+    <p class="no-record" v-if='showOrders.length==0'><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span>暂无记录</span></p>
 
     <!-- 管理端公共 footer -->
     <clerk-footer :propSubject='""'></clerk-footer>
@@ -48,6 +51,8 @@ export default {
   name: 'AdminCenter',
   data () {
     return {
+      weekStatistics: null, // 本周数据
+      showOrderIndex: 0, // 0 完成  1 未完成
     };
   },
   props: {
@@ -56,6 +61,23 @@ export default {
     ...mapGetters([
       'userInfo'
     ]),
+    /*// 已经完成
+    completeOrders () {
+      return this.weekStatistics.completed_orders.orders;
+    },
+    // 未完成
+    uncompleteOrders () {
+      return this.weekStatistics.uncompleted_orders.orders;
+    },*/
+    // 展示在页面中的订单列表
+    showOrders () {
+      if (!this.weekStatistics) {
+        return [];
+      } else {
+        return this.showOrderIndex == 0 ? this.weekStatistics.completed_orders.orders: this.weekStatistics.uncompleted_orders.orders;
+      }
+    },
+
 
   },
   components: {
@@ -63,6 +85,25 @@ export default {
   },
   created () {
     var _this = this;
+    $.ajax({
+      type: "POST",  
+      url: BASEURL + "/get_profit",  // 29.  获取我的收益接口
+      data: {
+      },  
+      headers: {'token': localStorage.getItem("shiguangshudong")},
+      dataType: "json",  
+      success: function(res){  
+        TokenError(res.code, _this); // token错误
+
+        if (res.code == 0) {
+          console.log('get_profit为：', res.data);
+          _this.weekStatistics = res.data;
+        }
+      },  
+      error: function(e){  
+       console.log(e);  
+      }  
+    });
     // 获取用户或店员信息 先判断vuex中用户信息是否存在
     /*if (!this.userInfo) {
       $.ajax({
@@ -93,7 +134,10 @@ export default {
     ...mapActions([
       'setUserInfo'
     ]),
-
+    // 切换订单展示
+    tabOrder (index) {
+      this.showOrderIndex = index;
+    }
   }
 }
 </script>
@@ -110,6 +154,7 @@ export default {
   background-color: #d3dce3;
   padding-top: .3rem;
   box-sizing: border-box;
+  padding-bottom: 1.2rem;
   align-items: center;
 
   .cur-week-info {
@@ -183,6 +228,17 @@ export default {
         }
       }
     }
+  }
+}
+
+/* 暂无记录 */
+.no-record {
+  padding: 1.2rem 0 ;
+  font-size: .25rem;
+  color: $color-text-d;
+  i {
+    display: inline-flex;
+    padding-right: .15rem;
   }
 }
 </style>

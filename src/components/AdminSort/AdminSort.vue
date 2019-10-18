@@ -4,16 +4,16 @@
     <div class="sort-infos">
       <h2><i class="fa fa-bar-chart-o"></i><span>业绩排名</span></h2>
       <div class="cur-sort">
-        <p>我的当前排名 <span>12</span></p>
-        <p>距离前一名排名还差 ¥<span>12.0</span></p>
+        <p>我的当前排名 <span v-if='statistics'>{{statistics.distance_ranking}}</span></p>
+        <p>距离前一名排名还差 ¥<span v-if='statistics'>{{statistics.renewal_rate}}</span></p>
       </div>
       <ul>
         <li class='order-repeat'>
-          <span>50%</span><span>续单率</span>
+          <span v-if='statistics'>{{statistics.continuation_rate}}%</span><span>续单率</span>
           <i class="fa fa-file-text-o"></i>
         </li>
         <li class='client-repeat'>
-          <span>60%</span><span>续客率</span>
+          <span v-if='statistics'>{{statistics.today_income}}%</span><span>续客率</span>
           <i class="fa fa-file-text-o"></i>
         </li>
       </ul>
@@ -22,24 +22,24 @@
     <!-- 收入统计 -->
     <div class="total-infos">
       <h2><i class="fa fa-pie-chart" aria-hidden="true"></i><span>收入统计</span></h2>
-      <ul>
+      <ul v-if='statistics'>
         <li>
-          <span>¥12.0</span><span>今日收入</span>
+          <span>¥{{statistics.today_income}}</span><span>今日收入</span>
         </li>
         <li class='cur-week' @click='curWeekLink'>
-          <span>¥12.0</span><span>本周收入&nbsp;></span>
+          <span>¥{{statistics.week_income}}</span><span>本周收入&nbsp;></span>
         </li>
         <li>
-          <span>¥12.0</span><span>历史收入</span>
+          <span>¥{{statistics.history_income}}</span><span>历史收入</span>
         </li>
         <li>
-          <span>¥12.0</span><span>今日接单</span>
+          <span>{{statistics.today_order}}</span><span>今日接单</span>
         </li>
         <li>
-          <span>¥12.0</span><span>本周接单数</span>
+          <span>{{statistics.week_order}}</span><span>本周接单数</span>
         </li>
         <li>
-          <span>¥12.0</span><span>历史接单数</span>
+          <span>{{statistics.history_order}}</span><span>历史接单数</span>
         </li>
       </ul>
     </div>
@@ -66,6 +66,7 @@ export default {
   name: 'AdminCenter',
   data () {
     return {
+      statistics: null, // 排名统计信息
     };
   },
   props: {
@@ -81,6 +82,25 @@ export default {
   },
   created () {
     var _this = this;
+    $.ajax({
+      type: "POST",  
+      url: BASEURL + "/get_data_statistics",  // 28.  获取业绩排名及收入统计接口
+      data: {
+      },  
+      headers: {'token': localStorage.getItem("shiguangshudong")},
+      dataType: "json",  
+      success: function(res){  
+        TokenError(res.code, _this); // token错误
+
+        if (res.code == 0) {
+          console.log('get_data_statistics为：', res.data);
+          _this.statistics = res.data;
+        }
+      },  
+      error: function(e){  
+       console.log(e);  
+      }  
+    });
     // 获取用户或店员信息 先判断vuex中用户信息是否存在
     /*if (!this.userInfo) {
       $.ajax({
@@ -129,6 +149,8 @@ export default {
   flex-direction: column;
   min-height: 100VH;
   background-color: #d3dce3;
+  padding-bottom: 1.2rem;
+  box-sizing: border-box;
 
   .sort-infos {
     width: 100%;

@@ -5,7 +5,7 @@
       <!-- 1待接单  2已接单未服务  3服务中  4服务完成 -->
       <li :class="{'active': filterActor == '0'}" @click='tabOrder("0")'><a href="javascript:;">全部</a></li>
       <li :class="{'active': filterActor == '1'}" @click='tabOrder("1")'><a href="javascript:;" >待接单</a></li>
-      <!-- <li :class="{'active': filterActor == '2'}" @click='tabOrder("2")'><a href="javascript:;" >待服务</a></li> -->
+      <li :class="{'active': filterActor == '2'}" @click='tabOrder("2")'><a href="javascript:;" >待服务</a></li>
       <li :class="{'active': filterActor == '3'}" @click='tabOrder("3")'><a href="javascript:;" >服务中</a></li>
       <li :class="{'active': filterActor == '4'}" @click='tabOrder("4")'><a href="javascript:;" >已完成</a></li>
     </ul>
