@@ -8,7 +8,7 @@ import ClerkLists from '@/components/ClerkLists/ClerkLists'
 import ClerkInfo from '@/components/ClerkInfo/ClerkInfo'
 import RandomOrder from '@/components/RandomOrder/RandomOrder'
 import UserOrderlist from '@/components/UserOrderlist/UserOrderlist'
-import UserOrderdetail from '@/components/UserOrderdetail/UserOrderdetail'
+import UserOrderDetail from '@/components/UserOrderDetail/UserOrderDetail'
 
 // 管理端
 import AdminCenter from '@/components/AdminCenter/AdminCenter'
@@ -172,8 +172,8 @@ const router = new Router({
     },
     {
       path: '/userorderdetail/:id', // 接单大厅（管理端）
-      name: 'UserOrderdetail',
-      component: UserOrderdetail,
+      name: 'UserOrderDetail',
+      component: UserOrderDetail,
       meta: {
         title: '订单详情',
         requireAuth: true

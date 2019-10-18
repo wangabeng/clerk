@@ -127,6 +127,7 @@ export default {
   },
   created () {
     var _this = this;
+    _this.isLoading = true;
     $.ajax({
       type: "POST",  
       url: BASEURL + "/get_order_list",  // 接口23 
@@ -141,6 +142,7 @@ export default {
 
         if (res.code == 0) {
           console.log('接口23：', res.data);
+          _this.isLoading = false;
           _this.allOrders = _this.allOrders.concat(res.data);
         }
       },  

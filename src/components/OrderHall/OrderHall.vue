@@ -56,6 +56,8 @@
       </div>
     </div>
     
+    <p class="no-record" v-if='allHallOrders.length==0 && !isLoading'><i class="fa fa-exclamation-circle" aria-hidden="true"></i><span>暂无记录</span></p>
+
     <!-- SVG动画加载更多 -->
     <p style="width: 100%;text-align: center;" ref='loadingTxt' id='loading-txt'><img style='width:2rem;height:.5rem;display: inline-block;' src="~common/image/loading.svg" 
       v-if='isLoading' alt=""></p>
@@ -181,6 +183,7 @@ export default {
     // 获取接单大厅的订单列表
     getHallOrder () {
       var _this = this;
+      _this.isLoading = true;
       $.ajax({
          type: "POST",  
          url: BASEURL + "/get_accept_orders",  
@@ -191,13 +194,17 @@ export default {
         },  
         headers: {'token': localStorage.getItem("shiguangshudong")},
         dataType: "json",  
-        success: function(res){  
-                    console.log("接口19成功");  
-                    console.log(res.data);
-                    _this.allHallOrders = _this.allHallOrders.concat(res.data);
-                    // _this.allHallOrders = data.data;
-                    console.log(_this.allHallOrders);
-                    console.log("接口19 结束");
+        success: function(res){
+                    TokenError(res.code, _this); // token错误
+                    if (res.code == 0) {
+                      console.log("接口19成功");  
+                      console.log(res.data);
+                      _this.isLoading = false;
+                      _this.allHallOrders = _this.allHallOrders.concat(res.data);
+                      // _this.allHallOrders = data.data;
+                      console.log(_this.allHallOrders);
+                      console.log("接口19 结束");
+                    }
                   },  
         error: function(e){
                     console.log(e);  
@@ -253,14 +260,16 @@ export default {
                             console.log(res.data);
                             TokenError(res.code, _this);
 
-                            _this.allHallOrders = _this.allHallOrders.concat(res.data);
-                            // console.log('最新列表为', _this.allList);
+                            if (res.code == 0) {
+                              _this.allHallOrders = _this.allHallOrders.concat(res.data);
+                              // console.log('最新列表为', _this.allList);
 
-                            loadingEle.style.display = 'none';
-                            // _this.isLoading = false;
-                            setTimeout(function () {
-                                _this.isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 _this.isLoading因为是true 不执行if内语句 起到节流作用
-                            }, 1000);
+                              loadingEle.style.display = 'none';
+                              // _this.isLoading = false;
+                              setTimeout(function () {
+                                  _this.isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 _this.isLoading因为是true 不执行if内语句 起到节流作用
+                              }, 1000);
+                            }
                           },  
                 error: function(e){  
                              console.log(e);  
@@ -564,6 +573,18 @@ export default {
 
   }
 
+}
+
+
+/* 暂无记录 */
+.no-record {
+  padding: 1.2rem 0 ;
+  font-size: .25rem;
+  color: $color-text-d;
+  i {
+    display: inline-flex;
+    padding-right: .15rem;
+  }
 }
 </style>
 

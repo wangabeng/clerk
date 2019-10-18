@@ -317,19 +317,21 @@ export default {
         headers: {'token': localStorage.getItem("shiguangshudong")},
         dataType: "json",  
         success: function(res){  
-                    console.log(res.data);
-                    // console.log("当前路由：", this.$route.name);
-                    TokenError(res.code, _this); // token错误
-                    /*if (res.code == 1004) {
-                      localStorage.removeItem("shiguangshudong");
-                      _this.$router.go(0);
-                      return false;
-                    }*/
+                    if (res.code == 0) {
+                      console.log(res.data);
+                      // console.log("当前路由：", this.$route.name);
+                      TokenError(res.code, _this); // token错误
+                      /*if (res.code == 1004) {
+                        localStorage.removeItem("shiguangshudong");
+                        _this.$router.go(0);
+                        return false;
+                      }*/
 
-                    _this.allList = res.data;
+                      _this.allList = res.data;
 
-                    _this.isLoading = false;
-                    console.log('最新列表为', _this.allList);
+                      _this.isLoading = false;
+                      console.log('最新列表为', _this.allList);
+                    }
                   },  
         error: function(e){  
                      console.log(e);  
@@ -461,16 +463,18 @@ export default {
        headers: {'token': localStorage.getItem("shiguangshudong")},
        dataType: "json",  
        success: function(data){  
-                  console.log("接口18成功");  
-                  console.log(data.data);
-                  for (var i = 0; i < data.data.length; i++ ) {
-                    console.log(data.data[i]);
-                    _this.typeArr.push({
-                      text: data.data[i].level_name,
-                      num: parseInt(data.data[i].id),
-                    });
+                  if (data.code == 0) {
+                    console.log("接口18成功");  
+                    console.log(data.data);
+                    for (var i = 0; i < data.data.length; i++ ) {
+                      console.log(data.data[i]);
+                      _this.typeArr.push({
+                        text: data.data[i].level_name,
+                        num: parseInt(data.data[i].id),
+                      });
+                    }
+                    console.log("接口18 结束", _this.typeArr);
                   }
-                  console.log("接口18 结束", _this.typeArr);
                 },  
        error: function(e){  
                    console.log(e);  
@@ -540,17 +544,19 @@ export default {
               headers: {'token': localStorage.getItem("shiguangshudong")},
               dataType: "json",  
               success: function(res){  
-                          console.log(res.data);
-                          TokenError(res.code, _this);
+                          if (res.code == 0) {
+                            console.log(res.data);
+                            TokenError(res.code, _this);
 
-                          _this.allList = _this.allList.concat(res.data);
-                          // console.log('最新列表为', _this.allList);
+                            _this.allList = _this.allList.concat(res.data);
+                            // console.log('最新列表为', _this.allList);
 
-                          loadingEle.style.display = 'none';
-                          // _this.isLoading = false;
-                          setTimeout(function () {
-                              _this.isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 _this.isLoading因为是true 不执行if内语句 起到节流作用
-                          }, 1000);
+                            loadingEle.style.display = 'none';
+                            // _this.isLoading = false;
+                            setTimeout(function () {
+                                _this.isLoading = false; // 当第一次上拉 值变为true 再次快速上拉 _this.isLoading因为是true 不执行if内语句 起到节流作用
+                            }, 1000);
+                          }
                         },  
               error: function(e){  
                            console.log(e);  
@@ -749,6 +755,7 @@ export default {
             width: 100%;
             height: 100%;
             border-radius: .03rem;
+            background-color: $color-background-d;
           }
           .main-tag {
             position: absolute;

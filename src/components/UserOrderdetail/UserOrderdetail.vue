@@ -126,14 +126,14 @@ export default {
             return '待接单'
             break;
         case '2':
-            return '已接单未服务'
+            return '已接单'
             break;
         case '3':
             return '服务中'
             break;
         case '4':
-            return '服务完成'
-            break;     
+            return '已完成'
+            break;    
         default:
             return
             break;
