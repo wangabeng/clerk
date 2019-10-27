@@ -74,8 +74,9 @@
           <span v-if='newCity'>&nbsp;已选择&nbsp;</span>
           <span>{{newCity}}</span>
         </div>
+        <p class="check-txt" v-if='ifSubmit && !newCityId'>* 所在城市必填</p>
       </div>
-      {{newProvince}}{{newCity}}
+      <!-- {{newProvince}}{{newCity}} -->
 
 
 
@@ -113,7 +114,7 @@
 
     <!-- 录音 -->
     <div class="record-audio">
-      <h3>录音（15秒内）&nbsp;<span v-if='ifSubmit && !audio_url'>录音必须</span></h3>
+      <h3>录音（15秒内）&nbsp;<span v-if='ifSubmit && !serverId'>录音必须</span></h3>
       <!-- 录音按钮 -->
       <div class="new-record" v-if='firstFlag'>
         <input  id='newAudio' type="button" value='录音'>
@@ -308,6 +309,8 @@ export default {
 
       ifShowCity: false, // 是否显示城市选择器 是否隐藏 只在父元素控制
 
+      serverId: '', // 微信录音serverId号 20191027添加
+
     }
   },
   watch: {
@@ -400,8 +403,11 @@ export default {
           headers: {'token': localStorage.getItem("shiguangshudong")},
           success: function (res) {
             TokenError(res.code, _this); // token错误
-            console.log(res.data.file);
-            _this.uploadArr.push(res.data.file);
+            if (res.code == 0) {
+              console.log(res.data.file);
+              _this.uploadArr.push(res.data.file);              
+            }
+
           },
           error: function(e){  
             console.log(e);  
@@ -418,14 +424,22 @@ export default {
       this.ifSubmit = true;
       // 如果有表单为空的 
       var _this = this;
-      if (!!this.nick_name && !!this.sex && !!this.birth_year  && !!this.birth_month  && !!this.voice_type && !!this.online_time  && !!this.city_id && !!this.experience  && !!this.game && !!this.wechat_num  && !!this.audio_url  && !!this.types) {
+      // !this.types || 
+      console.log('表单数据', !this.nick_name , !this.sex , !this.birth_year  , !this.birth_month  , !this.voice_type , !this.online_time  , !this.newCityId , !this.experience  , !this.game , !this.wechat_num  , this.types.length==0 , !this.serverId);
+      if (!this.nick_name || !this.sex || !this.birth_year  || !this.birth_month  || !this.voice_type || !this.online_time  || !this.newCityId || !this.experience  || !this.game || !this.wechat_num  || this.types==0 || !this.serverId) {
+        // 如果数据为空
+        return;        
+      } 
+      this.insertOne();
+      /*
+      if (!!this.nick_name && !!this.sex && !!this.birth_year  && !!this.birth_month  && !!this.voice_type && !!this.online_time  && !!this.city_id && !!this.experience  && !!this.game && !!this.wechat_num  && !!this.types && !!this.serverId) {
         // 如果有数据为空 就把警告开关打开
         this.ifSubmit = true;
         // 提交注册
         
       } else {
         this.insertOne();
-      }
+      }*/
     },
     // 插入一条数据 提交新店员申请
     insertOne () {
@@ -450,7 +464,9 @@ export default {
           experience: _this.experience, //
           game: _this.game, //
           wechat_num: _this.wechat_num, //
-          audio_url:  _this.audio_url, // 'https://www.w3school.com.cn/i/horse.ogg', // 上传到服务器中的audio的url地址
+          // audio_url:  _this.audio_url, // 'https://www.w3school.com.cn/i/horse.ogg', // 上传到服务器中的audio的url地址
+          serverid:  _this.serverId, // 20191027添加 录音的weixinid
+
           image_urls: _this.uploadArr.join(), // 见 uploadArr
           types: _this.types.join(), //
         },  
@@ -524,9 +540,12 @@ export default {
        success: function(res){  
                   console.log("接口17成功");  
                   TokenError(res.code, _this); // token错误
-                  console.log(res.data);
-                  _this.allTypes = res.data;
-                  console.log("接口17 结束", _this.allTypes);
+                  if (res.code == 0) {
+                    console.log(res.data);
+                    _this.allTypes = res.data;
+                    console.log("接口17 结束", _this.allTypes);                    
+                  }
+
                 },  
        error: function(e){  
                    console.log(e);  
@@ -692,6 +711,9 @@ export default {
           success: function (res) {
             voice.localId = res.localId;
             // 录音成功后先上传到微信服务器 然后上传到自己的服务器
+
+            console.log("停止录音 未上传");
+
             uploadVoice();
           },
           fail: function (res) {
@@ -700,7 +722,7 @@ export default {
         });
       };
 
-      //上传录音
+      //上传录音  (暂时不上传 仅仅是传给全局serverId)把微信录音的serverId传递给 serverId
       function uploadVoice(){
         //调用微信的上传录音接口把本地录音先上传到微信的服务器
         //不过，微信只保留3天，而我们需要长期保存，我们需要把资源从微信服务器下载到自己的服务器
@@ -709,9 +731,12 @@ export default {
           isShowProgressTips: 1, // 默认为1，显示进度提示
           success: function (res) {
             //把录音在微信服务器上的id（res.serverId）发送到自己的服务器供下载。
-            TokenError(res.code, _this); // token错误
+            // TokenError(res.code, _this); // token错误
             console.log("微信录音上传结果：");
             console.log(res);
+
+            _this.serverId = res.serverId;
+            console.log("微信录音上传结果_this.serverId：", _this.serverId);
 
             // ajax上传微信语音文件
             // var file = event.target.files[0];
