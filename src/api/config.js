@@ -5,10 +5,10 @@
 export const BASEURL = 'https://www.sgshudong.com/api';
 
 // 测试域名
-// export const FRONTEURL = 'nicedevelop.nat300.top';
+export const FRONTEURL = 'nicedevelop.nat300.top';
 
 // 正式域名
-export const FRONTEURL = 'm.sgshudong.com';
+// export const FRONTEURL = 'm.sgshudong.com';
 
 
 export const APPID = 'wxa3c69deeaa1b4948';

@@ -115,3 +115,18 @@ OrderCenter 店员端订单列表
 OrderDetail  店员端订单详情
 
 
+
+--------------------
+切换调试模式
+config.js
+	8 11行切换
+router/index.js
+
+utils.js
+	44-46行注释掉	
+
+给浏览器添加本地添加删除shiguangshudong
+localStorage.setItem("shiguangshudong", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiMTEifQ.B6P8Sz_PC_Lz1Y30Ud7TfmHeBdcLJKbtoWPDEZZqbM8")
+localStorage.removeItem("shiguangshudong")		
+
+

@@ -26,7 +26,9 @@
           <!-- 头像 -->
           <div class="potrait">
             <img :src="item.avatar_url" alt="">
-            <p class='main-tag'>{{item.level}}</p>
+             <!-- 1普通 2金牌 3镇店 -->
+            <p class='main-tag' 
+              :class="{'common': item.level == '普通', 'gold': item.level == '金牌', 'zhendian': item.level == '镇店'}">{{item.level}}</p>
           </div>
           <div class="mid-infos">
             <!-- 名字及状态 -->
@@ -35,13 +37,14 @@
                 <span>{{item.nick_name}}</span>
                 <!-- 1 男 2 女 -->
                 <i class="fa fa-mars male" aria-hidden="true" v-if="item.sex == '1'"></i>
-                <i class="fa fa-venus" aria-hidden="true" v-if="item.sex == '2'"></i>                
+                <i class="fa fa-venus famale" aria-hidden="true" v-if="item.sex == '2'"></i>                
               </div>
               <div class="online-status">
                 <!-- online  offline -->
-                <i class="fa fa-circle online" 
+                <i class="fa fa-circle" 
                   :class="{'online': item.is_online == '1', 'offline': item.is_online == '2'}" aria-hidden="true"></i>
-                <span>{{item.is_online == '1'? "在线": "离线"}}</span>
+                <span 
+                  :class="{'online': item.is_online == '1', 'offline': item.is_online == '2'}">{{item.is_online == '1'? "在线": "离线"}}</span>
               </div>
 
             </div>
@@ -676,7 +679,8 @@ export default {
       display: flex;
       flex-direction: row;
       align-items: center;
-      background-color: #f7f7f7;
+      // background-color: #f7f7f7;
+      background-color: #b9e3f0;
       padding: .12rem .1rem;
       border-radius: .05rem;
 
@@ -762,13 +766,25 @@ export default {
             font-size: .18rem;
             bottom: 0;
             left: 0;
-            background-color: #f94120;
+            // background-color: #f94120;
             padding: .06rem;
             padding-right: .1rem;
             color: #fff;
             border-top-right-radius: .3rem;
             border-bottom-right-radius: .3rem;
             border-bottom-left-radius: .03rem;
+            // 普通 橘黄
+            &.common {
+              background-color: #fc6b00;
+            }
+            // 金牌 粉色
+            &.gold {
+              background-color: #e46aa3;
+            }
+            // 镇店 红色
+            &.zhendian {
+              background-color: #f94120;
+            }
           }
 
         }
@@ -814,7 +830,16 @@ export default {
                 margin-right: .07rem;
 
                 &.online {
-                  color: #46bf29;
+                  color: #00b3e8;
+                }
+                &.offline {
+                  color: $color-background-dd;
+                }
+              }
+              span {
+
+                &.online {
+                  color: #00b3e8;
                 }
                 &.offline {
                   color: $color-background-dd;
@@ -845,7 +870,7 @@ export default {
               display: inline-flex;
               box-shadow: $box-shadow;
               border-radius: .04rem;
-              @include background_fill('~common/image/audio.png');
+              @include background_fill('~common/image/audio2.png');
               &.playing {
                 @include background_fill('~common/image/audioplay.gif');
               }

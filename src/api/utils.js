@@ -41,8 +41,8 @@ export const GetSign =  function () {
 // token错误清除本地存储并刷新
 export const TokenError =  function (code, _this) {
   if (code == 1004) {
-    localStorage.removeItem("shiguangshudong");
+    /*localStorage.removeItem("shiguangshudong");
     _this.$router.go(0);
-    return false;
+    return false;*/
   }
 }
