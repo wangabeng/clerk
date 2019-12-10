@@ -8,10 +8,14 @@
         <p class="check-txt" v-if='ifSubmit && !sex'>请选择聊天对象</p>
       </h3>
       <label for="male">
-        <span>小哥哥</span>
+        <i class="fa fa-check-circle" aria-hidden="true" style='color: #06b1e5' v-if='sex=="1"'></i>
+        <i class="fa fa-circle-thin" aria-hidden="true" v-if='sex==""||sex!="1"'></i>
         <input type="radio" name='gender' id='male' value='1' v-model='sex'>
+        <span>小哥哥</span>
       </label>
       <label for="famale">
+        <i class="fa fa-check-circle" aria-hidden="true" style='color: #06b1e5' v-if='sex=="2"'></i>
+        <i class="fa fa-circle-thin" aria-hidden="true" v-if='sex==""||sex!="2"'></i>
         <span>小姐姐</span>
         <input type="radio" name='gender' id='famale' value='2' v-model='sex'>
       </label>
@@ -24,14 +28,20 @@
         <p class="check-txt" v-if='ifSubmit && !level'>请选择等级</p>
       </h3>
       <label for="putong">
+        <i class="fa fa-check-circle" aria-hidden="true" style='color: #06b1e5' v-if='level=="1"'></i>
+        <i class="fa fa-circle-thin" aria-hidden="true" v-if='level==""||level!="1"'></i>
         <span>普通</span>
         <input type="radio" name='level' id='putong' value='1' v-model='level'>
       </label>
       <label for="jinpai">
+        <i class="fa fa-check-circle" aria-hidden="true" style='color: #06b1e5' v-if='level=="2"'></i>
+        <i class="fa fa-circle-thin" aria-hidden="true" v-if='level==""||level!="2"'></i>
         <span>金牌</span>
         <input type="radio" name='level' id='jinpai' value='2' v-model='level'>
       </label>
       <label for="zhendian">
+        <i class="fa fa-check-circle" aria-hidden="true" style='color: #06b1e5' v-if='level=="3"'></i>
+        <i class="fa fa-circle-thin" aria-hidden="true" v-if='level==""||level!="3"'></i>
         <span>镇店</span>
         <input type="radio" name='level' id='zhendian' value='3' v-model='level'>
       </label>
@@ -43,14 +53,20 @@
         <span>选择标签（最多选择3个）</span>
       </h3>
       <label for="wenrou">
+        <i class="fa fa-check-square" aria-hidden="true" style='color: #06b1e5' v-if='fantag.indexOf("温柔的")>-1'></i>
+        <i class="fa fa-square-o" aria-hidden="true" v-if='fantag.indexOf("温柔的")==-1'></i>
         <span>温柔的</span>
         <input type="checkbox" name='tag' id='wenrou' value='温柔的' v-model="fantag">
       </label>
       <label for="keai">
+        <i class="fa fa-check-square" aria-hidden="true" style='color: #06b1e5' v-if='fantag.indexOf("可爱的")>-1'></i>
+        <i class="fa fa-square-o" aria-hidden="true" v-if='fantag.indexOf("可爱的")==-1'></i>
         <span>可爱的</span>
         <input type="checkbox" name='tag' id='keai' value='可爱的' v-model="fantag">
       </label>
       <label for="erciyuan">
+        <i class="fa fa-check-square" aria-hidden="true" style='color: #06b1e5' v-if='fantag.indexOf("二次元")>-1'></i>
+        <i class="fa fa-square-o" aria-hidden="true" v-if='fantag.indexOf("二次元")==-1'></i>
         <span>二次元</span>
         <input type="checkbox" name='tag' id='erciyuan' value='二次元' v-model="fantag">
       </label>
@@ -556,18 +572,23 @@ export default {
   flex-direction: column;
   align-items: center;
   background-color: $color-background-d;
-  padding-bottom: 2rem;
+  background-color: #e2f6fd;
+
+  // padding-bottom: 2rem;
+  padding: .2rem .2rem .2rem;
+  box-sizing: border-box;
 
   .each-option-aera {
     width: 100%;
     padding: 0 .25rem;
     box-sizing: border-box;
-    margin-bottom: .3rem;
+    margin-bottom: .2rem;
     background-color: #fff;
+    border-radius: .05rem;
 
     h3 {
       width: 100%;
-      padding: .2rem 0;
+      padding: .15rem 0;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -586,13 +607,18 @@ export default {
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: space-between;
+      // justify-content: space-between;
       border-top: $border-1px;
       color: $color-text-d;
 
       span {}
+      i {
+        margin-right: .1rem;
+        
+        font-size: .3rem;
+      }
       input {
-
+        display: none;
       }
     }
   }

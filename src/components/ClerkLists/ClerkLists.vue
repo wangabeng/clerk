@@ -680,7 +680,7 @@ export default {
       flex-direction: row;
       align-items: center;
       // background-color: #f7f7f7;
-      background-color: #b9e3f0;
+      background-color: #e2f6fd;
       padding: .12rem .1rem;
       border-radius: .05rem;
 
