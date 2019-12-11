@@ -3,7 +3,7 @@
     <!-- 申请说明 -->
     <div class="apply-info">
       <h3>新店员申请资料</h3>
-      <p>如果你颜值在线，双商在线，如果你喜欢熬夜挑灯夜读，那么请加入我们吧！</p>
+      <p>如果你也想成为我们的一份子，请认真填写下面的表格，以及收录自己的语音资料。资料通过后，我们的审核人员会在2-5天内添加你的微信，请耐心等候。</p>
     </div>
 
     <!-- 信息填写区 -->
@@ -36,13 +36,18 @@
 
       <div class="each-input-fill form-check" >
         <span class='title'>出生年月</span>
-        <div class="date-wrapper">
-          <!-- <vue-datepicker-local v-model="time" format="YYYY-MM" clearable></vue-datepicker-local> -->
+        <!-- <div class="date-wrapper">
           <vue-datepicker-local :disabledDate="disabledDate" v-model="time" format="YYYY-MM" clearable/>
+        </div> -->
+        <div class='slider-date-picker' @click='showSliderPicker'>
+          <span v-if='!picker.sliderMonth'>请选择&nbsp;</span>
+          <span v-if='picker.sliderMonth'>已选择&nbsp;</span>
+          <span>{{picker.sliderYear}}{{picker.sliderMonth}}</span>
         </div>
-        <p class="check-txt" v-if='ifSubmit && !birth_year && !birth_month'>* 出生年月必填</p>
+        <p class="check-txt" v-if='ifSubmit && !picker.sliderYear && !picker.sliderMonth'>* 出生年月必填</p>
       </div>
       <!-- {{birth_year}} and {{birth_month}} -->
+      <!-- {{picker.sliderYear}} and {{picker.sliderMonth}} -->
 
       <div class="each-input-fill form-check">
         <span class='title'>声线类型</span>
@@ -80,8 +85,8 @@
       <div class="each-input-fill form-check">
         <span class='title'  >所在城市</span>
         <div class="city-container"  @click='showCityPicker'>
-          <span v-if='!newCity'>&nbsp;请选择&nbsp;</span>
-          <span v-if='newCity'>&nbsp;已选择&nbsp;</span>
+          <span v-if='!newCity'>请选择&nbsp;</span>
+          <span v-if='newCity'>已选择&nbsp;</span>
           <span>{{newCity}}</span>
         </div>
         <p class="check-txt" v-if='ifSubmit && !newCityId'>* 所在城市必填</p>
@@ -206,7 +211,7 @@
     </div>
     <!-- {{types}} -->
 
-    <!-- 测试区域 -->
+    <!-- 日期滑动区域 -->
     <awesome-picker
       ref="picker"
       :data="picker.data"
@@ -216,8 +221,8 @@
       @cancel="handlePickerCancel"
       @confirm="handlePickerConfirm">
     </awesome-picker>
-    <input type="button" name="" value='测试' @click='show2'>
-    <!-- 测试区域 -->
+    <!-- <input type="button" name="" value='测试' @click='showSliderPicker'> -->
+    <!-- 日期滑动区域 结束 -->
 
     <!-- 提交申请 -->
     <div class="apply-now">
@@ -231,6 +236,7 @@
     <city-picker v-if='ifShowCity' 
       @hidePicker='hidePicker' 
       @sumPicker = 'sumPicker'></city-picker>
+    
 
 
 <!--遮罩层 时间选择器-->
@@ -277,7 +283,7 @@ var fullYear = 80;
 for (var i = 0; i < fullYear; i++) {
   yearArr.push(curYear - i + '年');
 }
-var MonthArr = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '11月', '12月'];
+var MonthArr = ['12月', '11月', '10月', '9月', '8月', '7月', '6月', '5月', '4月', '3月', '2月', '1月'];
 /*console.log(yearArr, MonthArr);
 console.log(parseInt("12月"));*/
 // 生成时间及日期 结束
@@ -359,15 +365,17 @@ export default {
         ],
         anchor: [
           { 
-            index: 18,
-            // value: '2019年'
+            // index: 1,
+            value: '2019年'
           },
           {
-            index: 0,
-            // value: '12月'
+            // index: 1,
+            value: '12月'
           } 
         ],
         confirmColor: '#03afe1',
+        sliderYear: '',
+        sliderMonth: '',
       }
 
       // 滑动版时间选择器 结束
@@ -486,8 +494,8 @@ export default {
       // 如果有表单为空的 
       var _this = this;
       // !this.types || 
-      console.log('表单数据', !this.nick_name , !this.sex , !this.birth_year  , !this.birth_month  , !this.voice_type , !this.online_time  , !this.newCityId , !this.experience  , !this.game , !this.wechat_num  , this.types.length==0 , !this.serverId);
-      if (!this.nick_name || !this.sex || !this.birth_year  || !this.birth_month  || !this.voice_type || !this.online_time  || !this.newCityId || !this.experience  || !this.game || !this.wechat_num  || this.types==0 || !this.serverId) {
+      /*console.log('表单数据', !this.nick_name , !this.sex , !this.birth_year  , !this.birth_month  , !this.voice_type , !this.online_time  , !this.newCityId , !this.experience  , !this.game , !this.wechat_num  , this.types.length==0 , !this.serverId);*/
+      if (!this.nick_name || !this.sex || !this.picker.sliderYear  || !this.picker.sliderMonth  || !this.voice_type || !this.online_time  || !this.newCityId || !this.experience  || !this.game || !this.wechat_num  || this.types==0 || !this.serverId) {
         // 如果数据为空
         return;        
       } 
@@ -512,8 +520,10 @@ export default {
         data: {
           nick_name: _this.nick_name, // 昵称
           sex: _this.sex, // 性别
-          birth_year: _this.birth_year, // 出生年 计算属性中
-          birth_month: _this.birth_month, // 出生月 计算属性中
+          // birth_year: _this.birth_year, // 出生年 计算属性中
+          // birth_month: _this.birth_month, // 出生月 计算属性中
+          birth_year: parseInt(_this.picker.sliderYear), // 出生年 计算属性中
+          birth_month: parseInt(_this.picker.sliderMonth), // 出生月 计算属性中
           voice_type: _this.voice_type, // 声线类型
           online_time: _this.online_time, //
           // province_id: _this.province, // 见 data
@@ -590,11 +600,13 @@ export default {
 
 
     // 滑动版时间选择器
-    show2() { // 显示隐藏日期选择器滑动
+    showSliderPicker() { // 显示隐藏日期选择器滑动
       this.$refs.picker.show();
     },
-    handlePickerConfirm (value1, value2) { // 确认
-      console.log(value1, value2);
+    handlePickerConfirm (value) { // 确认
+      console.log(value);
+      this.picker.sliderYear = value[0].value;
+      this.picker.sliderMonth = value[1].value;
     },
     handlePickerCancel () { // 取消
       // 
@@ -951,6 +963,8 @@ export default {
 
       .gender-wrapper {
         flex: 1;
+        box-sizing: border-box;
+        padding-left: .1rem;
         label {
           margin-right: .3rem;
           margin-right: .3rem;
@@ -982,6 +996,13 @@ export default {
       }
       .city-container {
         flex: 1;
+        box-sizing: border-box;
+        padding-left: .1rem;
+      }
+      .slider-date-picker {
+        flex: 1;
+        box-sizing: border-box;
+        padding-left: .1rem;
       }
     }
   }
