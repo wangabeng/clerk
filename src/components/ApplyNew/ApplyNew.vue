@@ -17,8 +17,18 @@
       <div class="each-input-fill form-check">
         <span class='title'>选择性别</span>
         <div class="gender-wrapper">
-          <label for="male"><span>男</span><input type="radio" id='male' name='gender' value='1' v-model='sex'></label>
-          <label for="famale"><span>女</span><input type="radio" id='famale' name='gender' value='2' v-model='sex'></label>
+          <label for="male" class='male'>
+            <span>男</span>
+            <i class="fa fa-check-circle" aria-hidden="true"  v-if='sex=="1"'></i>
+            <i class="fa fa-circle-thin" aria-hidden="true" v-if='sex==""||sex!="1"'></i>
+            <input type="radio" id='male' name='gender' value='1' v-model='sex'>
+          </label>
+          <label for="famale" class='famale'>
+            <span>女</span>
+            <i class="fa fa-check-circle" aria-hidden="true"  v-if='sex=="2"'></i>
+            <i class="fa fa-circle-thin" aria-hidden="true" v-if='sex==""||sex!="2"'></i>
+            <input type="radio" id='famale' name='gender' value='2' v-model='sex'>
+          </label>
         </div>
         <p class="check-txt" v-if='ifSubmit && !sex'>* 性别必填</p>
       </div>
@@ -174,8 +184,10 @@
     <!-- 接单类型 -->
     <div class="order-type">
       <h4 class='form-check'><span>接单类型（多选）</span><span class='check-txt' v-if='ifSubmit && types.length==0'>* 接单类型 必填</span></h4>
-      <label v-if='allTypes' :for='item.id' v-for='item in allTypes'> <!-- {"id": "1","service_name": "文字语音条"} -->
-        <input type="checkbox"  :id='item.id' :value='item.id' v-model='types'>
+      <label v-if='allTypes' :for='item.id' v-for='item in allTypes'>
+        <i class="fa fa-check-square" aria-hidden="true" style='color: #06b1e5' v-if='types.indexOf(item.id)>-1'></i>
+        <i class="fa fa-square-o" aria-hidden="true" v-if='types.indexOf(item.id)==-1'></i>
+        <input type="checkbox"  :id='item.id' :value='item.id' v-model='types' style='display: none'>
         <span>{{item.service_name}}</span>
       </label><!-- 
       <label for="yuyintonghua">
@@ -190,8 +202,22 @@
         <input type="checkbox"  id='连麦哄睡' value='4' v-model='types'>
         <span>文字语音条</span>
       </label> -->
+      <!-- {{types}} -->
     </div>
     <!-- {{types}} -->
+
+    <!-- 测试区域 -->
+    <awesome-picker
+      ref="picker"
+      :data="picker.data"
+      :anchor="picker.anchor" 
+      :colorConfirm='picker.confirmColor'
+
+      @cancel="handlePickerCancel"
+      @confirm="handlePickerConfirm">
+    </awesome-picker>
+    <input type="button" name="" value='测试' @click='show2'>
+    <!-- 测试区域 -->
 
     <!-- 提交申请 -->
     <div class="apply-now">
@@ -243,6 +269,19 @@ import 'vue-layer/lib/vue-layer.css';
 
 import CityPicker from 'base/CityPicker/CityPicker.vue'
 
+// 生成时间及日期
+console.log('时间：', typeof new Date().getFullYear());
+var curYear = new Date().getFullYear();
+var yearArr = [];
+var fullYear = 80;
+for (var i = 0; i < fullYear; i++) {
+  yearArr.push(curYear - i + '年');
+}
+var MonthArr = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '11月', '12月'];
+/*console.log(yearArr, MonthArr);
+console.log(parseInt("12月"));*/
+// 生成时间及日期 结束
+
 export default {
   name: 'ApplyNew',
   components: {
@@ -250,6 +289,8 @@ export default {
     VDistpicker, // 城市选择
 
     CityPicker, // 城市选择
+
+    // VuePicker, // 滑动版 时间选择器
     
   },
   data () {
@@ -310,6 +351,26 @@ export default {
       ifShowCity: false, // 是否显示城市选择器 是否隐藏 只在父元素控制
 
       serverId: '', // 微信录音serverId号 20191027添加
+
+      // 滑动版时间选择器
+      picker: {
+        data: [
+          yearArr, MonthArr
+        ],
+        anchor: [
+          { 
+            index: 18,
+            // value: '2019年'
+          },
+          {
+            index: 0,
+            // value: '12月'
+          } 
+        ],
+        confirmColor: '#03afe1',
+      }
+
+      // 滑动版时间选择器 结束
 
     }
   },
@@ -526,6 +587,22 @@ export default {
       _this.newProvinceId = p.id;
     },
     // 城市选择 自定义 结束
+
+
+    // 滑动版时间选择器
+    show2() { // 显示隐藏日期选择器滑动
+      this.$refs.picker.show();
+    },
+    handlePickerConfirm (value1, value2) { // 确认
+      console.log(value1, value2);
+    },
+    handlePickerCancel () { // 取消
+      // 
+    },
+    // 滑动版时间选择器 结束
+
+
+
 
   },
   beforeCreate () {
@@ -876,6 +953,28 @@ export default {
         flex: 1;
         label {
           margin-right: .3rem;
+          margin-right: .3rem;
+          padding: .08rem .15rem;
+          border-radius: .05rem;
+          &.male {
+            border: 1px solid #0181d2;
+            i {
+              color: #0181d2;
+            }
+          }
+          &.famale {
+            border: 1px solid #bb527b;
+            i {
+              color: #bb527b;
+            }
+          }
+          i {
+            margin-left: .12rem;
+            font-size: .26rem;
+          }
+          input {
+            display: none;
+          }
         }
       }
       .date-wrapper {
@@ -1100,6 +1199,10 @@ export default {
       flex-direction: row;
       align-items: center;
       padding: .1rem 0;
+      i {
+        margin-right: .1rem;
+        font-size: .3rem;
+      }
       input {
         margin-right: .1rem;
       }
@@ -1258,5 +1361,8 @@ export default {
     transform: scale(.9);
   }
 }
+
+// 滑动版本日期选择器
+
 
 </style>

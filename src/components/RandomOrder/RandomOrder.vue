@@ -572,7 +572,7 @@ export default {
   flex-direction: column;
   align-items: center;
   background-color: $color-background-d;
-  background-color: #e2f6fd;
+  // background-color: #e2f6fd;
 
   // padding-bottom: 2rem;
   padding: .2rem .2rem .2rem;
@@ -613,7 +613,7 @@ export default {
 
       span {}
       i {
-        margin-right: .1rem;
+        margin-right: .12rem;
         
         font-size: .3rem;
       }
