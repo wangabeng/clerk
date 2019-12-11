@@ -1113,7 +1113,7 @@ export default {
         display: inline-flex;
         box-shadow: $box-shadow;
         border-radius: .04rem;
-        @include background_fill('~common/image/audio.png');
+        @include background_fill('~common/image/audio2.png');
         &.playing {
           @include background_fill('~common/image/audioplay.gif');
         }
@@ -1261,7 +1261,7 @@ export default {
       i {
         margin-right: .07rem;
         &.online {
-          color: #46bf29;
+          color: #03afe1;
         }
         &.offline {
           color: $color-text-d

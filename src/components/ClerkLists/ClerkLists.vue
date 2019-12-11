@@ -772,7 +772,7 @@ export default {
             color: #fff;
             border-top-right-radius: .3rem;
             border-bottom-right-radius: .3rem;
-            border-bottom-left-radius: .03rem;
+            border-bottom-left-radius: .1rem;
             // 普通 橘黄
             &.common {
               background-color: #fc6b00;
